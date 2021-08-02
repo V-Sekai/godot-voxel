@@ -26,9 +26,6 @@
 #include "terrain/voxel_terrain.h"
 #include "terrain/voxel_viewer.h"
 #include "util/macros.h"
-#ifdef VOXEL_FAST_NOISE_2_SUPPORT
-#include "util/noise/fast_noise_2.h"
-#endif
 #include "constants/voxel_string_names.h"
 #include "terrain/instancing/voxel_instance_component.h"
 #include "terrain/instancing/voxel_instance_library_scene_item.h"
