@@ -15,7 +15,6 @@
 #include "meshers/blocky/voxel_library.h"
 #include "meshers/blocky/voxel_mesher_blocky.h"
 #include "meshers/cubes/voxel_mesher_cubes.h"
-#include "meshers/dmc/voxel_mesher_dmc.h"
 #include "storage/voxel_buffer.h"
 #include "storage/voxel_memory_pool.h"
 #include "streams/region/voxel_stream_region_files.h"
@@ -121,7 +120,6 @@ void register_voxel_types() {
 	// Meshers
 	ClassDB::register_virtual_class<VoxelMesher>();
 	ClassDB::register_class<VoxelMesherBlocky>();
-	ClassDB::register_class<VoxelMesherDMC>();
 	ClassDB::register_class<VoxelMesherCubes>();
 
 	// Reminder: how to create a singleton accessible from scripts:
