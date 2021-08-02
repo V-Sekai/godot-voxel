@@ -58,7 +58,6 @@ def get_doc_classes():
 
     "VoxelMesher",
     "VoxelMesherBlocky",
-    "VoxelMesherTransvoxel",
     "VoxelMesherDMC",
     "VoxelMesherCubes"
 ]

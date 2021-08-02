@@ -19,7 +19,6 @@ voxel_files = [
 	"constants/*.cpp",
 
 	"meshers/blocky/*.cpp",
-	"meshers/transvoxel/*.cpp",
 	"meshers/dmc/*.cpp",
 	"meshers/cubes/*.cpp",
 	"meshers/*.cpp",
