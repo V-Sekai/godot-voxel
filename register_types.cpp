@@ -3,14 +3,6 @@
 #include "edition/voxel_tool_buffer.h"
 #include "edition/voxel_tool_lod_terrain.h"
 #include "edition/voxel_tool_terrain.h"
-#include "generators/graph/voxel_generator_graph.h"
-#include "generators/graph/voxel_graph_node_db.h"
-#include "generators/simple/voxel_generator_flat.h"
-#include "generators/simple/voxel_generator_heightmap.h"
-#include "generators/simple/voxel_generator_image.h"
-#include "generators/simple/voxel_generator_noise.h"
-#include "generators/simple/voxel_generator_noise_2d.h"
-#include "generators/simple/voxel_generator_waves.h"
 #include "generators/voxel_generator_script.h"
 #include "meshers/blocky/voxel_library.h"
 #include "meshers/blocky/voxel_mesher_blocky.h"
@@ -48,7 +40,6 @@
 void register_voxel_types() {
 	VoxelMemoryPool::create_singleton();
 	VoxelStringNames::create_singleton();
-	VoxelGraphNodeDB::create_singleton();
 	VoxelServer::create_singleton();
 
 	Engine::get_singleton()->add_singleton(Engine::Singleton("VoxelServer", VoxelServer::get_singleton()));
@@ -83,13 +74,6 @@ void register_voxel_types() {
 
 	// Generators
 	ClassDB::register_virtual_class<VoxelGenerator>();
-	ClassDB::register_class<VoxelGeneratorFlat>();
-	ClassDB::register_class<VoxelGeneratorWaves>();
-	ClassDB::register_virtual_class<VoxelGeneratorHeightmap>();
-	ClassDB::register_class<VoxelGeneratorImage>();
-	ClassDB::register_class<VoxelGeneratorNoise2D>();
-	ClassDB::register_class<VoxelGeneratorNoise>();
-	ClassDB::register_class<VoxelGeneratorGraph>();
 	ClassDB::register_class<VoxelGeneratorScript>();
 
 	// Utilities
@@ -141,7 +125,6 @@ void unregister_voxel_types() {
 	// See https://github.com/Zylann/godot_voxel/issues/189
 
 	VoxelStringNames::destroy_singleton();
-	VoxelGraphNodeDB::destroy_singleton();
 	VoxelServer::destroy_singleton();
 
 	// Do this last as VoxelServer might still be holding some refs to voxel blocks
