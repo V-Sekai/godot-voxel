@@ -1,9 +1,9 @@
 #include "vox_importer.h"
-#include "../../constants/voxel_string_names.h"
-#include "../../meshers/cubes/voxel_mesher_cubes.h"
-#include "../../storage/voxel_buffer.h"
-#include "../../streams/vox_data.h"
-#include "../../util/godot/funcs.h"
+#include "../constants/voxel_string_names.h"
+#include "../meshers/cubes/voxel_mesher_cubes.h"
+#include "../storage/voxel_buffer.h"
+#include "../streams/vox_data.h"
+#include "../util/godot/funcs.h"
 
 #include <core/os/file_access.h>
 #include <scene/3d/mesh_instance.h>
