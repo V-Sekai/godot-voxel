@@ -39,13 +39,6 @@ String VoxelVoxImporter::get_resource_type() const {
 	return "PackedScene";
 }
 
-// float VoxelVoxImporter::get_priority() const {
-//     return 0;
-// }
-
-// int VoxelVoxImporter::get_import_order() const {
-// }
-
 void VoxelVoxImporter::get_import_options(List<ImportOption> *r_options, int p_preset) const {
 	VoxelStringNames *sn = VoxelStringNames::get_singleton();
 	r_options->push_back(ImportOption(PropertyInfo(Variant::BOOL, sn->store_colors_in_texture), false));
