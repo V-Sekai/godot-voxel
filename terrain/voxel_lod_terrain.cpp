@@ -1,7 +1,6 @@
 #include "voxel_lod_terrain.h"
 #include "../constants/voxel_string_names.h"
 #include "../edition/voxel_tool_lod_terrain.h"
-#include "../meshers/transvoxel/voxel_mesher_transvoxel.h"
 #include "../server/voxel_server.h"
 #include "../util/funcs.h"
 #include "../util/godot/funcs.h"
@@ -9,6 +8,7 @@
 #include "../util/profiling.h"
 #include "../util/profiling_clock.h"
 #include "instancing/voxel_instancer.h"
+#include "modules/voxel/meshers/blocky/voxel_mesher_blocky.h"
 
 #include <core/core_string_names.h>
 #include <core/engine.h>
@@ -160,7 +160,7 @@ VoxelLodTerrain::VoxelLodTerrain() {
 	set_lod_distance(48.f);
 
 	// For ease of use in editor
-	Ref<VoxelMesherTransvoxel> default_mesher;
+	Ref<VoxelMesherBlocky> default_mesher;
 	default_mesher.instance();
 	_mesher = default_mesher;
 }
