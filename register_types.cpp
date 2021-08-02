@@ -21,7 +21,7 @@
 #include "tests/tests.h"
 #endif
 
-void register_voxel_types() {
+void register_vox_types() {
 	VoxelMemoryPool::create_singleton();
 	VoxelStringNames::create_singleton();
 
@@ -61,7 +61,7 @@ void register_voxel_types() {
 #endif
 }
 
-void unregister_voxel_types() {
+void unregister_vox_types() {
 	// At this point, the GDScript module has nullified GDScriptLanguage::singleton!!
 	// That means it's impossible to free scripts still referenced by VoxelServer. And that can happen, because
 	// users can write custom generators, which run inside threads, and these threads are hosted in the server...

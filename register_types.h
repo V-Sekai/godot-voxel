@@ -1,2 +1,2 @@
-void register_voxel_types();
-void unregister_voxel_types();
+void register_vox_types();
+void unregister_vox_types();
