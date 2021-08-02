@@ -16,8 +16,6 @@
 #include "terrain/voxel_viewer.h"
 #include "util/macros.h"
 #include "constants/voxel_string_names.h"
-#include "util/noise/fast_noise_lite.h"
-#include "util/noise/fast_noise_lite_gradient.h"
 
 #include <core/engine.h>
 
@@ -70,8 +68,6 @@ void register_voxel_types() {
 	// And this can happen in a thread, causing crashes due to the concurrent access
 	ClassDB::register_class<VoxelToolBuffer>();
 	ClassDB::register_class<VoxelVoxLoader>();
-	ClassDB::register_class<FastNoiseLite>();
-	ClassDB::register_class<FastNoiseLiteGradient>();
 
 	// Meshers
 	ClassDB::register_virtual_class<VoxelMesher>();
