@@ -143,13 +143,11 @@ void register_voxel_types() {
 	PRINT_VERBOSE(String("Size of VoxelLodTerrain: {0}").format(varray((int)sizeof(VoxelLodTerrain))));
 	PRINT_VERBOSE(String("Size of VoxelInstancer: {0}").format(varray((int)sizeof(VoxelInstancer))));
 
-#ifdef TOOLS_ENABLED
 	EditorPlugins::add_by_type<VoxelGraphEditorPlugin>();
 	EditorPlugins::add_by_type<VoxelTerrainEditorPlugin>();
 	EditorPlugins::add_by_type<VoxelInstanceLibraryEditorPlugin>();
 	EditorPlugins::add_by_type<FastNoiseLiteEditorPlugin>();
 	EditorPlugins::add_by_type<VoxEditorPlugin>();
-#endif
 
 #ifdef VOXEL_RUN_TESTS
 	run_voxel_tests();
@@ -176,10 +174,8 @@ void unregister_voxel_types() {
 	VoxelMemoryPool::destroy_singleton();
 	// TODO No remove?
 
-#ifdef TOOLS_ENABLED
 	VoxelDebug::free_resources();
 
 	// TODO Seriously, no remove?
 	//EditorPlugins::remove_by_type<VoxelGraphEditorPlugin>();
-#endif
 }
