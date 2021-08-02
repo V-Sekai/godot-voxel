@@ -44,7 +44,6 @@
 
 #ifdef TOOLS_ENABLED
 #include "editor/editor_plugin.h"
-#include "editor/fast_noise_lite/fast_noise_lite_editor_plugin.h"
 #include "editor/instance_library/voxel_instance_library_editor_plugin.h"
 #include "vox_editor_plugin.h"
 #include "editor/voxel_debug.h"
@@ -142,7 +141,6 @@ void register_voxel_types() {
 	PRINT_VERBOSE(String("Size of VoxelInstancer: {0}").format(varray((int)sizeof(VoxelInstancer))));
 
 	EditorPlugins::add_by_type<VoxelInstanceLibraryEditorPlugin>();
-	EditorPlugins::add_by_type<FastNoiseLiteEditorPlugin>();
 	EditorPlugins::add_by_type<VoxEditorPlugin>();
 
 #ifdef VOXEL_RUN_TESTS
