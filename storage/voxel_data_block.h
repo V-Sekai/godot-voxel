@@ -9,14 +9,14 @@
 class VoxelDataBlock {
 public:
 	Ref<VoxelBuffer> voxels;
-	const Vector3i position;
+	const VoxelVector3i position;
 	const unsigned int lod_index = 0;
 	VoxelRefCount viewers;
 
-	static VoxelDataBlock *create(Vector3i bpos, Ref<VoxelBuffer> buffer, unsigned int size, unsigned int p_lod_index) {
+	static VoxelDataBlock *create(VoxelVector3i bpos, Ref<VoxelBuffer> buffer, unsigned int size, unsigned int p_lod_index) {
 		const int bs = size;
 		ERR_FAIL_COND_V(buffer.is_null(), nullptr);
-		ERR_FAIL_COND_V(buffer->get_size() != Vector3i(bs, bs, bs), nullptr);
+		ERR_FAIL_COND_V(buffer->get_size() != VoxelVector3i(bs, bs, bs), nullptr);
 		return memnew(VoxelDataBlock(bpos, buffer, p_lod_index));
 	}
 
@@ -38,7 +38,7 @@ public:
 	inline bool get_needs_lodding() const { return _needs_lodding; }
 
 private:
-	VoxelDataBlock(Vector3i bpos, Ref<VoxelBuffer> buffer, unsigned int p_lod_index) :
+	VoxelDataBlock(VoxelVector3i bpos, Ref<VoxelBuffer> buffer, unsigned int p_lod_index) :
 			voxels(buffer), position(bpos), lod_index(p_lod_index) {}
 
 	// The block was edited, which requires its LOD counterparts to be recomputed

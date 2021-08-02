@@ -44,7 +44,7 @@ void test_voxel_data_map_paste_fill() {
 	static const int channel = VoxelBuffer::CHANNEL_TYPE;
 
 	Ref<VoxelBuffer> buffer;
-	buffer.instance();
+	buffer.instantiate();
 	buffer->create(32, 16, 32);
 	buffer->fill(voxel_value, channel);
 
@@ -81,7 +81,7 @@ void test_voxel_data_map_paste_mask() {
 	static const int channel = VoxelBuffer::CHANNEL_TYPE;
 
 	Ref<VoxelBuffer> buffer;
-	buffer.instance();
+	buffer.instantiate();
 	buffer->create(32, 16, 32);
 	// Fill the inside of the buffer with a value, and outline it with another value, which we'll use as mask
 	buffer->fill(masked_value, channel);
@@ -158,7 +158,7 @@ void test_voxel_data_map_copy() {
 
 	Box3i box(10, 10, 10, 32, 16, 32);
 	Ref<VoxelBuffer> buffer;
-	buffer.instance();
+	buffer.instantiate();
 	buffer->create(box.size);
 
 	// Fill the inside of the buffer with a value, and leave outline to zero,
@@ -174,7 +174,7 @@ void test_voxel_data_map_copy() {
 	map.paste(box.pos, **buffer, (1 << channel), default_value, true);
 
 	Ref<VoxelBuffer> buffer2;
-	buffer2.instance();
+	buffer2.instantiate();
 	buffer2->create(box.size);
 
 	map.copy(box.pos, **buffer2, (1 << channel));
@@ -275,7 +275,7 @@ void test_copy_3d_region_zxy() {
 
 void test_voxel_graph_generator_default_graph_compilation() {
 	Ref<VoxelGeneratorGraph> generator;
-	generator.instance();
+	generator.instantiate();
 	generator->load_plane_preset();
 	VoxelGraphRuntime::CompilationResult result = generator->compile();
 	ERR_FAIL_COND_MSG(!result.success,
@@ -284,7 +284,7 @@ void test_voxel_graph_generator_default_graph_compilation() {
 
 void test_voxel_graph_generator_texturing() {
 	Ref<VoxelGeneratorGraph> generator;
-	generator.instance();
+	generator.instantiate();
 
 	// Plane centered on Y=0, angled 45 degrees, going up towards +X
 	// When Y<0, weight0 must be 1 and weight1 must be 0.
@@ -419,7 +419,7 @@ void test_voxel_graph_generator_texturing() {
 				{
 					// Block centered on origin
 					Ref<VoxelBuffer> buffer;
-					buffer.instance();
+					buffer.instantiate();
 					buffer->create(Vector3i(16, 16, 16));
 
 					VoxelBlockRequest request;
@@ -438,7 +438,7 @@ void test_voxel_graph_generator_texturing() {
 					// Below 0
 					Ref<VoxelBuffer> buffer0;
 					{
-						buffer0.instance();
+						buffer0.instantiate();
 						buffer0->create(Vector3i(16, 16, 16));
 						VoxelBlockRequest request;
 						request.lod = 0;
@@ -450,7 +450,7 @@ void test_voxel_graph_generator_texturing() {
 					// Above 0
 					Ref<VoxelBuffer> buffer1;
 					{
-						buffer1.instance();
+						buffer1.instantiate();
 						buffer1->create(Vector3i(16, 16, 16));
 						VoxelBlockRequest request;
 						request.lod = 0;

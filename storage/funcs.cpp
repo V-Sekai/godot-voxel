@@ -2,13 +2,13 @@
 #include "../util/math/box3i.h"
 
 void copy_3d_region_zxy(
-		Span<uint8_t> dst, Vector3i dst_size, Vector3i dst_min,
-		Span<const uint8_t> src, Vector3i src_size, Vector3i src_min, Vector3i src_max,
+		Span<uint8_t> dst, VoxelVector3i dst_size, VoxelVector3i dst_min,
+		Span<const uint8_t> src, VoxelVector3i src_size, VoxelVector3i src_min, VoxelVector3i src_max,
 		size_t item_size) {
 	//
-	Vector3i::sort_min_max(src_min, src_max);
+	VoxelVector3i::sort_min_max(src_min, src_max);
 	clip_copy_region(src_min, src_max, src_size, dst_min, dst_size);
-	const Vector3i area_size = src_max - src_min;
+	const VoxelVector3i area_size = src_max - src_min;
 	if (area_size.x <= 0 || area_size.y <= 0 || area_size.z <= 0) {
 		// Degenerate area, we'll not copy anything.
 		return;
@@ -34,11 +34,11 @@ void copy_3d_region_zxy(
 		// essentially doing y+1
 		const unsigned int src_row_offset = src_size.y * item_size;
 		const unsigned int dst_row_offset = dst_size.y * item_size;
-		Vector3i pos;
+		VoxelVector3i pos;
 		for (pos.z = 0; pos.z < area_size.z; ++pos.z) {
 			pos.x = 0;
-			unsigned int src_ri = Vector3i(src_min + pos).get_zxy_index(src_size) * item_size;
-			unsigned int dst_ri = Vector3i(dst_min + pos).get_zxy_index(dst_size) * item_size;
+			unsigned int src_ri = VoxelVector3i(src_min + pos).get_zxy_index(src_size) * item_size;
+			unsigned int dst_ri = VoxelVector3i(dst_min + pos).get_zxy_index(dst_size) * item_size;
 			for (; pos.x < area_size.x; ++pos.x) {
 				// TODO Cast src and dst to `restrict` so the optimizer can assume adresses don't overlap,
 				//      which might allow to write as a for loop (which may compile as a `memcpy`)?

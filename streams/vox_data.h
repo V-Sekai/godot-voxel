@@ -6,9 +6,10 @@
 #include "../util/math/vector3i.h"
 
 #include <core/math/basis.h>
-#include <core/ustring.h>
+#include <core/string/ustring.h>
 #include <unordered_map>
 #include <vector>
+#include <memory>
 
 namespace std {
 template <>
@@ -22,7 +23,7 @@ struct hash<String> {
 namespace vox {
 
 struct Model {
-	Vector3i size;
+	VoxelVector3i size;
 	// TODO Optimization: implement lazy loading/streaming to reduce intermediary memory allocations?
 	// Loading a full 256^3 model needs 16 megabytes, but a lot of areas might actually be uniform,
 	// and we might not need the actual model immediately
@@ -55,7 +56,7 @@ struct Rotation {
 struct TransformNode : public Node {
 	int child_node_id;
 	int layer_id;
-	Vector3i position;
+	VoxelVector3i position;
 	Rotation rotation;
 	String name;
 	bool hidden;

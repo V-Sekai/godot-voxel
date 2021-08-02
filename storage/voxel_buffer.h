@@ -7,9 +7,9 @@
 #include "../util/span.h"
 #include "funcs.h"
 
-#include <core/map.h>
-#include <core/reference.h>
-#include <core/vector.h>
+#include <core/templates/map.h>
+#include "core/object/ref_counted.h"
+#include <core/templates/vector.h>
 
 class VoxelTool;
 class Image;
@@ -18,9 +18,9 @@ class FuncRef;
 // Dense voxels data storage.
 // Organized in channels of configurable bit depth.
 // Values can be interpreted either as unsigned integers or normalized floats.
-class VoxelBuffer : public Reference {
+class VoxelBuffer : public RefCounted {
 	// TODO Perhaps we could decouple the Godot class and the internals, so we don't always need `Reference`?
-	GDCLASS(VoxelBuffer, Reference)
+	GDCLASS(VoxelBuffer, RefCounted);
 
 public:
 	enum ChannelId {
@@ -101,12 +101,12 @@ public:
 	~VoxelBuffer();
 
 	void create(unsigned int sx, unsigned int sy, unsigned int sz);
-	void create(Vector3i size);
+	void create(VoxelVector3i size);
 	void clear();
 	void clear_channel(unsigned int channel_index, uint64_t clear_value = 0);
 	void clear_channel_f(unsigned int channel_index, real_t clear_value);
 
-	_FORCE_INLINE_ const Vector3i &get_size() const { return _size; }
+	_FORCE_INLINE_ const VoxelVector3i &get_size() const { return _size; }
 
 	void set_default_values(FixedArray<uint64_t, VoxelBuffer::MAX_CHANNELS> values);
 
@@ -116,16 +116,16 @@ public:
 	real_t get_voxel_f(int x, int y, int z, unsigned int channel_index = 0) const;
 	void set_voxel_f(real_t value, int x, int y, int z, unsigned int channel_index = 0);
 
-	_FORCE_INLINE_ uint64_t get_voxel(const Vector3i pos, unsigned int channel_index = 0) const {
+	_FORCE_INLINE_ uint64_t get_voxel(const VoxelVector3i pos, unsigned int channel_index = 0) const {
 		return get_voxel(pos.x, pos.y, pos.z, channel_index);
 	}
-	_FORCE_INLINE_ void set_voxel(int value, const Vector3i pos, unsigned int channel_index = 0) {
+	_FORCE_INLINE_ void set_voxel(int value, const VoxelVector3i pos, unsigned int channel_index = 0) {
 		set_voxel(value, pos.x, pos.y, pos.z, channel_index);
 	}
 
 	void fill(uint64_t defval, unsigned int channel_index = 0);
-	void fill_area(uint64_t defval, Vector3i min, Vector3i max, unsigned int channel_index = 0);
-	void fill_area_f(float fvalue, Vector3i min, Vector3i max, unsigned int channel_index);
+	void fill_area(uint64_t defval, VoxelVector3i min, VoxelVector3i max, unsigned int channel_index = 0);
+	void fill_area_f(float fvalue, VoxelVector3i min, VoxelVector3i max, unsigned int channel_index);
 	void fill_f(real_t value, unsigned int channel = 0);
 
 	bool is_uniform(unsigned int channel_index) const;
@@ -134,7 +134,7 @@ public:
 	void decompress_channel(unsigned int channel_index);
 	Compression get_channel_compression(unsigned int channel_index) const;
 
-	static uint32_t get_size_in_bytes_for_volume(Vector3i size, Depth depth);
+	static uint32_t get_size_in_bytes_for_volume(VoxelVector3i size, Depth depth);
 
 	void copy_format(const VoxelBuffer &other);
 
@@ -143,7 +143,7 @@ public:
 	// If you also want to copy metadata, use the specialized functions.
 	void copy_from(const VoxelBuffer &other);
 	void copy_from(const VoxelBuffer &other, unsigned int channel_index);
-	void copy_from(const VoxelBuffer &other, Vector3i src_min, Vector3i src_max, Vector3i dst_min,
+	void copy_from(const VoxelBuffer &other, VoxelVector3i src_min, VoxelVector3i src_max, VoxelVector3i dst_min,
 			unsigned int channel_index);
 
 	// Copy a region from a box of values, passed as a raw array.
@@ -151,7 +151,7 @@ public:
 	// `src_min` and `src_max` are the sub-region of that box we want to copy.
 	// `dst_min` is the lower corner where we want the data to be copied into the destination.
 	template <typename T>
-	void copy_from(Span<const T> src, Vector3i src_size, Vector3i src_min, Vector3i src_max, Vector3i dst_min,
+	void copy_from(Span<const T> src, VoxelVector3i src_size, VoxelVector3i src_min, VoxelVector3i src_max, VoxelVector3i dst_min,
 			unsigned int channel_index) {
 		ERR_FAIL_INDEX(channel_index, MAX_CHANNELS);
 
@@ -177,7 +177,7 @@ public:
 	// `dst_min` is the lower corner of where we want the source data to be stored.
 	// `src_min` and `src_max` is the sub-region of the source we want to copy.
 	template <typename T>
-	void copy_to(Span<T> dst, Vector3i dst_size, Vector3i dst_min, Vector3i src_min, Vector3i src_max,
+	void copy_to(Span<T> dst, VoxelVector3i dst_size, VoxelVector3i dst_min, VoxelVector3i src_min, VoxelVector3i src_max,
 			unsigned int channel_index) const {
 		ERR_FAIL_INDEX(channel_index, MAX_CHANNELS);
 
@@ -204,10 +204,10 @@ public:
 	inline void read_write_action(Box3i box, unsigned int channel_index, F action_func) {
 		ERR_FAIL_INDEX(channel_index, MAX_CHANNELS);
 
-		box.clip(Box3i(Vector3i(), _size));
-		Vector3i min_pos = box.pos;
-		Vector3i max_pos = box.pos + box.size;
-		Vector3i pos;
+		box.clip(Box3i(VoxelVector3i(), _size));
+		VoxelVector3i min_pos = box.pos;
+		VoxelVector3i max_pos = box.pos + box.size;
+		VoxelVector3i pos;
 		for (pos.z = min_pos.z; pos.z < max_pos.z; ++pos.z) {
 			for (pos.x = min_pos.x; pos.x < max_pos.x; ++pos.x) {
 				for (pos.y = min_pos.y; pos.y < max_pos.y; ++pos.y) {
@@ -222,7 +222,7 @@ public:
 		}
 	}
 
-	static _FORCE_INLINE_ unsigned int get_index(const Vector3i pos, const Vector3i size) {
+	static _FORCE_INLINE_ unsigned int get_index(const VoxelVector3i pos, const VoxelVector3i size) {
 		return pos.get_zxy_index(size);
 	}
 
@@ -232,9 +232,9 @@ public:
 
 	template <typename F>
 	inline void for_each_index_and_pos(const Box3i &box, F f) {
-		const Vector3i min_pos = box.pos;
-		const Vector3i max_pos = box.pos + box.size;
-		Vector3i pos;
+		const VoxelVector3i min_pos = box.pos;
+		const VoxelVector3i max_pos = box.pos + box.size;
+		VoxelVector3i pos;
 		for (pos.z = min_pos.z; pos.z < max_pos.z; ++pos.z) {
 			for (pos.x = min_pos.x; pos.x < max_pos.x; ++pos.x) {
 				pos.y = min_pos.y;
@@ -247,32 +247,32 @@ public:
 		}
 	}
 
-	// Data_T action_func(Vector3i pos, Data_T in_v)
+	// Data_T action_func(VoxelVector3i pos, Data_T in_v)
 	template <typename F, typename Data_T>
-	void write_box_template(const Box3i &box, unsigned int channel_index, F action_func, Vector3i offset) {
+	void write_box_template(const Box3i &box, unsigned int channel_index, F action_func, VoxelVector3i offset) {
 		decompress_channel(channel_index);
 		Channel &channel = _channels[channel_index];
 #ifdef DEBUG_ENABLED
-		ERR_FAIL_COND(!Box3i(Vector3i(), _size).contains(box));
+		ERR_FAIL_COND(!Box3i(VoxelVector3i(), _size).contains(box));
 		ERR_FAIL_COND(get_depth_byte_count(channel.depth) != sizeof(Data_T));
 #endif
 		Span<Data_T> data = Span<uint8_t>(channel.data, channel.size_in_bytes)
 									.reinterpret_cast_to<Data_T>();
-		for_each_index_and_pos(box, [data, action_func, offset](unsigned int i, Vector3i pos) {
+		for_each_index_and_pos(box, [data, action_func, offset](unsigned int i, VoxelVector3i pos) {
 			data[i] = action_func(pos + offset, data[i]);
 		});
 	}
 
-	// void action_func(Vector3i pos, Data0_T &inout_v0, Data1_T &inout_v1)
+	// void action_func(VoxelVector3i pos, Data0_T &inout_v0, Data1_T &inout_v1)
 	template <typename F, typename Data0_T, typename Data1_T>
 	void write_box_2_template(const Box3i &box, unsigned int channel_index0, unsigned channel_index1, F action_func,
-			Vector3i offset) {
+			VoxelVector3i offset) {
 		decompress_channel(channel_index0);
 		decompress_channel(channel_index1);
 		Channel &channel0 = _channels[channel_index0];
 		Channel &channel1 = _channels[channel_index1];
 #ifdef DEBUG_ENABLED
-		ERR_FAIL_COND(!Box3i(Vector3i(), _size).contains(box));
+		ERR_FAIL_COND(!Box3i(VoxelVector3i(), _size).contains(box));
 		ERR_FAIL_COND(get_depth_byte_count(channel0.depth) != sizeof(Data0_T));
 		ERR_FAIL_COND(get_depth_byte_count(channel1.depth) != sizeof(Data1_T));
 #endif
@@ -280,14 +280,14 @@ public:
 									  .reinterpret_cast_to<Data0_T>();
 		Span<Data1_T> data1 = Span<uint8_t>(channel1.data, channel1.size_in_bytes)
 									  .reinterpret_cast_to<Data1_T>();
-		for_each_index_and_pos(box, [action_func, offset, &data0, &data1](unsigned int i, Vector3i pos) {
+		for_each_index_and_pos(box, [action_func, offset, &data0, &data1](unsigned int i, VoxelVector3i pos) {
 			// TODO The caller must still specify exactly the correct type, maybe some conversion could be used
 			action_func(pos + offset, data0[i], data1[i]);
 		});
 	}
 
 	template <typename F>
-	void write_box(const Box3i &box, unsigned int channel_index, F action_func, Vector3i offset) {
+	void write_box(const Box3i &box, unsigned int channel_index, F action_func, VoxelVector3i offset) {
 #ifdef DEBUG_ENABLED
 		ERR_FAIL_INDEX(channel_index, MAX_CHANNELS);
 #endif
@@ -313,7 +313,7 @@ public:
 
 	/*template <typename F>
 	void write_box_2(const Box3i &box, unsigned int channel_index0, unsigned int channel_index1, F action_func,
-			Vector3i offset) {
+			VoxelVector3i offset) {
 #ifdef DEBUG_ENABLED
 		ERR_FAIL_INDEX(channel_index0, MAX_CHANNELS);
 		ERR_FAIL_INDEX(channel_index1, MAX_CHANNELS);
@@ -365,12 +365,12 @@ public:
 		return x < (unsigned)_size.x && y < (unsigned)_size.y && z < (unsigned)_size.z;
 	}
 
-	_FORCE_INLINE_ bool is_position_valid(const Vector3i pos) const {
+	_FORCE_INLINE_ bool is_position_valid(const VoxelVector3i pos) const {
 		return is_position_valid(pos.x, pos.y, pos.z);
 	}
 
 	_FORCE_INLINE_ bool is_box_valid(const Box3i box) const {
-		return Box3i(Vector3i(), _size).contains(box);
+		return Box3i(VoxelVector3i(), _size).contains(box);
 	}
 
 	_FORCE_INLINE_ unsigned int get_volume() const {
@@ -380,7 +380,7 @@ public:
 	// TODO Have a template version based on channel depth
 	bool get_channel_raw(unsigned int channel_index, Span<uint8_t> &slice) const;
 
-	void downscale_to(VoxelBuffer &dst, Vector3i src_min, Vector3i src_max, Vector3i dst_min) const;
+	void downscale_to(VoxelBuffer &dst, VoxelVector3i src_min, VoxelVector3i src_max, VoxelVector3i dst_min) const;
 	Ref<VoxelTool> get_voxel_tool();
 
 	bool equals(const VoxelBuffer &p_other) const;
@@ -398,12 +398,12 @@ public:
 
 	Variant get_block_metadata() const { return _block_metadata; }
 	void set_block_metadata(Variant meta);
-	Variant get_voxel_metadata(Vector3i pos) const;
-	void set_voxel_metadata(Vector3i pos, Variant meta);
+	Variant get_voxel_metadata(VoxelVector3i pos) const;
+	void set_voxel_metadata(VoxelVector3i pos, Variant meta);
 
 	template <typename F>
 	void for_each_voxel_metadata_in_area(Box3i box, F callback) const {
-		const Map<Vector3i, Variant>::Element *elem = _voxel_metadata.front();
+		const Map<VoxelVector3i, Variant>::Element *elem = _voxel_metadata.front();
 		while (elem != nullptr) {
 			if (box.contains(elem->key())) {
 				callback(elem->key(), elem->value());
@@ -412,15 +412,15 @@ public:
 		}
 	}
 
-	void for_each_voxel_metadata(Ref<FuncRef> callback) const;
-	void for_each_voxel_metadata_in_area(Ref<FuncRef> callback, Box3i box) const;
+	void for_each_voxel_metadata(Callable callback) const;
+	void for_each_voxel_metadata_in_area(Callable callback, Box3i box) const;
 
 	void clear_voxel_metadata();
 	void clear_voxel_metadata_in_area(Box3i box);
-	void copy_voxel_metadata_in_area(Ref<VoxelBuffer> src_buffer, Box3i src_box, Vector3i dst_origin);
+	void copy_voxel_metadata_in_area(Ref<VoxelBuffer> src_buffer, Box3i src_box, VoxelVector3i dst_origin);
 	void copy_voxel_metadata(const VoxelBuffer &src_buffer);
 
-	const Map<Vector3i, Variant> &get_voxel_metadata() const { return _voxel_metadata; }
+	const Map<VoxelVector3i, Variant> &get_voxel_metadata() const { return _voxel_metadata; }
 
 	// Internal synchronization.
 	// This lock is optional, and used internally at the moment, only in multithreaded areas.
@@ -432,8 +432,8 @@ public:
 	Ref<Image> debug_print_sdf_to_image_top_down();
 
 private:
-	void create_channel_noinit(int i, Vector3i size);
-	void create_channel(int i, Vector3i size, uint64_t defval);
+	void create_channel_noinit(int i, VoxelVector3i size);
+	void create_channel(int i, VoxelVector3i size, uint64_t defval);
 	void delete_channel(int i);
 
 	static void _bind_methods();
@@ -449,13 +449,13 @@ private:
 	void _b_set_voxel(uint64_t value, int x, int y, int z, unsigned int channel) { set_voxel(value, x, y, z, channel); }
 	void _b_copy_channel_from(Ref<VoxelBuffer> other, unsigned int channel);
 	void _b_copy_channel_from_area(Ref<VoxelBuffer> other, Vector3 src_min, Vector3 src_max, Vector3 dst_min, unsigned int channel);
-	void _b_fill_area(uint64_t defval, Vector3 min, Vector3 max, unsigned int channel_index) { fill_area(defval, Vector3i(min), Vector3i(max), channel_index); }
+	void _b_fill_area(uint64_t defval, Vector3 min, Vector3 max, unsigned int channel_index) { fill_area(defval, VoxelVector3i(min), VoxelVector3i(max), channel_index); }
 	void _b_set_voxel_f(real_t value, int x, int y, int z, unsigned int channel) { set_voxel_f(value, x, y, z, channel); }
 	void _b_set_voxel_v(uint64_t value, Vector3 pos, unsigned int channel_index = 0) { set_voxel(value, pos.x, pos.y, pos.z, channel_index); }
 	void _b_downscale_to(Ref<VoxelBuffer> dst, Vector3 src_min, Vector3 src_max, Vector3 dst_min) const;
-	Variant _b_get_voxel_metadata(Vector3 pos) const { return get_voxel_metadata(Vector3i(pos)); }
-	void _b_set_voxel_metadata(Vector3 pos, Variant meta) { set_voxel_metadata(Vector3i(pos), meta); }
-	void _b_for_each_voxel_metadata_in_area(Ref<FuncRef> callback, Vector3 min_pos, Vector3 max_pos);
+	Variant _b_get_voxel_metadata(Vector3 pos) const { return get_voxel_metadata(VoxelVector3i(pos)); }
+	void _b_set_voxel_metadata(Vector3 pos, Variant meta) { set_voxel_metadata(VoxelVector3i(pos), meta); }
+	void _b_for_each_voxel_metadata_in_area(Callable callback, Vector3 min_pos, Vector3 max_pos);
 	void _b_clear_voxel_metadata_in_area(Vector3 min_pos, Vector3 max_pos);
 	void _b_copy_voxel_metadata_in_area(Ref<VoxelBuffer> src_buffer, Vector3 src_min_pos, Vector3 src_max_pos, Vector3 dst_pos);
 
@@ -465,10 +465,10 @@ private:
 	FixedArray<Channel, MAX_CHANNELS> _channels;
 
 	// How many voxels are there in the three directions. All populated channels have the same size.
-	Vector3i _size;
+	VoxelVector3i _size;
 
 	Variant _block_metadata;
-	Map<Vector3i, Variant> _voxel_metadata;
+	Map<VoxelVector3i, Variant> _voxel_metadata;
 
 	// TODO It may be preferable to actually move away from storing an RWLock in every buffer in the future.
 	// We should be able to find a solution because very few of these locks are actually used at a given time.

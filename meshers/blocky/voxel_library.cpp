@@ -1,4 +1,5 @@
 #include "voxel_library.h"
+#include "core/math/geometry_2d.h"
 #include "../../util/macros.h"
 #include <bitset>
 
@@ -19,7 +20,6 @@ void VoxelLibrary::set_voxel_count(unsigned int type_count) {
 	}
 	// Note: a smaller size may cause a loss of data
 	_voxel_types.resize(type_count);
-	_change_notify();
 	_needs_baking = true;
 }
 
@@ -148,7 +148,7 @@ static void rasterize_triangle_barycentric(Vector2 a, Vector2 b, Vector2 c, F ou
 
 	for (int y = min_y; y < max_y; ++y) {
 		for (int x = min_x; x < max_x; ++x) {
-			if (Geometry::is_point_in_triangle(Vector2(x, y) + offset, a, b, c)) {
+			if (Geometry2D::is_point_in_triangle(Vector2(x, y) + offset, a, b, c)) {
 				output_func(x, y);
 			}
 		}
@@ -356,7 +356,7 @@ void VoxelLibrary::generate_side_culling_matrix() {
 		print_line(line);
 
 		Ref<Image> im;
-		im.instance();
+		im.instantiate();
 		im->create(RASTER_SIZE, RASTER_SIZE, false, Image::FORMAT_RGB8);
 		im->lock();
 		for (int y = 0; y < RASTER_SIZE; ++y) {

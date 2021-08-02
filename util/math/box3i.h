@@ -2,17 +2,17 @@
 #define BOX3I_H
 
 #include "vector3i.h"
-#include <core/variant.h>
+#include <core/variant/variant.h>
 
 // Axis-aligned box using integer coordinates
 class Box3i {
 public:
-	Vector3i pos;
-	Vector3i size;
+	VoxelVector3i pos;
+	VoxelVector3i size;
 
 	Box3i() {}
 
-	Box3i(Vector3i p_pos, Vector3i p_size) :
+	Box3i(VoxelVector3i p_pos, VoxelVector3i p_size) :
 			pos(p_pos),
 			size(p_size) {}
 
@@ -24,12 +24,12 @@ public:
 			pos(other.pos),
 			size(other.size) {}
 
-	static inline Box3i from_center_extents(Vector3i center, Vector3i extents) {
+	static inline Box3i from_center_extents(VoxelVector3i center, VoxelVector3i extents) {
 		return Box3i(center - extents, 2 * extents);
 	}
 
 	// max is exclusive
-	static inline Box3i from_min_max(Vector3i p_min, Vector3i p_max) {
+	static inline Box3i from_min_max(VoxelVector3i p_min, VoxelVector3i p_max) {
 		return Box3i(p_min, p_max - p_min);
 	}
 
@@ -40,8 +40,8 @@ public:
 		box.pos.y = MIN(a.pos.y, b.pos.y);
 		box.pos.z = MIN(a.pos.z, b.pos.z);
 
-		Vector3i max_a = a.pos + a.size;
-		Vector3i max_b = b.pos + b.size;
+		VoxelVector3i max_a = a.pos + a.size;
+		VoxelVector3i max_b = b.pos + b.size;
 
 		box.size.x = MAX(max_a.x, max_b.x) - box.pos.x;
 		box.size.y = MAX(max_a.y, max_b.y) - box.pos.y;
@@ -50,8 +50,8 @@ public:
 		return box;
 	}
 
-	bool inline contains(Vector3i p_pos) const {
-		const Vector3i end = pos + size;
+	bool inline contains(VoxelVector3i p_pos) const {
+		const VoxelVector3i end = pos + size;
 		return p_pos.x >= pos.x &&
 			   p_pos.y >= pos.y &&
 			   p_pos.z >= pos.z &&
@@ -61,8 +61,8 @@ public:
 	}
 
 	bool inline contains(const Box3i other) const {
-		const Vector3i other_end = other.pos + other.size;
-		const Vector3i end = pos + size;
+		const VoxelVector3i other_end = other.pos + other.size;
+		const VoxelVector3i end = pos + size;
 		return other.pos.x >= pos.x &&
 			   other.pos.y >= pos.y &&
 			   other.pos.z >= pos.z &&
@@ -98,13 +98,13 @@ public:
 	}
 
 	struct NoAction {
-		inline void operator()(const Vector3i pos) {}
+		inline void operator()(const VoxelVector3i pos) {}
 	};
 
 	template <typename A>
 	inline void for_each_cell(A a) const {
-		Vector3i max = pos + size;
-		Vector3i p;
+		VoxelVector3i max = pos + size;
+		VoxelVector3i p;
 		for (p.z = pos.z; p.z < max.z; ++p.z) {
 			for (p.y = pos.y; p.y < max.y; ++p.y) {
 				for (p.x = pos.x; p.x < max.x; ++p.x) {
@@ -116,8 +116,8 @@ public:
 
 	template <typename A>
 	inline void for_each_cell_zxy(A a) const {
-		Vector3i max = pos + size;
-		Vector3i p;
+		VoxelVector3i max = pos + size;
+		VoxelVector3i p;
 		for (p.z = pos.z; p.z < max.z; ++p.z) {
 			for (p.x = pos.x; p.x < max.x; ++p.x) {
 				for (p.y = pos.y; p.y < max.y; ++p.y) {
@@ -130,8 +130,8 @@ public:
 	// Returns true if all cells of the box comply with the given predicate on their position.
 	template <typename A>
 	inline bool all_cells_match(A a) const {
-		Vector3i max = pos + size;
-		Vector3i p;
+		VoxelVector3i max = pos + size;
+		VoxelVector3i p;
 		for (p.z = pos.z; p.z < max.z; ++p.z) {
 			for (p.y = pos.y; p.y < max.y; ++p.y) {
 				for (p.x = pos.x; p.x < max.x; ++p.x) {
@@ -166,27 +166,27 @@ public:
 
 		Box3i a = *this;
 
-		Vector3i a_min = a.pos;
-		Vector3i b_min = b.pos;
-		Vector3i a_max = a.pos + a.size;
-		Vector3i b_max = b.pos + b.size;
+		VoxelVector3i a_min = a.pos;
+		VoxelVector3i b_min = b.pos;
+		VoxelVector3i a_max = a.pos + a.size;
+		VoxelVector3i b_max = b.pos + b.size;
 
 		if (a_min.x < b_min.x) {
-			Vector3i a_rect_size(b_min.x - a_min.x, a.size.y, a.size.z);
+			VoxelVector3i a_rect_size(b_min.x - a_min.x, a.size.y, a.size.z);
 			action(Box3i(a_min, a_rect_size));
 			a_min.x = b_min.x;
 			a.pos.x = b.pos.x;
 			a.size.x = a_max.x - a_min.x;
 		}
 		if (a_min.y < b_min.y) {
-			Vector3i a_rect_size(a.size.x, b_min.y - a_min.y, a.size.z);
+			VoxelVector3i a_rect_size(a.size.x, b_min.y - a_min.y, a.size.z);
 			action(Box3i(a_min, a_rect_size));
 			a_min.y = b_min.y;
 			a.pos.y = b.pos.y;
 			a.size.y = a_max.y - a_min.y;
 		}
 		if (a_min.z < b_min.z) {
-			Vector3i a_rect_size(a.size.x, a.size.y, b_min.z - a_min.z);
+			VoxelVector3i a_rect_size(a.size.x, a.size.y, b_min.z - a_min.z);
 			action(Box3i(a_min, a_rect_size));
 			a_min.z = b_min.z;
 			a.pos.z = b.pos.z;
@@ -194,22 +194,22 @@ public:
 		}
 
 		if (a_max.x > b_max.x) {
-			Vector3i a_rect_pos(b_max.x, a_min.y, a_min.z);
-			Vector3i a_rect_size(a_max.x - b_max.x, a.size.y, a.size.z);
+			VoxelVector3i a_rect_pos(b_max.x, a_min.y, a_min.z);
+			VoxelVector3i a_rect_size(a_max.x - b_max.x, a.size.y, a.size.z);
 			action(Box3i(a_rect_pos, a_rect_size));
 			a_max.x = b_max.x;
 			a.size.x = a_max.x - a_min.x;
 		}
 		if (a_max.y > b_max.y) {
-			Vector3i a_rect_pos(a_min.x, b_max.y, a_min.z);
-			Vector3i a_rect_size(a.size.x, a_max.y - b_max.y, a.size.z);
+			VoxelVector3i a_rect_pos(a_min.x, b_max.y, a_min.z);
+			VoxelVector3i a_rect_size(a.size.x, a_max.y - b_max.y, a.size.z);
 			action(Box3i(a_rect_pos, a_rect_size));
 			a_max.y = b_max.y;
 			a.size.y = a_max.y - a_min.y;
 		}
 		if (a_max.z > b_max.z) {
-			Vector3i a_rect_pos(a_min.x, a_min.y, b_max.z);
-			Vector3i a_rect_size(a.size.x, a.size.y, a_max.z - b_max.z);
+			VoxelVector3i a_rect_pos(a_min.x, a_min.y, b_max.z);
+			VoxelVector3i a_rect_size(a.size.x, a.size.y, a_max.z - b_max.z);
 			action(Box3i(a_rect_pos, a_rect_size));
 		}
 	}
@@ -227,14 +227,14 @@ public:
 		//  |/      |/    |/
 		//  o-------o     o---x
 
-		Vector3i min_pos = pos;
-		Vector3i max_pos = pos + size;
+		VoxelVector3i min_pos = pos;
+		VoxelVector3i max_pos = pos + size;
 
 		// Top and bottom
 		for (int z = min_pos.z; z < max_pos.z; ++z) {
 			for (int x = min_pos.x; x < max_pos.x; ++x) {
-				f(Vector3i(x, min_pos.y, z));
-				f(Vector3i(x, max_pos.y - 1, z));
+				f(VoxelVector3i(x, min_pos.y, z));
+				f(VoxelVector3i(x, max_pos.y - 1, z));
 			}
 		}
 
@@ -245,8 +245,8 @@ public:
 		// Z sides
 		for (int x = min_pos.x; x < max_pos.x; ++x) {
 			for (int y = min_pos.y; y < max_pos.y; ++y) {
-				f(Vector3i(x, y, min_pos.z));
-				f(Vector3i(x, y, max_pos.z - 1));
+				f(VoxelVector3i(x, y, min_pos.z));
+				f(VoxelVector3i(x, y, max_pos.z - 1));
 			}
 		}
 
@@ -257,8 +257,8 @@ public:
 		// X sides
 		for (int z = min_pos.z; z < max_pos.z; ++z) {
 			for (int y = min_pos.y; y < max_pos.y; ++y) {
-				f(Vector3i(min_pos.x, y, z));
-				f(Vector3i(max_pos.x - 1, y, z));
+				f(VoxelVector3i(min_pos.x, y, z));
+				f(VoxelVector3i(max_pos.x - 1, y, z));
 			}
 		}
 	}
@@ -279,8 +279,8 @@ public:
 		Box3i o;
 		o.pos = pos.floordiv(step_size);
 		// TODO Is that ceildiv?
-		Vector3i max_pos = (pos + size - Vector3i(1)).floordiv(step_size);
-		o.size = max_pos - o.pos + Vector3i(1);
+		VoxelVector3i max_pos = (pos + size - VoxelVector3i(1)).floordiv(step_size);
+		o.size = max_pos - o.pos + VoxelVector3i(1);
 		return o;
 	}
 

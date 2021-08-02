@@ -9,8 +9,7 @@
 #include "../util/profiling.h"
 #include "voxel_buffer.h"
 
-#include <core/func_ref.h>
-#include <core/image.h>
+#include <core/io/image.h>
 #include <core/io/marshalls.h>
 #include <core/math/math_funcs.h>
 #include <string.h>
@@ -141,7 +140,7 @@ void VoxelBuffer::create(unsigned int sx, unsigned int sy, unsigned int sz) {
 
 	clear_voxel_metadata();
 
-	Vector3i new_size(sx, sy, sz);
+	VoxelVector3i new_size(sx, sy, sz);
 	if (new_size != _size) {
 		for (unsigned int i = 0; i < MAX_CHANNELS; ++i) {
 			Channel &channel = _channels[i];
@@ -155,7 +154,7 @@ void VoxelBuffer::create(unsigned int sx, unsigned int sy, unsigned int sz) {
 	}
 }
 
-void VoxelBuffer::create(Vector3i size) {
+void VoxelBuffer::create(VoxelVector3i size) {
 	create(size.x, size.y, size.z);
 }
 
@@ -166,7 +165,7 @@ void VoxelBuffer::clear() {
 			delete_channel(i);
 		}
 	}
-	_size = Vector3i();
+	_size = VoxelVector3i();
 	clear_voxel_metadata();
 }
 
@@ -328,13 +327,13 @@ void VoxelBuffer::fill(uint64_t defval, unsigned int channel_index) {
 	}
 }
 
-void VoxelBuffer::fill_area(uint64_t defval, Vector3i min, Vector3i max, unsigned int channel_index) {
+void VoxelBuffer::fill_area(uint64_t defval, VoxelVector3i min, VoxelVector3i max, unsigned int channel_index) {
 	ERR_FAIL_INDEX(channel_index, MAX_CHANNELS);
 
-	Vector3i::sort_min_max(min, max);
-	min.clamp_to(Vector3i(0, 0, 0), _size + Vector3i(1, 1, 1));
-	max.clamp_to(Vector3i(0, 0, 0), _size + Vector3i(1, 1, 1));
-	const Vector3i area_size = max - min;
+	VoxelVector3i::sort_min_max(min, max);
+	min.clamp_to(VoxelVector3i(0, 0, 0), _size + VoxelVector3i(1, 1, 1));
+	max.clamp_to(VoxelVector3i(0, 0, 0), _size + VoxelVector3i(1, 1, 1));
+	const VoxelVector3i area_size = max - min;
 	if (area_size.x == 0 || area_size.y == 0 || area_size.z == 0) {
 		return;
 	}
@@ -350,7 +349,7 @@ void VoxelBuffer::fill_area(uint64_t defval, Vector3i min, Vector3i max, unsigne
 		}
 	}
 
-	Vector3i pos;
+	VoxelVector3i pos;
 	const unsigned int volume = get_volume();
 	for (pos.z = min.z; pos.z < max.z; ++pos.z) {
 		for (pos.x = min.x; pos.x < max.x; ++pos.x) {
@@ -389,7 +388,7 @@ void VoxelBuffer::fill_area(uint64_t defval, Vector3i min, Vector3i max, unsigne
 	}
 }
 
-void VoxelBuffer::fill_area_f(float fvalue, Vector3i min, Vector3i max, unsigned int channel_index) {
+void VoxelBuffer::fill_area_f(float fvalue, VoxelVector3i min, VoxelVector3i max, unsigned int channel_index) {
 	ERR_FAIL_INDEX(channel_index, MAX_CHANNELS);
 	const Channel &channel = _channels[channel_index];
 	fill_area(real_to_raw_voxel(fvalue, channel.depth), min, max, channel_index);
@@ -499,7 +498,7 @@ void VoxelBuffer::copy_from(const VoxelBuffer &other, unsigned int channel_index
 }
 
 // TODO Disallow copying from overlapping areas of the same buffer
-void VoxelBuffer::copy_from(const VoxelBuffer &other, Vector3i src_min, Vector3i src_max, Vector3i dst_min,
+void VoxelBuffer::copy_from(const VoxelBuffer &other, VoxelVector3i src_min, VoxelVector3i src_max, VoxelVector3i dst_min,
 		unsigned int channel_index) {
 	ERR_FAIL_INDEX(channel_index, MAX_CHANNELS);
 
@@ -527,9 +526,9 @@ void VoxelBuffer::copy_from(const VoxelBuffer &other, Vector3i src_min, Vector3i
 	} else if (channel.defval != other_channel.defval) {
 		// This logic is still required due to how source and destination regions can be specified.
 		// The actual size of the destination area must be determined from the source area, after it has been clipped.
-		Vector3i::sort_min_max(src_min, src_max);
+		VoxelVector3i::sort_min_max(src_min, src_max);
 		clip_copy_region(src_min, src_max, other._size, dst_min, _size);
-		const Vector3i area_size = src_max - src_min;
+		const VoxelVector3i area_size = src_max - src_min;
 		if (area_size.x <= 0 || area_size.y <= 0 || area_size.z <= 0) {
 			// Degenerate area, we'll not copy anything.
 			return;
@@ -561,12 +560,12 @@ bool VoxelBuffer::get_channel_raw(unsigned int channel_index, Span<uint8_t> &sli
 	return false;
 }
 
-void VoxelBuffer::create_channel(int i, Vector3i size, uint64_t defval) {
+void VoxelBuffer::create_channel(int i, VoxelVector3i size, uint64_t defval) {
 	create_channel_noinit(i, size);
 	fill(defval, i);
 }
 
-uint32_t VoxelBuffer::get_size_in_bytes_for_volume(Vector3i size, Depth depth) {
+uint32_t VoxelBuffer::get_size_in_bytes_for_volume(VoxelVector3i size, Depth depth) {
 	// Calculate appropriate size based on bit depth
 	const unsigned int volume = size.x * size.y * size.z;
 	const unsigned int bits = volume * ::get_depth_bit_count(depth);
@@ -574,7 +573,7 @@ uint32_t VoxelBuffer::get_size_in_bytes_for_volume(Vector3i size, Depth depth) {
 	return size_in_bytes;
 }
 
-void VoxelBuffer::create_channel_noinit(int i, Vector3i size) {
+void VoxelBuffer::create_channel_noinit(int i, VoxelVector3i size) {
 	Channel &channel = _channels[i];
 	uint32_t size_in_bytes = get_size_in_bytes_for_volume(size, channel.depth);
 	CRASH_COND(channel.data != nullptr);
@@ -590,17 +589,17 @@ void VoxelBuffer::delete_channel(int i) {
 	channel.size_in_bytes = 0;
 }
 
-void VoxelBuffer::downscale_to(VoxelBuffer &dst, Vector3i src_min, Vector3i src_max, Vector3i dst_min) const {
+void VoxelBuffer::downscale_to(VoxelBuffer &dst, VoxelVector3i src_min, VoxelVector3i src_max, VoxelVector3i dst_min) const {
 	// TODO Align input to multiple of two
 
-	src_min.clamp_to(Vector3i(), _size);
-	src_max.clamp_to(Vector3i(), _size + Vector3i(1));
+	src_min.clamp_to(VoxelVector3i(), _size);
+	src_max.clamp_to(VoxelVector3i(), _size + VoxelVector3i(1));
 
-	Vector3i dst_max = dst_min + ((src_max - src_min) >> 1);
+	VoxelVector3i dst_max = dst_min + ((src_max - src_min) >> 1);
 
 	// TODO This will be wrong if it overlaps the border?
-	dst_min.clamp_to(Vector3i(), dst._size);
-	dst_max.clamp_to(Vector3i(), dst._size + Vector3i(1));
+	dst_min.clamp_to(VoxelVector3i(), dst._size);
+	dst_max.clamp_to(VoxelVector3i(), dst._size + VoxelVector3i(1));
 
 	for (int channel_index = 0; channel_index < MAX_CHANNELS; ++channel_index) {
 		const Channel &src_channel = _channels[channel_index];
@@ -613,11 +612,11 @@ void VoxelBuffer::downscale_to(VoxelBuffer &dst, Vector3i src_min, Vector3i src_
 
 		// Nearest-neighbor downscaling
 
-		Vector3i pos;
+		VoxelVector3i pos;
 		for (pos.z = dst_min.z; pos.z < dst_max.z; ++pos.z) {
 			for (pos.x = dst_min.x; pos.x < dst_max.x; ++pos.x) {
 				for (pos.y = dst_min.y; pos.y < dst_max.y; ++pos.y) {
-					const Vector3i src_pos = src_min + ((pos - dst_min) << 1);
+					const VoxelVector3i src_pos = src_min + ((pos - dst_min) << 1);
 
 					// TODO Remove check once it works
 					CRASH_COND(!is_position_valid(src_pos.x, src_pos.y, src_pos.z));
@@ -722,9 +721,9 @@ void VoxelBuffer::set_block_metadata(Variant meta) {
 	_block_metadata = meta;
 }
 
-Variant VoxelBuffer::get_voxel_metadata(Vector3i pos) const {
+Variant VoxelBuffer::get_voxel_metadata(VoxelVector3i pos) const {
 	ERR_FAIL_COND_V(!is_position_valid(pos), Variant());
-	const Map<Vector3i, Variant>::Element *elem = _voxel_metadata.find(pos);
+	const Map<VoxelVector3i, Variant>::Element *elem = _voxel_metadata.find(pos);
 	if (elem != nullptr) {
 		return elem->value();
 	} else {
@@ -732,7 +731,7 @@ Variant VoxelBuffer::get_voxel_metadata(Vector3i pos) const {
 	}
 }
 
-void VoxelBuffer::set_voxel_metadata(Vector3i pos, Variant meta) {
+void VoxelBuffer::set_voxel_metadata(VoxelVector3i pos, Variant meta) {
 	ERR_FAIL_COND(!is_position_valid(pos));
 	if (meta.get_type() == Variant::NIL) {
 		_voxel_metadata.erase(pos);
@@ -741,17 +740,17 @@ void VoxelBuffer::set_voxel_metadata(Vector3i pos, Variant meta) {
 	}
 }
 
-void VoxelBuffer::for_each_voxel_metadata(Ref<FuncRef> callback) const {
+void VoxelBuffer::for_each_voxel_metadata(Callable callback) const {
 	ERR_FAIL_COND(callback.is_null());
-	const Map<Vector3i, Variant>::Element *elem = _voxel_metadata.front();
+	const Map<VoxelVector3i, Variant>::Element *elem = _voxel_metadata.front();
 
 	while (elem != nullptr) {
 		const Variant key = elem->key().to_vec3();
 		const Variant *args[2] = { &key, &elem->value() };
-		Variant::CallError err;
-		callback->call_func(args, 2, err);
-
-		ERR_FAIL_COND_MSG(err.error != Variant::CallError::CALL_OK,
+		Callable::CallError err;
+		Variant retval;
+		callback.call(args, 2, retval, err);
+		ERR_FAIL_COND_MSG(err.error != Callable::CallError::CALL_OK,
 				String("FuncRef call failed at {0}").format(varray(key)));
 		// TODO Can't provide detailed error because FuncRef doesn't give us access to the object
 		// ERR_FAIL_COND_MSG(err.error != Variant::CallError::CALL_OK, false,
@@ -761,15 +760,16 @@ void VoxelBuffer::for_each_voxel_metadata(Ref<FuncRef> callback) const {
 	}
 }
 
-void VoxelBuffer::for_each_voxel_metadata_in_area(Ref<FuncRef> callback, Box3i box) const {
+void VoxelBuffer::for_each_voxel_metadata_in_area(Callable callback, Box3i box) const {
 	ERR_FAIL_COND(callback.is_null());
-	for_each_voxel_metadata_in_area(box, [&callback](Vector3i pos, Variant meta) {
+	for_each_voxel_metadata_in_area(box, [&callback](VoxelVector3i pos, Variant meta) {
 		const Variant key = pos.to_vec3();
 		const Variant *args[2] = { &key, &meta };
-		Variant::CallError err;
-		callback->call_func(args, 2, err);
+		Callable::CallError err;
+		Variant retval;
+		callback.call(args, 2, retval, err);
 
-		ERR_FAIL_COND_MSG(err.error != Variant::CallError::CALL_OK,
+		ERR_FAIL_COND_MSG(err.error != Callable::CallError::CALL_OK,
 				String("FuncRef call failed at {0}").format(varray(key)));
 		// TODO Can't provide detailed error because FuncRef doesn't give us access to the object
 		// ERR_FAIL_COND_MSG(err.error != Variant::CallError::CALL_OK, false,
@@ -782,9 +782,9 @@ void VoxelBuffer::clear_voxel_metadata() {
 }
 
 void VoxelBuffer::clear_voxel_metadata_in_area(Box3i box) {
-	Map<Vector3i, Variant>::Element *elem = _voxel_metadata.front();
+	Map<VoxelVector3i, Variant>::Element *elem = _voxel_metadata.front();
 	while (elem != nullptr) {
-		Map<Vector3i, Variant>::Element *next_elem = elem->next();
+		Map<VoxelVector3i, Variant>::Element *next_elem = elem->next();
 		if (box.contains(elem->key())) {
 			_voxel_metadata.erase(elem);
 		}
@@ -792,19 +792,19 @@ void VoxelBuffer::clear_voxel_metadata_in_area(Box3i box) {
 	}
 }
 
-void VoxelBuffer::copy_voxel_metadata_in_area(Ref<VoxelBuffer> src_buffer, Box3i src_box, Vector3i dst_origin) {
+void VoxelBuffer::copy_voxel_metadata_in_area(Ref<VoxelBuffer> src_buffer, Box3i src_box, VoxelVector3i dst_origin) {
 	ERR_FAIL_COND(src_buffer.is_null());
 	ERR_FAIL_COND(!src_buffer->is_box_valid(src_box));
 
 	const Box3i clipped_src_box = src_box.clipped(Box3i(src_box.pos - dst_origin, _size));
-	const Vector3i clipped_dst_offset = dst_origin + clipped_src_box.pos - src_box.pos;
+	const VoxelVector3i clipped_dst_offset = dst_origin + clipped_src_box.pos - src_box.pos;
 
-	const Map<Vector3i, Variant>::Element *elem = src_buffer->_voxel_metadata.front();
+	const Map<VoxelVector3i, Variant>::Element *elem = src_buffer->_voxel_metadata.front();
 
 	while (elem != nullptr) {
-		const Vector3i src_pos = elem->key();
+		const VoxelVector3i src_pos = elem->key();
 		if (src_box.contains(src_pos)) {
-			const Vector3i dst_pos = src_pos + clipped_dst_offset;
+			const VoxelVector3i dst_pos = src_pos + clipped_dst_offset;
 			CRASH_COND(!is_position_valid(dst_pos));
 			_voxel_metadata[dst_pos] = elem->value().duplicate();
 		}
@@ -815,10 +815,10 @@ void VoxelBuffer::copy_voxel_metadata_in_area(Ref<VoxelBuffer> src_buffer, Box3i
 void VoxelBuffer::copy_voxel_metadata(const VoxelBuffer &src_buffer) {
 	ERR_FAIL_COND(src_buffer.get_size() != _size);
 
-	const Map<Vector3i, Variant>::Element *elem = src_buffer._voxel_metadata.front();
+	const Map<VoxelVector3i, Variant>::Element *elem = src_buffer._voxel_metadata.front();
 
 	while (elem != nullptr) {
-		const Vector3i pos = elem->key();
+		const VoxelVector3i pos = elem->key();
 		_voxel_metadata[pos] = elem->value().duplicate();
 		elem = elem->next();
 	}
@@ -829,8 +829,7 @@ void VoxelBuffer::copy_voxel_metadata(const VoxelBuffer &src_buffer) {
 Ref<Image> VoxelBuffer::debug_print_sdf_to_image_top_down() {
 	Image *im = memnew(Image);
 	im->create(_size.x, _size.z, false, Image::FORMAT_RGB8);
-	im->lock();
-	Vector3i pos;
+	VoxelVector3i pos;
 	for (pos.z = 0; pos.z < _size.z; ++pos.z) {
 		for (pos.x = 0; pos.x < _size.x; ++pos.x) {
 			for (pos.y = _size.y - 1; pos.y >= 0; --pos.y) {
@@ -844,7 +843,6 @@ Ref<Image> VoxelBuffer::debug_print_sdf_to_image_top_down() {
 			im->set_pixel(pos.x, pos.z, Color(c, c, c));
 		}
 	}
-	im->unlock();
 	return Ref<Image>(im);
 }
 
@@ -929,24 +927,24 @@ void VoxelBuffer::_b_copy_channel_from(Ref<VoxelBuffer> other, unsigned int chan
 void VoxelBuffer::_b_copy_channel_from_area(Ref<VoxelBuffer> other, Vector3 src_min, Vector3 src_max, Vector3 dst_min,
 		unsigned int channel) {
 	ERR_FAIL_COND(other.is_null());
-	copy_from(**other, Vector3i(src_min), Vector3i(src_max), Vector3i(dst_min), channel);
+	copy_from(**other, VoxelVector3i(src_min), VoxelVector3i(src_max), VoxelVector3i(dst_min), channel);
 }
 
 void VoxelBuffer::_b_downscale_to(Ref<VoxelBuffer> dst, Vector3 src_min, Vector3 src_max, Vector3 dst_min) const {
 	ERR_FAIL_COND(dst.is_null());
-	downscale_to(**dst, Vector3i(src_min), Vector3i(src_max), Vector3i(dst_min));
+	downscale_to(**dst, VoxelVector3i(src_min), VoxelVector3i(src_max), VoxelVector3i(dst_min));
 }
 
-void VoxelBuffer::_b_for_each_voxel_metadata_in_area(Ref<FuncRef> callback, Vector3 min_pos, Vector3 max_pos) {
-	for_each_voxel_metadata_in_area(callback, Box3i::from_min_max(Vector3i(min_pos), Vector3i(max_pos)));
+void VoxelBuffer::_b_for_each_voxel_metadata_in_area(Callable callback, Vector3 min_pos, Vector3 max_pos) {
+	for_each_voxel_metadata_in_area(callback, Box3i::from_min_max(VoxelVector3i(min_pos), VoxelVector3i(max_pos)));
 }
 
 void VoxelBuffer::_b_clear_voxel_metadata_in_area(Vector3 min_pos, Vector3 max_pos) {
-	clear_voxel_metadata_in_area(Box3i::from_min_max(Vector3i(min_pos), Vector3i(max_pos)));
+	clear_voxel_metadata_in_area(Box3i::from_min_max(VoxelVector3i(min_pos), VoxelVector3i(max_pos)));
 }
 
 void VoxelBuffer::_b_copy_voxel_metadata_in_area(Ref<VoxelBuffer> src_buffer, Vector3 src_min_pos, Vector3 src_max_pos,
 		Vector3 dst_pos) {
 	copy_voxel_metadata_in_area(
-			src_buffer, Box3i::from_min_max(Vector3i(src_min_pos), Vector3i(src_max_pos)), dst_pos);
+			src_buffer, Box3i::from_min_max(VoxelVector3i(src_min_pos), VoxelVector3i(src_max_pos)), dst_pos);
 }
