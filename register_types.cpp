@@ -1,14 +1,12 @@
 #include "register_types.h"
 #include "edition/voxel_tool.h"
 #include "edition/voxel_tool_buffer.h"
-#include "generators/voxel_generator_script.h"
 #include "meshers/blocky/voxel_library.h"
 #include "meshers/blocky/voxel_mesher_blocky.h"
 #include "meshers/cubes/voxel_mesher_cubes.h"
 #include "storage/voxel_buffer.h"
 #include "storage/voxel_memory_pool.h"
 #include "streams/vox_loader.h"
-#include "streams/voxel_stream_script.h"
 #include "util/macros.h"
 #include "constants/voxel_string_names.h"
 
@@ -34,14 +32,6 @@ void register_voxel_types() {
 
 	// Storage
 	ClassDB::register_class<VoxelBuffer>();
-
-	// Streams
-	ClassDB::register_virtual_class<VoxelStream>();
-	ClassDB::register_class<VoxelStreamScript>();
-
-	// Generators
-	ClassDB::register_virtual_class<VoxelGenerator>();
-	ClassDB::register_class<VoxelGeneratorScript>();
 
 	// Utilities
 	ClassDB::register_class<VoxelRaycastResult>();
