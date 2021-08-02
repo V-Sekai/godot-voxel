@@ -48,7 +48,7 @@
 #include "editor/graph/voxel_graph_editor_plugin.h"
 #include "editor/instance_library/voxel_instance_library_editor_plugin.h"
 #include "editor/terrain/voxel_terrain_editor_plugin.h"
-#include "vox/vox_editor_plugin.h"
+#include "vox_editor_plugin.h"
 #include "editor/voxel_debug.h"
 #endif
 
