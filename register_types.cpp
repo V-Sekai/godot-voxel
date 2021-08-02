@@ -17,9 +17,7 @@
 #include "meshers/cubes/voxel_mesher_cubes.h"
 #include "storage/voxel_buffer.h"
 #include "storage/voxel_memory_pool.h"
-#include "streams/region/voxel_stream_region_files.h"
 #include "streams/vox_loader.h"
-#include "streams/voxel_stream_block_files.h"
 #include "streams/voxel_stream_script.h"
 #include "terrain/instancing/voxel_instancer.h"
 #include "terrain/voxel_box_mover.h"
@@ -84,8 +82,6 @@ void register_voxel_types() {
 
 	// Streams
 	ClassDB::register_virtual_class<VoxelStream>();
-	ClassDB::register_class<VoxelStreamBlockFiles>();
-	ClassDB::register_class<VoxelStreamRegionFiles>();
 	ClassDB::register_class<VoxelStreamScript>();
 
 	// Generators
@@ -108,7 +104,6 @@ void register_voxel_types() {
 	// I had to bind this one despite it being useless as-is because otherwise Godot lazily initializes its class.
 	// And this can happen in a thread, causing crashes due to the concurrent access
 	ClassDB::register_class<VoxelToolBuffer>();
-	ClassDB::register_class<VoxelBlockSerializer>();
 	ClassDB::register_class<VoxelVoxLoader>();
 	ClassDB::register_class<FastNoiseLite>();
 	ClassDB::register_class<FastNoiseLiteGradient>();
