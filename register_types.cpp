@@ -1,7 +1,6 @@
 #include "register_types.h"
 #include "edition/voxel_tool.h"
 #include "edition/voxel_tool_buffer.h"
-#include "edition/voxel_tool_terrain.h"
 #include "generators/voxel_generator_script.h"
 #include "meshers/blocky/voxel_library.h"
 #include "meshers/blocky/voxel_mesher_blocky.h"
@@ -10,10 +9,6 @@
 #include "storage/voxel_memory_pool.h"
 #include "streams/vox_loader.h"
 #include "streams/voxel_stream_script.h"
-#include "terrain/voxel_box_mover.h"
-#include "terrain/voxel_mesh_block.h"
-#include "terrain/voxel_terrain.h"
-#include "terrain/voxel_viewer.h"
 #include "util/macros.h"
 #include "constants/voxel_string_names.h"
 
@@ -31,12 +26,6 @@
 void register_voxel_types() {
 	VoxelMemoryPool::create_singleton();
 	VoxelStringNames::create_singleton();
-	VoxelServer::create_singleton();
-
-	Engine::get_singleton()->add_singleton(Engine::Singleton("VoxelServer", VoxelServer::get_singleton()));
-
-	// TODO Can I prevent users from instancing it? is "register_virtual_class" correct for a class that's not abstract?
-	ClassDB::register_class<VoxelServer>();
 
 	// Misc
 	ClassDB::register_class<Voxel>();
@@ -46,10 +35,6 @@ void register_voxel_types() {
 	// Storage
 	ClassDB::register_class<VoxelBuffer>();
 
-	// Nodes
-	ClassDB::register_virtual_class<VoxelNode>();
-	ClassDB::register_class<VoxelTerrain>();
-	ClassDB::register_class<VoxelViewer>();
 	// Streams
 	ClassDB::register_virtual_class<VoxelStream>();
 	ClassDB::register_class<VoxelStreamScript>();
@@ -59,10 +44,8 @@ void register_voxel_types() {
 	ClassDB::register_class<VoxelGeneratorScript>();
 
 	// Utilities
-	ClassDB::register_class<VoxelBoxMover>();
 	ClassDB::register_class<VoxelRaycastResult>();
 	ClassDB::register_class<VoxelTool>();
-	ClassDB::register_class<VoxelToolTerrain>();
 	// I had to bind this one despite it being useless as-is because otherwise Godot lazily initializes its class.
 	// And this can happen in a thread, causing crashes due to the concurrent access
 	ClassDB::register_class<VoxelToolBuffer>();
@@ -80,8 +63,6 @@ void register_voxel_types() {
 	PRINT_VERBOSE(String("Size of Reference: {0}").format(varray((int)sizeof(Reference))));
 	PRINT_VERBOSE(String("Size of Node: {0}").format(varray((int)sizeof(Node))));
 	PRINT_VERBOSE(String("Size of VoxelBuffer: {0}").format(varray((int)sizeof(VoxelBuffer))));
-	PRINT_VERBOSE(String("Size of VoxelMeshBlock: {0}").format(varray((int)sizeof(VoxelMeshBlock))));
-	PRINT_VERBOSE(String("Size of VoxelTerrain: {0}").format(varray((int)sizeof(VoxelTerrain))));
 
 	EditorPlugins::add_by_type<VoxEditorPlugin>();
 
@@ -97,7 +78,6 @@ void unregister_voxel_types() {
 	// See https://github.com/Zylann/godot_voxel/issues/189
 
 	VoxelStringNames::destroy_singleton();
-	VoxelServer::destroy_singleton();
 
 	// Do this last as VoxelServer might still be holding some refs to voxel blocks
 	unsigned int used_blocks = VoxelMemoryPool::get_singleton()->debug_get_used_blocks();
@@ -107,8 +87,4 @@ void unregister_voxel_types() {
 						  .format(varray(used_blocks)));
 	}
 	VoxelMemoryPool::destroy_singleton();
-	// TODO No remove?
-
-	// TODO Seriously, no remove?
-	//EditorPlugins::remove_by_type<VoxelGraphEditorPlugin>();
 }

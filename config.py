@@ -49,7 +49,6 @@ def get_doc_classes():
     "VoxelBoxMover",
     "VoxelRaycastResult",
     "VoxelTool",
-    "VoxelToolTerrain",
     "VoxelToolBuffer",
     "VoxelBlockSerializer",
     "VoxelVoxLoader",
