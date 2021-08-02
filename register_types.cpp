@@ -22,7 +22,6 @@
 #ifdef TOOLS_ENABLED
 #include "editor/editor_plugin.h"
 #include "vox_editor_plugin.h"
-#include "editor/voxel_debug.h"
 #endif
 
 #ifdef VOXEL_RUN_TESTS
@@ -109,8 +108,6 @@ void unregister_voxel_types() {
 	}
 	VoxelMemoryPool::destroy_singleton();
 	// TODO No remove?
-
-	VoxelDebug::free_resources();
 
 	// TODO Seriously, no remove?
 	//EditorPlugins::remove_by_type<VoxelGraphEditorPlugin>();
