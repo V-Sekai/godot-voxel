@@ -1,7 +1,6 @@
 #include "register_types.h"
 #include "edition/voxel_tool.h"
 #include "edition/voxel_tool_buffer.h"
-#include "edition/voxel_tool_lod_terrain.h"
 #include "edition/voxel_tool_terrain.h"
 #include "generators/voxel_generator_script.h"
 #include "meshers/blocky/voxel_library.h"
@@ -11,16 +10,12 @@
 #include "storage/voxel_memory_pool.h"
 #include "streams/vox_loader.h"
 #include "streams/voxel_stream_script.h"
-#include "terrain/instancing/voxel_instancer.h"
 #include "terrain/voxel_box_mover.h"
-#include "terrain/voxel_lod_terrain.h"
 #include "terrain/voxel_mesh_block.h"
 #include "terrain/voxel_terrain.h"
 #include "terrain/voxel_viewer.h"
 #include "util/macros.h"
 #include "constants/voxel_string_names.h"
-#include "terrain/instancing/voxel_instance_component.h"
-#include "terrain/instancing/voxel_instance_library_scene_item.h"
 #include "util/noise/fast_noise_lite.h"
 #include "util/noise/fast_noise_lite_gradient.h"
 
@@ -28,7 +23,6 @@
 
 #ifdef TOOLS_ENABLED
 #include "editor/editor_plugin.h"
-#include "editor/instance_library/voxel_instance_library_editor_plugin.h"
 #include "vox_editor_plugin.h"
 #include "editor/voxel_debug.h"
 #endif
@@ -51,10 +45,6 @@ void register_voxel_types() {
 	ClassDB::register_class<Voxel>();
 	ClassDB::register_class<VoxelLibrary>();
 	ClassDB::register_class<VoxelColorPalette>();
-	ClassDB::register_class<VoxelInstanceLibrary>();
-	ClassDB::register_class<VoxelInstanceLibraryItemBase>();
-	ClassDB::register_class<VoxelInstanceLibraryItem>();
-	ClassDB::register_class<VoxelInstanceLibrarySceneItem>();
 
 	// Storage
 	ClassDB::register_class<VoxelBuffer>();
@@ -62,12 +52,7 @@ void register_voxel_types() {
 	// Nodes
 	ClassDB::register_virtual_class<VoxelNode>();
 	ClassDB::register_class<VoxelTerrain>();
-	ClassDB::register_class<VoxelLodTerrain>();
 	ClassDB::register_class<VoxelViewer>();
-	ClassDB::register_class<VoxelInstanceGenerator>();
-	ClassDB::register_class<VoxelInstancer>();
-	ClassDB::register_class<VoxelInstanceComponent>();
-
 	// Streams
 	ClassDB::register_virtual_class<VoxelStream>();
 	ClassDB::register_class<VoxelStreamScript>();
@@ -81,7 +66,6 @@ void register_voxel_types() {
 	ClassDB::register_class<VoxelRaycastResult>();
 	ClassDB::register_class<VoxelTool>();
 	ClassDB::register_class<VoxelToolTerrain>();
-	ClassDB::register_class<VoxelToolLodTerrain>();
 	// I had to bind this one despite it being useless as-is because otherwise Godot lazily initializes its class.
 	// And this can happen in a thread, causing crashes due to the concurrent access
 	ClassDB::register_class<VoxelToolBuffer>();
@@ -103,10 +87,7 @@ void register_voxel_types() {
 	PRINT_VERBOSE(String("Size of VoxelBuffer: {0}").format(varray((int)sizeof(VoxelBuffer))));
 	PRINT_VERBOSE(String("Size of VoxelMeshBlock: {0}").format(varray((int)sizeof(VoxelMeshBlock))));
 	PRINT_VERBOSE(String("Size of VoxelTerrain: {0}").format(varray((int)sizeof(VoxelTerrain))));
-	PRINT_VERBOSE(String("Size of VoxelLodTerrain: {0}").format(varray((int)sizeof(VoxelLodTerrain))));
-	PRINT_VERBOSE(String("Size of VoxelInstancer: {0}").format(varray((int)sizeof(VoxelInstancer))));
 
-	EditorPlugins::add_by_type<VoxelInstanceLibraryEditorPlugin>();
 	EditorPlugins::add_by_type<VoxEditorPlugin>();
 
 #ifdef VOXEL_RUN_TESTS
