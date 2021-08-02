@@ -88,10 +88,6 @@ void register_voxel_types() {
 	ClassDB::register_class<VoxelVoxLoader>();
 	ClassDB::register_class<FastNoiseLite>();
 	ClassDB::register_class<FastNoiseLiteGradient>();
-	// See SCsub
-#ifdef VOXEL_FAST_NOISE_2_SUPPORT
-	ClassDB::register_class<FastNoise2>();
-#endif
 
 	// Meshers
 	ClassDB::register_virtual_class<VoxelMesher>();
