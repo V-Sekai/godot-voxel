@@ -510,8 +510,10 @@ Error Data::_load_from_file(String fpath) {
 							break;
 						}
 					}
-					ERR_FAIL_COND_V_MSG(!layer_exists, ERR_INVALID_DATA,
-							String("Layer {0} does not exist").format(varray(layer_id)));
+					if (!layer_exists) {
+						print_line(String("Layer {0} does not exist").format(varray(layer_id)));
+						continue;
+					}
 				}
 			} break;
 
