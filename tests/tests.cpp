@@ -1,42 +1,10 @@
 #include "tests.h"
-#include "../generators/graph/voxel_generator_graph.h"
 #include "../storage/voxel_data_map.h"
 #include "../util/island_finder.h"
 #include "../util/math/box3i.h"
 
-#include <core/hash_map.h>
-#include <core/print_string.h>
-
-void test_box3i_for_inner_outline() {
-	const Box3i box(-1, 2, 3, 8, 6, 5);
-
-	HashMap<Vector3i, bool, Vector3iHasher> expected_coords;
-	const Box3i inner_box = box.padded(-1);
-	box.for_each_cell([&expected_coords, inner_box](Vector3i pos) {
-		if (!inner_box.contains(pos)) {
-			expected_coords.set(pos, false);
-		}
-	});
-
-	box.for_inner_outline([&expected_coords](Vector3i pos) {
-		bool *b = expected_coords.getptr(pos);
-		if (b == nullptr) {
-			ERR_FAIL_MSG("Unexpected position");
-		}
-		if (*b) {
-			ERR_FAIL_MSG("Duplicate position");
-		}
-		*b = true;
-	});
-
-	const Vector3i *key = nullptr;
-	while ((key = expected_coords.next(key))) {
-		bool v = expected_coords[*key];
-		if (!v) {
-			ERR_FAIL_MSG("Missing position");
-		}
-	}
-}
+#include <core/templates/hash_map.h>
+#include <core/string/print_string.h>
 
 void test_voxel_data_map_paste_fill() {
 	static const int voxel_value = 1;
@@ -51,12 +19,12 @@ void test_voxel_data_map_paste_fill() {
 	VoxelDataMap map;
 	map.create(4, 0);
 
-	const Box3i box(Vector3i(10, 10, 10), buffer->get_size());
+	const Box3i box(VoxelVector3i(10, 10, 10), buffer->get_size());
 
 	map.paste(box.pos, **buffer, (1 << channel), std::numeric_limits<uint64_t>::max(), true);
 
 	// All voxels in the area must be as pasted
-	const bool is_match = box.all_cells_match([&map](const Vector3i &pos) {
+	const bool is_match = box.all_cells_match([&map](const VoxelVector3i &pos) {
 		return map.get_voxel(pos, channel) == voxel_value;
 	});
 
@@ -65,7 +33,7 @@ void test_voxel_data_map_paste_fill() {
 	// Check neighbor voxels to make sure they were not changed
 	const Box3i padded_box = box.padded(1);
 	bool outside_is_ok = true;
-	padded_box.for_inner_outline([&map, &outside_is_ok](const Vector3i &pos) {
+	padded_box.for_inner_outline([&map, &outside_is_ok](const VoxelVector3i &pos) {
 		if (map.get_voxel(pos, channel) != default_value) {
 			outside_is_ok = false;
 		}
@@ -96,19 +64,19 @@ void test_voxel_data_map_paste_mask() {
 	VoxelDataMap map;
 	map.create(4, 0);
 
-	const Box3i box(Vector3i(10, 10, 10), buffer->get_size());
+	const Box3i box(VoxelVector3i(10, 10, 10), buffer->get_size());
 
 	map.paste(box.pos, **buffer, (1 << channel), masked_value, true);
 
 	// All voxels in the area must be as pasted. Ignoring the outline.
-	const bool is_match = box.padded(-1).all_cells_match([&map](const Vector3i &pos) {
+	const bool is_match = box.padded(-1).all_cells_match([&map](const VoxelVector3i &pos) {
 		return map.get_voxel(pos, channel) == voxel_value;
 	});
 
 	/*for (int y = 0; y < buffer->get_size().y; ++y) {
 		String line = String("y={0} | ").format(varray(y));
 		for (int x = 0; x < buffer->get_size().x; ++x) {
-			const int v = buffer->get_voxel(Vector3i(x, y, box.pos.z + 5), channel);
+			const int v = buffer->get_voxel(VoxelVector3i(x, y, box.pos.z + 5), channel);
 			if (v == default_value) {
 				line += "- ";
 			} else if (v == voxel_value) {
@@ -123,7 +91,7 @@ void test_voxel_data_map_paste_mask() {
 	for (int y = 0; y < 64; ++y) {
 		String line = String("y={0} | ").format(varray(y));
 		for (int x = 0; x < 64; ++x) {
-			const int v = map.get_voxel(Vector3i(x, y, box.pos.z + 5), channel);
+			const int v = map.get_voxel(VoxelVector3i(x, y, box.pos.z + 5), channel);
 			if (v == default_value) {
 				line += "- ";
 			} else if (v == voxel_value) {
@@ -139,7 +107,7 @@ void test_voxel_data_map_paste_mask() {
 
 	// Now check the outline voxels, they should be the same as before
 	bool outside_is_ok = true;
-	box.for_inner_outline([&map, &outside_is_ok](const Vector3i &pos) {
+	box.for_inner_outline([&map, &outside_is_ok](const VoxelVector3i &pos) {
 		if (map.get_voxel(pos, channel) != default_value) {
 			outside_is_ok = false;
 		}
@@ -182,7 +150,7 @@ void test_voxel_data_map_copy() {
 	// for (int y = 0; y < buffer2->get_size().y; ++y) {
 	// 	String line = String("y={0} | ").format(varray(y));
 	// 	for (int x = 0; x < buffer2->get_size().x; ++x) {
-	// 		const int v = buffer2->get_voxel(Vector3i(x, y, 5), channel);
+	// 		const int v = buffer2->get_voxel(VoxelVector3i(x, y, 5), channel);
 	// 		if (v == default_value) {
 	// 			line += "- ";
 	// 		} else if (v == voxel_value) {
@@ -214,8 +182,8 @@ void test_encode_weights_packed_u16() {
 void test_copy_3d_region_zxy() {
 	std::vector<uint16_t> src;
 	std::vector<uint16_t> dst;
-	const Vector3i src_size(8, 8, 8);
-	const Vector3i dst_size(3, 4, 5);
+	const VoxelVector3i src_size(8, 8, 8);
+	const VoxelVector3i dst_size(3, 4, 5);
 	src.resize(src_size.volume(), 0);
 	dst.resize(src_size.volume(), 0);
 	for (unsigned int i = 0; i < src.size(); ++i) {
@@ -224,9 +192,9 @@ void test_copy_3d_region_zxy() {
 
 	Span<const uint16_t> srcs = to_span_const(src);
 	Span<uint16_t> dsts = to_span(dst);
-	const Vector3i dst_min(0, 0, 0);
-	const Vector3i src_min(2, 1, 0);
-	const Vector3i src_max(5, 4, 3);
+	const VoxelVector3i dst_min(0, 0, 0);
+	const VoxelVector3i src_min(2, 1, 0);
+	const VoxelVector3i src_max(5, 4, 3);
 	copy_3d_region_zxy(dsts, dst_size, dst_min, srcs, src_size, src_min, src_max);
 
 	/*for (pos.y = src_min.y; pos.y < src_max.y; ++pos.y) {
@@ -244,8 +212,8 @@ void test_copy_3d_region_zxy() {
 		print_line(s);
 	}
 	print_line("----");
-	const Vector3i dst_max = dst_min + (src_max - src_min);
-	pos = Vector3i();
+	const VoxelVector3i dst_max = dst_min + (src_max - src_min);
+	pos = VoxelVector3i();
 	for (pos.y = dst_min.y; pos.y < dst_max.y; ++pos.y) {
 		String s;
 		for (pos.x = dst_min.x; pos.x < dst_max.x; ++pos.x) {
@@ -261,7 +229,7 @@ void test_copy_3d_region_zxy() {
 		print_line(s);
 	}*/
 
-	Vector3i pos;
+	VoxelVector3i pos;
 	for (pos.z = src_min.z; pos.z < src_max.z; ++pos.z) {
 		for (pos.x = src_min.x; pos.x < src_max.x; ++pos.x) {
 			for (pos.y = src_min.y; pos.y < src_max.y; ++pos.y) {
@@ -271,290 +239,6 @@ void test_copy_3d_region_zxy() {
 			}
 		}
 	}
-}
-
-void test_voxel_graph_generator_default_graph_compilation() {
-	Ref<VoxelGeneratorGraph> generator;
-	generator.instantiate();
-	generator->load_plane_preset();
-	VoxelGraphRuntime::CompilationResult result = generator->compile();
-	ERR_FAIL_COND_MSG(!result.success,
-			String("Failed to compile graph: {0}: {1}").format(varray(result.node_id, result.message)));
-}
-
-void test_voxel_graph_generator_texturing() {
-	Ref<VoxelGeneratorGraph> generator;
-	generator.instantiate();
-
-	// Plane centered on Y=0, angled 45 degrees, going up towards +X
-	// When Y<0, weight0 must be 1 and weight1 must be 0.
-	// When Y>0, weight0 must be 0 and weight1 must be 1.
-	// When 0<Y<1, weight0 must transition from 1 to 0 and weight1 must transition from 0 to 1.
-
-	/*
-	 *        Clamp --- Sub1 --- Weight0
-	 *       /      \
-	 *  Z   Y        Weight1
-	 *       \
-	 *  X --- Sub0 --- Sdf
-	 * 
-	 */
-
-	const uint32_t in_x = generator->create_node(VoxelGeneratorGraph::NODE_INPUT_X, Vector2(0, 0));
-	const uint32_t in_y = generator->create_node(VoxelGeneratorGraph::NODE_INPUT_Y, Vector2(0, 0));
-	const uint32_t in_z = generator->create_node(VoxelGeneratorGraph::NODE_INPUT_Z, Vector2(0, 0));
-	const uint32_t out_sdf = generator->create_node(VoxelGeneratorGraph::NODE_OUTPUT_SDF, Vector2(0, 0));
-	const uint32_t n_clamp = generator->create_node(VoxelGeneratorGraph::NODE_CLAMP, Vector2(0, 0));
-	const uint32_t n_sub0 = generator->create_node(VoxelGeneratorGraph::NODE_SUBTRACT, Vector2(0, 0));
-	const uint32_t n_sub1 = generator->create_node(VoxelGeneratorGraph::NODE_SUBTRACT, Vector2(0, 0));
-	const uint32_t out_weight0 = generator->create_node(VoxelGeneratorGraph::NODE_OUTPUT_WEIGHT, Vector2(0, 0));
-	const uint32_t out_weight1 = generator->create_node(VoxelGeneratorGraph::NODE_OUTPUT_WEIGHT, Vector2(0, 0));
-
-	generator->set_node_default_input(n_sub1, 0, 1.0);
-	generator->set_node_param(n_clamp, 0, 0.0);
-	generator->set_node_param(n_clamp, 1, 1.0);
-	generator->set_node_param(out_weight0, 0, 0);
-	generator->set_node_param(out_weight1, 0, 1);
-
-	generator->add_connection(in_y, 0, n_sub0, 0);
-	generator->add_connection(in_x, 0, n_sub0, 1);
-	generator->add_connection(n_sub0, 0, out_sdf, 0);
-	generator->add_connection(in_y, 0, n_clamp, 0);
-	generator->add_connection(n_clamp, 0, n_sub1, 1);
-	generator->add_connection(n_sub1, 0, out_weight0, 0);
-	generator->add_connection(n_clamp, 0, out_weight1, 0);
-
-	VoxelGraphRuntime::CompilationResult compilation_result = generator->compile();
-	ERR_FAIL_COND_MSG(!compilation_result.success,
-			String("Failed to compile graph: {0}: {1}")
-					.format(varray(compilation_result.node_id, compilation_result.message)));
-
-	// Single value tests
-	{
-		const float sdf_must_be_in_air = generator->generate_single(Vector3i(-2, 0, 0));
-		const float sdf_must_be_in_ground = generator->generate_single(Vector3i(2, 0, 0));
-		ERR_FAIL_COND(sdf_must_be_in_air <= 0.f);
-		ERR_FAIL_COND(sdf_must_be_in_ground >= 0.f);
-
-		uint32_t out_weight0_buffer_index;
-		uint32_t out_weight1_buffer_index;
-		ERR_FAIL_COND(!generator->try_get_output_port_address(
-				ProgramGraph::PortLocation{ out_weight0, 0 }, out_weight0_buffer_index));
-		ERR_FAIL_COND(!generator->try_get_output_port_address(
-				ProgramGraph::PortLocation{ out_weight1, 0 }, out_weight1_buffer_index));
-
-		// Sample two points 1 unit below ground at to heights on the slope
-
-		{
-			const float sdf = generator->generate_single(Vector3i(-2, -3, 0));
-			ERR_FAIL_COND(sdf >= 0.f);
-			const VoxelGraphRuntime::State &state = VoxelGeneratorGraph::get_last_state_from_current_thread();
-
-			const VoxelGraphRuntime::Buffer &out_weight0_buffer = state.get_buffer(out_weight0_buffer_index);
-			const VoxelGraphRuntime::Buffer &out_weight1_buffer = state.get_buffer(out_weight1_buffer_index);
-
-			ERR_FAIL_COND(out_weight0_buffer.size < 1);
-			ERR_FAIL_COND(out_weight0_buffer.data == nullptr);
-			ERR_FAIL_COND(out_weight0_buffer.data[0] < 1.f);
-
-			ERR_FAIL_COND(out_weight1_buffer.size < 1);
-			ERR_FAIL_COND(out_weight1_buffer.data == nullptr);
-			ERR_FAIL_COND(out_weight1_buffer.data[0] > 0.f);
-		}
-		{
-			const float sdf = generator->generate_single(Vector3i(2, 1, 0));
-			ERR_FAIL_COND(sdf >= 0.f);
-			const VoxelGraphRuntime::State &state = VoxelGeneratorGraph::get_last_state_from_current_thread();
-
-			const VoxelGraphRuntime::Buffer &out_weight0_buffer = state.get_buffer(out_weight0_buffer_index);
-			const VoxelGraphRuntime::Buffer &out_weight1_buffer = state.get_buffer(out_weight1_buffer_index);
-
-			ERR_FAIL_COND(out_weight0_buffer.size < 1);
-			ERR_FAIL_COND(out_weight0_buffer.data == nullptr);
-			ERR_FAIL_COND(out_weight0_buffer.data[0] > 0.f);
-
-			ERR_FAIL_COND(out_weight1_buffer.size < 1);
-			ERR_FAIL_COND(out_weight1_buffer.data == nullptr);
-			ERR_FAIL_COND(out_weight1_buffer.data[0] < 1.f);
-		}
-	}
-
-	// Block tests
-	{
-		// packed U16 format decoding has a slightly lower maximum due to a compromise
-		const uint8_t WEIGHT_MAX = 240;
-
-		struct L {
-			static void check_weights(Ref<VoxelBuffer> buffer, Vector3i pos,
-					bool weight0_must_be_1, bool weight1_must_be_1) {
-				ERR_FAIL_COND(buffer.is_null());
-				const uint16_t encoded_indices = buffer->get_voxel(pos, VoxelBuffer::CHANNEL_INDICES);
-				const uint16_t encoded_weights = buffer->get_voxel(pos, VoxelBuffer::CHANNEL_WEIGHTS);
-				const FixedArray<uint8_t, 4> indices = decode_indices_from_packed_u16(encoded_indices);
-				const FixedArray<uint8_t, 4> weights = decode_weights_from_packed_u16(encoded_weights);
-				for (unsigned int i = 0; i < indices.size(); ++i) {
-					switch (indices[i]) {
-						case 0:
-							if (weight0_must_be_1) {
-								ERR_FAIL_COND(weights[i] < WEIGHT_MAX);
-							} else {
-								ERR_FAIL_COND(weights[i] > 0);
-							}
-							break;
-						case 1:
-							if (weight1_must_be_1) {
-								ERR_FAIL_COND(weights[i] < WEIGHT_MAX);
-							} else {
-								ERR_FAIL_COND(weights[i] > 0);
-							}
-							break;
-						default:
-							break;
-					}
-				}
-			}
-
-			static void do_block_tests(Ref<VoxelGeneratorGraph> generator) {
-				ERR_FAIL_COND(generator.is_null());
-				{
-					// Block centered on origin
-					Ref<VoxelBuffer> buffer;
-					buffer.instantiate();
-					buffer->create(Vector3i(16, 16, 16));
-
-					VoxelBlockRequest request;
-					request.lod = 0;
-					request.origin_in_voxels = -buffer->get_size() / 2;
-					request.voxel_buffer = buffer;
-					generator->generate_block(request);
-
-					L::check_weights(buffer, Vector3i(4, 3, 8), true, false);
-					L::check_weights(buffer, Vector3i(12, 11, 8), false, true);
-				}
-				{
-					// Two blocks: one above 0, the other below.
-					// The point is to check possible bugs due to optimizations.
-
-					// Below 0
-					Ref<VoxelBuffer> buffer0;
-					{
-						buffer0.instantiate();
-						buffer0->create(Vector3i(16, 16, 16));
-						VoxelBlockRequest request;
-						request.lod = 0;
-						request.origin_in_voxels = Vector3(0, -16, 0);
-						request.voxel_buffer = buffer0;
-						generator->generate_block(request);
-					}
-
-					// Above 0
-					Ref<VoxelBuffer> buffer1;
-					{
-						buffer1.instantiate();
-						buffer1->create(Vector3i(16, 16, 16));
-						VoxelBlockRequest request;
-						request.lod = 0;
-						request.origin_in_voxels = Vector3(0, 0, 0);
-						request.voxel_buffer = buffer1;
-						generator->generate_block(request);
-					}
-
-					L::check_weights(buffer0, Vector3i(8, 8, 8), true, false);
-					L::check_weights(buffer1, Vector3i(8, 8, 8), false, true);
-				}
-			}
-		};
-
-		// Putting state on the stack because the debugger doesnt let me access it
-		const VoxelGraphRuntime::State &state = VoxelGeneratorGraph::get_last_state_from_current_thread();
-
-		// Try first without optimization
-		generator->set_use_optimized_execution_map(false);
-		L::do_block_tests(generator);
-		// Try with optimization
-		generator->set_use_optimized_execution_map(true);
-		L::do_block_tests(generator);
-	}
-}
-
-void test_island_finder() {
-	const char *cdata =
-			"X X X - X "
-			"X X X - - "
-			"X X X - - "
-			"X X X - - "
-			"X X X - - "
-			//
-			"- - - - - "
-			"X X - - - "
-			"X X - - - "
-			"X X X X X "
-			"X X - - X "
-			//
-			"- - - - - "
-			"- - - - - "
-			"- - - - - "
-			"- - - - - "
-			"- - - - - "
-			//
-			"- - - - - "
-			"- - - - - "
-			"- - X - - "
-			"- - X X - "
-			"- - - - - "
-			//
-			"- - - - - "
-			"- - - - - "
-			"- - - - - "
-			"- - - X - "
-			"- - - - - "
-			//
-			;
-
-	const Vector3i grid_size(5, 5, 5);
-	ERR_FAIL_COND(grid_size.volume() != strlen(cdata) / 2);
-
-	std::vector<int> grid;
-	grid.resize(grid_size.volume());
-	for (unsigned int i = 0; i < grid.size(); ++i) {
-		const char c = cdata[i * 2];
-		if (c == 'X') {
-			grid[i] = 1;
-		} else if (c == '-') {
-			grid[i] = 0;
-		} else {
-			ERR_FAIL();
-		}
-	}
-
-	std::vector<uint8_t> output;
-	output.resize(grid_size.volume());
-	unsigned int label_count;
-
-	IslandFinder island_finder;
-	island_finder.scan_3d(
-			Box3i(Vector3i(), grid_size),
-			[&grid, grid_size](Vector3i pos) {
-				const unsigned int i = pos.get_zxy_index(grid_size);
-				CRASH_COND(i >= grid.size());
-				return grid[i] == 1;
-			},
-			to_span(output), &label_count);
-
-	// unsigned int i = 0;
-	// for (int z = 0; z < grid_size.z; ++z) {
-	// 	for (int x = 0; x < grid_size.x; ++x) {
-	// 		String s;
-	// 		for (int y = 0; y < grid_size.y; ++y) {
-	// 			s += String::num_int64(output[i++]);
-	// 			s += " ";
-	// 		}
-	// 		print_line(s);
-	// 	}
-	// 	print_line("//");
-	// }
-
-	ERR_FAIL_COND(label_count != 3);
 }
 
 void test_unordered_remove_if() {
@@ -658,107 +342,6 @@ void test_unordered_remove_if() {
 	}
 }
 
-void test_instance_data_serialization() {
-	struct L {
-		static VoxelInstanceBlockData::InstanceData create_instance(
-				float x, float y, float z, float rotx, float roty, float rotz, float scale) {
-			VoxelInstanceBlockData::InstanceData d;
-			d.transform = Transform(
-					Basis().rotated(Vector3(rotx, roty, rotz)).scaled(Vector3(scale, scale, scale)),
-					Vector3(x, y, z));
-			return d;
-		}
-	};
-
-	// Create some example data
-	VoxelInstanceBlockData src_data;
-	{
-		src_data.position_range = 30;
-		{
-			VoxelInstanceBlockData::LayerData layer;
-			layer.id = 1;
-			layer.scale_min = 1.f;
-			layer.scale_max = 1.f;
-			layer.instances.push_back(L::create_instance(0, 0, 0, 0, 0, 0, 1));
-			layer.instances.push_back(L::create_instance(10, 0, 0, 3.14, 0, 0, 1));
-			layer.instances.push_back(L::create_instance(0, 20, 0, 0, 3.14, 0, 1));
-			layer.instances.push_back(L::create_instance(0, 0, 30, 0, 0, 3.14, 1));
-			src_data.layers.push_back(layer);
-		}
-		{
-			VoxelInstanceBlockData::LayerData layer;
-			layer.id = 2;
-			layer.scale_min = 1.f;
-			layer.scale_max = 4.f;
-			layer.instances.push_back(L::create_instance(0, 1, 0, 0, 0, 0, 1));
-			layer.instances.push_back(L::create_instance(20, 1, 0, -2.14, 0, 0, 2));
-			layer.instances.push_back(L::create_instance(0, 20, 0, 0, -2.14, 0, 3));
-			layer.instances.push_back(L::create_instance(0, 1, 20, -1, 0, 2.14, 4));
-			src_data.layers.push_back(layer);
-		}
-	}
-
-	std::vector<uint8_t> serialized_data;
-
-	ERR_FAIL_COND(!serialize_instance_block_data(src_data, serialized_data));
-
-	VoxelInstanceBlockData dst_data;
-	ERR_FAIL_COND(!deserialize_instance_block_data(dst_data, to_span_const(serialized_data)));
-
-	// Compare blocks
-	ERR_FAIL_COND(src_data.layers.size() != dst_data.layers.size());
-	ERR_FAIL_COND(dst_data.position_range < 0.f);
-	ERR_FAIL_COND(dst_data.position_range != src_data.position_range);
-
-	const float distance_error = max(src_data.position_range, VoxelInstanceBlockData::POSITION_RANGE_MINIMUM) /
-								 float(VoxelInstanceBlockData::POSITION_RESOLUTION);
-
-	// Compare layers
-	for (unsigned int layer_index = 0; layer_index < dst_data.layers.size(); ++layer_index) {
-		const VoxelInstanceBlockData::LayerData &src_layer = src_data.layers[layer_index];
-		const VoxelInstanceBlockData::LayerData &dst_layer = dst_data.layers[layer_index];
-
-		ERR_FAIL_COND(src_layer.id != dst_layer.id);
-		if (src_layer.scale_max - src_layer.scale_min < VoxelInstanceBlockData::SIMPLE_11B_V1_SCALE_RANGE_MINIMUM) {
-			ERR_FAIL_COND(src_layer.scale_min != dst_layer.scale_min);
-		} else {
-			ERR_FAIL_COND(src_layer.scale_min != dst_layer.scale_min);
-			ERR_FAIL_COND(src_layer.scale_max != dst_layer.scale_max);
-		}
-		ERR_FAIL_COND(src_layer.instances.size() != dst_layer.instances.size());
-
-		const float scale_error =
-				max(src_layer.scale_max - src_layer.scale_min, VoxelInstanceBlockData::SIMPLE_11B_V1_SCALE_RANGE_MINIMUM) /
-				float(VoxelInstanceBlockData::SIMPLE_11B_V1_SCALE_RESOLUTION);
-
-		const float rotation_error = 2.f / float(VoxelInstanceBlockData::SIMPLE_11B_V1_QUAT_RESOLUTION);
-
-		// Compare instances
-		for (unsigned int instance_index = 0; instance_index < src_layer.instances.size(); ++instance_index) {
-			const VoxelInstanceBlockData::InstanceData &src_instance = src_layer.instances[instance_index];
-			const VoxelInstanceBlockData::InstanceData &dst_instance = dst_layer.instances[instance_index];
-
-			ERR_FAIL_COND(src_instance.transform.origin.distance_to(dst_instance.transform.origin) > distance_error);
-
-			const Vector3 src_scale = src_instance.transform.basis.get_scale();
-			const Vector3 dst_scale = dst_instance.transform.basis.get_scale();
-			ERR_FAIL_COND(src_scale.distance_to(dst_scale) > scale_error);
-
-			// Had to normalize here because Godot doesn't want to give you a Quat if the basis is scaled (even uniformly)
-			const Quat src_rot = src_instance.transform.basis.orthonormalized().get_quat();
-			const Quat dst_rot = dst_instance.transform.basis.orthonormalized().get_quat();
-			const float rot_dx = Math::abs(src_rot.x - dst_rot.x);
-			const float rot_dy = Math::abs(src_rot.y - dst_rot.y);
-			const float rot_dz = Math::abs(src_rot.z - dst_rot.z);
-			const float rot_dw = Math::abs(src_rot.w - dst_rot.w);
-			ERR_FAIL_COND(rot_dx > rotation_error);
-			ERR_FAIL_COND(rot_dy > rotation_error);
-			ERR_FAIL_COND(rot_dz > rotation_error);
-			ERR_FAIL_COND(rot_dw > rotation_error);
-		}
-	}
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define VOXEL_TEST(fname)                                     \
@@ -768,17 +351,12 @@ void test_instance_data_serialization() {
 void run_voxel_tests() {
 	print_line("------------ Voxel tests begin -------------");
 
-	VOXEL_TEST(test_box3i_for_inner_outline);
 	VOXEL_TEST(test_voxel_data_map_paste_fill);
 	VOXEL_TEST(test_voxel_data_map_paste_mask);
 	VOXEL_TEST(test_voxel_data_map_copy);
 	VOXEL_TEST(test_encode_weights_packed_u16);
 	VOXEL_TEST(test_copy_3d_region_zxy);
-	VOXEL_TEST(test_voxel_graph_generator_default_graph_compilation);
-	VOXEL_TEST(test_voxel_graph_generator_texturing);
-	VOXEL_TEST(test_island_finder);
 	VOXEL_TEST(test_unordered_remove_if);
-	VOXEL_TEST(test_instance_data_serialization);
 
 	print_line("------------ Voxel tests end -------------");
 }
