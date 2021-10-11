@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="VoxelMesherCubes" inherits="VoxelMesher" version="3.4">
+<class name="VoxelMesherCubes" inherits="VoxelMesher" version="4.0">
 	<brief_description>
 	</brief_description>
 	<description>
 	</description>
 	<tutorials>
 	</tutorials>
-	<methods>
-	</methods>
 	<members>
 		<member name="color_mode" type="int" setter="set_color_mode" getter="get_color_mode" enum="VoxelMesherCubes.ColorMode" default="0">
 		</member>
