@@ -7,7 +7,7 @@
 	<tutorials>
 	</tutorials>
 	<members>
-		<member name="distance" type="float" setter="" getter="get_distance" default="0.0">
+		<member name="distance" type="float" setter="" getter="get_distance" default="4.48416e-44">
 		</member>
 		<member name="position" type="Vector3" setter="" getter="get_position" default="Vector3(0, 0, 0)">
 		</member>
