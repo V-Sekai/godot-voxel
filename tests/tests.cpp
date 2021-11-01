@@ -147,9 +147,10 @@ void test_voxel_data_map_copy() {
   // 	String line = String("y={0} | ").format(varray(y));
   // 	for (int x = 0; x < buffer2->get_size().x; ++x) {
   // 		const int v = buffer2->get_voxel(VoxelVector3i(x, y, 5),
-  // channel); 		if (v == default_value) { 			line += "- "; 		}
-  // else if (v ==
-  // voxel_value) { 			line += "O "; 		} else { 			line += "X
+  // channel); 		if (v == default_value) { 			line += "- ";
+  // } else if (v ==
+  // voxel_value) { 			line += "O "; 		} else { 			line +=
+  // "X
   // ";
   // 		}
   // 	}
