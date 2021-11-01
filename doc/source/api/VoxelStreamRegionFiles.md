@@ -5,32 +5,32 @@ Inherits: [VoxelStream](VoxelStream.md)
 
 Loads and saves blocks to region files indexed by world position, under a directory.
 
-## Description: 
+## Description:
 
 Loads and saves blocks to the filesystem, in multiple region files indexed by world position, under a directory. Regions pack many blocks together, so it reduces file switching and improves performance. Inspired by [Seed of Andromeda](https://www.seedofandromeda.com/blogs/1-creating-a-region-file-system-for-a-voxel-game) and Minecraft.
 
 Region files are not thread-safe. Because of this, internal mutexing may often constrain the use by one thread only.
 
-## Properties: 
+## Properties:
 
 
-Type      | Name                                   | Default 
+Type      | Name                                   | Default
 --------- | -------------------------------------- | --------
-`int`     | [block_size_po2](#i_block_size_po2)    | 4       
-`String`  | [directory](#i_directory)              | ""      
-`int`     | [lod_count](#i_lod_count)              | 1       
-`int`     | [region_size_po2](#i_region_size_po2)  | 4       
-`int`     | [sector_size](#i_sector_size)          | 512     
+`int`     | [block_size_po2](#i_block_size_po2)    | 4
+`String`  | [directory](#i_directory)              | ""
+`int`     | [lod_count](#i_lod_count)              | 1
+`int`     | [region_size_po2](#i_region_size_po2)  | 4
+`int`     | [sector_size](#i_sector_size)          | 512
 <p></p>
 
-## Methods: 
+## Methods:
 
 
-Return                                                                        | Signature                                                                                                                              
+Return                                                                        | Signature
 ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------
-[void](#)                                                                     | [convert_files](#i_convert_files) ( [Dictionary](https://docs.godotengine.org/en/stable/classes/class_dictionary.html) new_settings )  
-[int](https://docs.godotengine.org/en/stable/classes/class_int.html)          | [get_block_size_po2](#i_get_block_size_po2) ( ) const                                                                                  
-[Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html)  | [get_region_size](#i_get_region_size) ( ) const                                                                                        
+[void](#)                                                                     | [convert_files](#i_convert_files) ( [Dictionary](https://docs.godotengine.org/en/stable/classes/class_dictionary.html) new_settings )
+[int](https://docs.godotengine.org/en/stable/classes/class_int.html)          | [get_block_size_po2](#i_get_block_size_po2) ( ) const
+[Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html)  | [get_region_size](#i_get_region_size) ( ) const
 <p></p>
 
 ## Property Descriptions
@@ -53,13 +53,13 @@ Directory under which the data is saved.
 
 ## Method Descriptions
 
-- [void](#)<span id="i_convert_files"></span> **convert_files**( [Dictionary](https://docs.godotengine.org/en/stable/classes/class_dictionary.html) new_settings ) 
+- [void](#)<span id="i_convert_files"></span> **convert_files**( [Dictionary](https://docs.godotengine.org/en/stable/classes/class_dictionary.html) new_settings )
 
 
-- [int](https://docs.godotengine.org/en/stable/classes/class_int.html)<span id="i_get_block_size_po2"></span> **get_block_size_po2**( ) 
+- [int](https://docs.godotengine.org/en/stable/classes/class_int.html)<span id="i_get_block_size_po2"></span> **get_block_size_po2**( )
 
 
-- [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html)<span id="i_get_region_size"></span> **get_region_size**( ) 
+- [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html)<span id="i_get_region_size"></span> **get_region_size**( )
 
 
 _Generated on May 31, 2021_

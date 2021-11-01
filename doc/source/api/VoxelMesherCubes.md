@@ -5,25 +5,25 @@ Inherits: [VoxelMesher](VoxelMesher.md)
 
 
 
-## Properties: 
+## Properties:
 
 
-Type                 | Name                                                 | Default 
+Type                 | Name                                                 | Default
 -------------------- | ---------------------------------------------------- | --------
-`int`                | [color_mode](#i_color_mode)                          | 0       
-`bool`               | [greedy_meshing_enabled](#i_greedy_meshing_enabled)  | true    
-`VoxelColorPalette`  | [palette](#i_palette)                                |         
+`int`                | [color_mode](#i_color_mode)                          | 0
+`bool`               | [greedy_meshing_enabled](#i_greedy_meshing_enabled)  | true
+`VoxelColorPalette`  | [palette](#i_palette)                                |
 <p></p>
 
-## Enumerations: 
+## Enumerations:
 
-enum **Materials**: 
+enum **Materials**:
 
 - **MATERIAL_OPAQUE** = **0**
 - **MATERIAL_TRANSPARENT** = **1**
 - **MATERIAL_COUNT** = **2**
 
-enum **ColorMode**: 
+enum **ColorMode**:
 
 - **COLOR_RAW** = **0**
 - **COLOR_MESHER_PALETTE** = **1**

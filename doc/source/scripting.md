@@ -71,7 +71,7 @@ const channel : int = VoxelBuffer.CHANNEL_TYPE
 
 func _get_used_channels_mask() -> int:
     return 1 << channel
- 
+
 func _generate_block(buffer : VoxelBuffer, origin : Vector3, lod : int) -> void:
 	if lod != 0:
         return
@@ -181,7 +181,7 @@ Custom stream
 Making a custom stream works similarly to a custom generator.
 
 You have to extend the class `VoxelStreamScript` and override the methods `_immerge_block` and `_emerge_block`.
-See 
+See
 
 TODO Script example of a custom stream
 

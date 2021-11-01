@@ -5,12 +5,12 @@ Inherits: [VoxelStream](VoxelStream.md)
 
 Saves voxel data into a single SQLite database file.
 
-## Properties: 
+## Properties:
 
 
-Type      | Name                               | Default 
+Type      | Name                               | Default
 --------- | ---------------------------------- | --------
-`String`  | [database_path](#i_database_path)  | ""      
+`String`  | [database_path](#i_database_path)  | ""
 <p></p>
 
 ## Property Descriptions

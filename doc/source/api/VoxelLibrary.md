@@ -5,29 +5,29 @@ Inherits: [Resource](https://docs.godotengine.org/en/stable/classes/class_resour
 
 
 
-## Properties: 
+## Properties:
 
 
-Type    | Name                               | Default 
+Type    | Name                               | Default
 ------- | ---------------------------------- | --------
-`int`   | [atlas_size](#i_atlas_size)        | 16      
-`bool`  | [bake_tangents](#i_bake_tangents)  | true    
-`int`   | [voxel_count](#i_voxel_count)      | 0       
+`int`   | [atlas_size](#i_atlas_size)        | 16
+`bool`  | [bake_tangents](#i_bake_tangents)  | true
+`int`   | [voxel_count](#i_voxel_count)      | 0
 <p></p>
 
-## Methods: 
+## Methods:
 
 
-Return                                                                | Signature                                                                                                                                                                                     
+Return                                                                | Signature
 --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-[void](#)                                                             | [bake](#i_bake) ( )                                                                                                                                                                           
-[Voxel](Voxel.md)                                                     | [create_voxel](#i_create_voxel) ( [int](https://docs.godotengine.org/en/stable/classes/class_int.html) id, [String](https://docs.godotengine.org/en/stable/classes/class_string.html) name )  
-[Voxel](Voxel.md)                                                     | [get_voxel](#i_get_voxel) ( [int](https://docs.godotengine.org/en/stable/classes/class_int.html) id )                                                                                         
-[Voxel](Voxel.md)                                                     | [get_voxel_by_name](#i_get_voxel_by_name) ( [String](https://docs.godotengine.org/en/stable/classes/class_string.html) name )                                                                 
-[int](https://docs.godotengine.org/en/stable/classes/class_int.html)  | [get_voxel_index_from_name](#i_get_voxel_index_from_name) ( [String](https://docs.godotengine.org/en/stable/classes/class_string.html) name ) const                                           
+[void](#)                                                             | [bake](#i_bake) ( )
+[Voxel](Voxel.md)                                                     | [create_voxel](#i_create_voxel) ( [int](https://docs.godotengine.org/en/stable/classes/class_int.html) id, [String](https://docs.godotengine.org/en/stable/classes/class_string.html) name )
+[Voxel](Voxel.md)                                                     | [get_voxel](#i_get_voxel) ( [int](https://docs.godotengine.org/en/stable/classes/class_int.html) id )
+[Voxel](Voxel.md)                                                     | [get_voxel_by_name](#i_get_voxel_by_name) ( [String](https://docs.godotengine.org/en/stable/classes/class_string.html) name )
+[int](https://docs.godotengine.org/en/stable/classes/class_int.html)  | [get_voxel_index_from_name](#i_get_voxel_index_from_name) ( [String](https://docs.godotengine.org/en/stable/classes/class_string.html) name ) const
 <p></p>
 
-## Constants: 
+## Constants:
 
 - **MAX_VOXEL_TYPES** = **65536**
 
@@ -45,19 +45,19 @@ Enable this option if you need normal mapping on your voxels. If you don't need 
 
 ## Method Descriptions
 
-- [void](#)<span id="i_bake"></span> **bake**( ) 
+- [void](#)<span id="i_bake"></span> **bake**( )
 
 
-- [Voxel](Voxel.md)<span id="i_create_voxel"></span> **create_voxel**( [int](https://docs.godotengine.org/en/stable/classes/class_int.html) id, [String](https://docs.godotengine.org/en/stable/classes/class_string.html) name ) 
+- [Voxel](Voxel.md)<span id="i_create_voxel"></span> **create_voxel**( [int](https://docs.godotengine.org/en/stable/classes/class_int.html) id, [String](https://docs.godotengine.org/en/stable/classes/class_string.html) name )
 
 
-- [Voxel](Voxel.md)<span id="i_get_voxel"></span> **get_voxel**( [int](https://docs.godotengine.org/en/stable/classes/class_int.html) id ) 
+- [Voxel](Voxel.md)<span id="i_get_voxel"></span> **get_voxel**( [int](https://docs.godotengine.org/en/stable/classes/class_int.html) id )
 
 
-- [Voxel](Voxel.md)<span id="i_get_voxel_by_name"></span> **get_voxel_by_name**( [String](https://docs.godotengine.org/en/stable/classes/class_string.html) name ) 
+- [Voxel](Voxel.md)<span id="i_get_voxel_by_name"></span> **get_voxel_by_name**( [String](https://docs.godotengine.org/en/stable/classes/class_string.html) name )
 
 
-- [int](https://docs.godotengine.org/en/stable/classes/class_int.html)<span id="i_get_voxel_index_from_name"></span> **get_voxel_index_from_name**( [String](https://docs.godotengine.org/en/stable/classes/class_string.html) name ) 
+- [int](https://docs.godotengine.org/en/stable/classes/class_int.html)<span id="i_get_voxel_index_from_name"></span> **get_voxel_index_from_name**( [String](https://docs.godotengine.org/en/stable/classes/class_string.html) name )
 
 
 _Generated on May 31, 2021_

@@ -48,7 +48,6 @@ enum Side {
 	SIDE_BACK,
 	SIDE_NONE // Either means there is no face, or it was consumed
 };
-
 } // namespace
 
 // Returns:

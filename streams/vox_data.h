@@ -21,7 +21,6 @@ struct hash<String> {
 } // namespace std
 
 namespace vox {
-
 struct Model {
 	VoxelVector3i size;
 	// TODO Optimization: implement lazy loading/streaming to reduce intermediary memory allocations?
@@ -139,7 +138,6 @@ private:
 	int _root_node_id = -1;
 	FixedArray<Color8, 256> _palette;
 };
-
 } // namespace vox
 
 #endif // VOX_DATA_H

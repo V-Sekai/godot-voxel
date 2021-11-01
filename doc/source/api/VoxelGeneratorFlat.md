@@ -5,14 +5,14 @@ Inherits: [VoxelGenerator](VoxelGenerator.md)
 
 
 
-## Properties: 
+## Properties:
 
 
-Type     | Name                         | Default 
+Type     | Name                         | Default
 -------- | ---------------------------- | --------
-`int`    | [channel](#i_channel)        | 1       
-`float`  | [height](#i_height)          | 0.0     
-`int`    | [voxel_type](#i_voxel_type)  | 1       
+`int`    | [channel](#i_channel)        | 1
+`float`  | [height](#i_height)          | 0.0
+`int`    | [voxel_type](#i_voxel_type)  | 1
 <p></p>
 
 ## Property Descriptions

@@ -6,7 +6,6 @@
 #include <unordered_set>
 
 namespace vox {
-
 const uint32_t PALETTE_SIZE = 256;
 
 uint32_t g_default_palette[PALETTE_SIZE] = {
@@ -303,7 +302,6 @@ Error Data::_load_from_file(String fpath) {
 			ERR_FAIL_COND_V(frame_count != 1, ERR_INVALID_DATA);
 
 			//for (int frame_index = 0; frame_index < frame_count; ++frame_index) {
-
 			std::unordered_map<String, String> frame;
 			const Error frame_err = parse_dictionary(f, frame);
 			ERR_FAIL_COND_V(frame_err != OK, frame_err);
@@ -359,7 +357,6 @@ Error Data::_load_from_file(String fpath) {
 			ERR_FAIL_COND_V(model_count != 1, ERR_INVALID_DATA);
 
 			//for (unsigned int i = 0; i < model_count; ++i) {
-
 			node.model_id = f.get_32();
 			ERR_FAIL_COND_V(node.model_id > 65536, ERR_INVALID_DATA);
 			ERR_FAIL_COND_V(node.model_id < 0, ERR_INVALID_DATA);
@@ -606,5 +603,4 @@ const Material &Data::get_material_by_id(int id) const {
 	CRASH_COND(material == nullptr);
 	return *material;
 }
-
 } // namespace vox

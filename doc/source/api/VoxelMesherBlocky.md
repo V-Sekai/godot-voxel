@@ -5,18 +5,18 @@ Inherits: [VoxelMesher](VoxelMesher.md)
 
 Produces a mesh by batching models corresponding to each voxel value, similar to games like Minecraft or StarMade.
 
-## Description: 
+## Description:
 
 Occluded faces are removed from the result, and some degree of ambient occlusion can be baked on the edges. Values are expected to be in the constant VoxelBuffer.CHANNEL_TYPE channel. Models are defined with a [VoxelLibrary](VoxelLibrary.md), in which model indices correspond to the voxel values. Models don't have to be cubes.
 
-## Properties: 
+## Properties:
 
 
-Type            | Name                                         | Default 
+Type            | Name                                         | Default
 --------------- | -------------------------------------------- | --------
-`VoxelLibrary`  | [library](#i_library)                        |         
-`float`         | [occlusion_darkness](#i_occlusion_darkness)  | 0.8     
-`bool`          | [occlusion_enabled](#i_occlusion_enabled)    | true    
+`VoxelLibrary`  | [library](#i_library)                        |
+`float`         | [occlusion_darkness](#i_occlusion_darkness)  | 0.8
+`bool`          | [occlusion_enabled](#i_occlusion_enabled)    | true
 <p></p>
 
 ## Property Descriptions

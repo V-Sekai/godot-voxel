@@ -5,44 +5,44 @@ Inherits: [VoxelNode](VoxelNode.md)
 
 Voxel volume using constant level of detail.
 
-## Properties: 
+## Properties:
 
 
-Type    | Name                                             | Default                                                                                 
+Type    | Name                                             | Default
 ------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------
-`AABB`  | [bounds](#i_bounds)                              | AABB( -5.36871e+08, -5.36871e+08, -5.36871e+08, 1.07374e+09, 1.07374e+09, 1.07374e+09 ) 
-`int`   | [collision_layer](#i_collision_layer)            | 1                                                                                       
-`int`   | [collision_mask](#i_collision_mask)              | 1                                                                                       
-`bool`  | [generate_collisions](#i_generate_collisions)    | true                                                                                    
-`int`   | [max_view_distance](#i_max_view_distance)        | 128                                                                                     
-`int`   | [mesh_block_size](#i_mesh_block_size)            | 16                                                                                      
-`bool`  | [run_stream_in_editor](#i_run_stream_in_editor)  | true                                                                                    
+`AABB`  | [bounds](#i_bounds)                              | AABB( -5.36871e+08, -5.36871e+08, -5.36871e+08, 1.07374e+09, 1.07374e+09, 1.07374e+09 )
+`int`   | [collision_layer](#i_collision_layer)            | 1
+`int`   | [collision_mask](#i_collision_mask)              | 1
+`bool`  | [generate_collisions](#i_generate_collisions)    | true
+`int`   | [max_view_distance](#i_max_view_distance)        | 128
+`int`   | [mesh_block_size](#i_mesh_block_size)            | 16
+`bool`  | [run_stream_in_editor](#i_run_stream_in_editor)  | true
 <p></p>
 
-## Methods: 
+## Methods:
 
 
-Return                                                                              | Signature                                                                                                                                                                                             
+Return                                                                              | Signature
 ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-[Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html)        | [data_block_to_voxel](#i_data_block_to_voxel) ( [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) block_pos ) const                                                        
-[Material](https://docs.godotengine.org/en/stable/classes/class_material.html)      | [get_material](#i_get_material) ( [int](https://docs.godotengine.org/en/stable/classes/class_int.html) id ) const                                                                                     
-[Dictionary](https://docs.godotengine.org/en/stable/classes/class_dictionary.html)  | [get_statistics](#i_get_statistics) ( ) const                                                                                                                                                         
-[VoxelTool](VoxelTool.md)                                                           | [get_voxel_tool](#i_get_voxel_tool) ( )                                                                                                                                                               
-[void](#)                                                                           | [save_block](#i_save_block) ( [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) position )                                                                                 
-[void](#)                                                                           | [save_modified_blocks](#i_save_modified_blocks) ( )                                                                                                                                                   
-[void](#)                                                                           | [set_material](#i_set_material) ( [int](https://docs.godotengine.org/en/stable/classes/class_int.html) id, [Material](https://docs.godotengine.org/en/stable/classes/class_material.html) material )  
-[Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html)        | [voxel_to_data_block](#i_voxel_to_data_block) ( [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) voxel_pos ) const                                                        
+[Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html)        | [data_block_to_voxel](#i_data_block_to_voxel) ( [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) block_pos ) const
+[Material](https://docs.godotengine.org/en/stable/classes/class_material.html)      | [get_material](#i_get_material) ( [int](https://docs.godotengine.org/en/stable/classes/class_int.html) id ) const
+[Dictionary](https://docs.godotengine.org/en/stable/classes/class_dictionary.html)  | [get_statistics](#i_get_statistics) ( ) const
+[VoxelTool](VoxelTool.md)                                                           | [get_voxel_tool](#i_get_voxel_tool) ( )
+[void](#)                                                                           | [save_block](#i_save_block) ( [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) position )
+[void](#)                                                                           | [save_modified_blocks](#i_save_modified_blocks) ( )
+[void](#)                                                                           | [set_material](#i_set_material) ( [int](https://docs.godotengine.org/en/stable/classes/class_int.html) id, [Material](https://docs.godotengine.org/en/stable/classes/class_material.html) material )
+[Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html)        | [voxel_to_data_block](#i_voxel_to_data_block) ( [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) voxel_pos ) const
 <p></p>
 
-## Signals: 
+## Signals:
 
-- block_loaded( [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) position ) 
+- block_loaded( [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) position )
 
 Emitted when a new block is loaded from stream.
 
 Note: it might be not visible yet.
 
-- block_unloaded( [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) position ) 
+- block_unloaded( [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) position )
 
 Emitted when a block unloaded due to being outside view distance.
 
@@ -83,13 +83,13 @@ Important: this option will turn off automatically if you setup a script world g
 
 ## Method Descriptions
 
-- [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html)<span id="i_data_block_to_voxel"></span> **data_block_to_voxel**( [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) block_pos ) 
+- [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html)<span id="i_data_block_to_voxel"></span> **data_block_to_voxel**( [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) block_pos )
 
 
-- [Material](https://docs.godotengine.org/en/stable/classes/class_material.html)<span id="i_get_material"></span> **get_material**( [int](https://docs.godotengine.org/en/stable/classes/class_int.html) id ) 
+- [Material](https://docs.godotengine.org/en/stable/classes/class_material.html)<span id="i_get_material"></span> **get_material**( [int](https://docs.godotengine.org/en/stable/classes/class_int.html) id )
 
 
-- [Dictionary](https://docs.godotengine.org/en/stable/classes/class_dictionary.html)<span id="i_get_statistics"></span> **get_statistics**( ) 
+- [Dictionary](https://docs.godotengine.org/en/stable/classes/class_dictionary.html)<span id="i_get_statistics"></span> **get_statistics**( )
 
 Gets debug information about how much time is spent processing the terrain.
 
@@ -110,13 +110,13 @@ The returned dictionary has the following structure:
 
 ```
 
-- [VoxelTool](VoxelTool.md)<span id="i_get_voxel_tool"></span> **get_voxel_tool**( ) 
+- [VoxelTool](VoxelTool.md)<span id="i_get_voxel_tool"></span> **get_voxel_tool**( )
 
 Creates an instance of [VoxelTool](VoxelTool.md) bound to this node, to access voxels and edition methods.
 
 You can keep it in a member variable to avoid creating one again, as long as the node still exists.
 
-- [void](#)<span id="i_save_block"></span> **save_block**( [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) position ) 
+- [void](#)<span id="i_save_block"></span> **save_block**( [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) position )
 
 Forces a specific block to be saved.
 
@@ -126,7 +126,7 @@ Note 2: this will only have an effect if the stream setup on this terrain suppor
 
 Note 3: saving is asynchronous and won't block the game. the save may complete only a short time after you call this method.
 
-- [void](#)<span id="i_save_modified_blocks"></span> **save_modified_blocks**( ) 
+- [void](#)<span id="i_save_modified_blocks"></span> **save_modified_blocks**( )
 
 Forces all modified blocks to be saved.
 
@@ -136,10 +136,10 @@ Note 2: this will only have an effect if the stream setup on this terrain suppor
 
 Note 3: saving is asynchronous and won't block the game. the save may complete only a short time after you call this method.
 
-- [void](#)<span id="i_set_material"></span> **set_material**( [int](https://docs.godotengine.org/en/stable/classes/class_int.html) id, [Material](https://docs.godotengine.org/en/stable/classes/class_material.html) material ) 
+- [void](#)<span id="i_set_material"></span> **set_material**( [int](https://docs.godotengine.org/en/stable/classes/class_int.html) id, [Material](https://docs.godotengine.org/en/stable/classes/class_material.html) material )
 
 
-- [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html)<span id="i_voxel_to_data_block"></span> **voxel_to_data_block**( [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) voxel_pos ) 
+- [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html)<span id="i_voxel_to_data_block"></span> **voxel_to_data_block**( [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) voxel_pos )
 
 
 _Generated on May 31, 2021_

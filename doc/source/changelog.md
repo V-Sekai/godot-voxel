@@ -93,7 +93,7 @@ Ongoing development - `master`
     - SDF and TYPE channels have different default depth, so if you relied on 8-bit depth, you may have to explicitely set that format in your generator, to avoid mismatch with existing savegames
     - The block serialization format has changed, and migration is not implemented, so old saves using it cannot be used. See documentation for more information.
     - Terrains no longer auto-save when they are destroyed while having a `stream` assigned. You have to call `save_modified_blocks()` explicitely before doing that.
-    - `VoxelLodTerrain.lod_split_scale` has been replaced with `lod_distance` for clarity. It is the distance from the viewer where the first LOD level may extend. 
+    - `VoxelLodTerrain.lod_split_scale` has been replaced with `lod_distance` for clarity. It is the distance from the viewer where the first LOD level may extend.
 
 - Fixes
     - C# should be able to properly implement generator/stream functions

@@ -5,15 +5,15 @@ Inherits: [VoxelGenerator](VoxelGenerator.md)
 
 
 
-## Properties: 
+## Properties:
 
 
-Type     | Name                             | Default 
+Type     | Name                             | Default
 -------- | -------------------------------- | --------
-`int`    | [channel](#i_channel)            | 1       
-`float`  | [height_range](#i_height_range)  | 200.0   
-`float`  | [height_start](#i_height_start)  | -50.0   
-`float`  | [iso_scale](#i_iso_scale)        | 0.1     
+`int`    | [channel](#i_channel)            | 1
+`float`  | [height_range](#i_height_range)  | 200.0
+`float`  | [height_start](#i_height_start)  | -50.0
+`float`  | [iso_scale](#i_iso_scale)        | 0.1
 <p></p>
 
 ## Property Descriptions

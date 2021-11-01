@@ -45,7 +45,7 @@ For more in-depth information, see the rest of the documentation.
 
 ![Screenshot of blocky terrain from the quick start guide](images/default-terrain.jpg)
 
-You can modify the shape of the terrain by changing noise parameters under the generator. 
+You can modify the shape of the terrain by changing noise parameters under the generator.
 
 `VoxelMesherBlocky` allows to specify way more than just white cubes: you can define multiple models, with varying textures, materials and shapes, in order to compose a world like you would see in Minecraft for example.
 
@@ -68,7 +68,7 @@ You can modify the shape of the terrain by changing noise parameters under the g
 
 ![Screenshot of smooth terrain from the quick start guide](images/noise-terrain-default.jpg)
 
-You can modify the shape of the terrain by changing noise parameters under the generator. 
+You can modify the shape of the terrain by changing noise parameters under the generator.
 
 Painting textures manually is not supported yet, but it's possible to apply procedural textures using a shader.
 

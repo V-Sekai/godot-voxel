@@ -1,7 +1,7 @@
 Voxel Tools documentation
 ============================
 
-Voxel Tools is a C++ module for creating volumetric worlds in [Godot Engine](https://godotengine.org/).  
+Voxel Tools is a C++ module for creating volumetric worlds in [Godot Engine](https://godotengine.org/).
 Explore categories on the left to get started!
 
 - [Github repository](https://github.com/Zylann/godot_voxel)

@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# coding: utf-8 
+# coding: utf-8
 
 # Converts a Godot Class XML file to an MD file
 #
@@ -237,7 +237,7 @@ def process_xml(f_xml, f_out, module_class_names):
                 table.append(row)
             out += make_table(table)
             out += "\n\n"
-        
+
     # Methods summary
     methods = []
     methods_container = root.find('methods')
@@ -268,7 +268,7 @@ def process_xml(f_xml, f_out, module_class_names):
 
             out += make_table(table)
             out += "\n\n"
-    
+
     # Signals
     signals = []
     signals_container = root.find('signals')
@@ -292,7 +292,7 @@ def process_xml(f_xml, f_out, module_class_names):
                     if text != "":
                         out += text
                         out += "\n\n"
-    
+
     # Enumerations and constants
     constants_container = root.find('constants')
     if constants_container is not None:
@@ -312,7 +312,7 @@ def process_xml(f_xml, f_out, module_class_names):
                 enum_items.append(generic_constant)
             else:
                 constants.append(generic_constant)
-        
+
         # Enums
         if len(enums) > 0:
             out += "## Enumerations: \n\n"
@@ -321,7 +321,7 @@ def process_xml(f_xml, f_out, module_class_names):
                 out += "enum **" + enum_name + "**: \n\n"
                 out += make_constants(enum_items)
                 out += "\n"
-            
+
             out += "\n"
 
         # Constants
@@ -329,7 +329,7 @@ def process_xml(f_xml, f_out, module_class_names):
             out += "## Constants: \n\n"
             out += make_constants(constants)
             out += "\n"
-    
+
     # Property descriptions
     if len(members) > 0:
         out += "## Property Descriptions\n\n"
@@ -348,7 +348,7 @@ def process_xml(f_xml, f_out, module_class_names):
                     out += "\n"
 
             out += "\n"
-    
+
     # Method descriptions
     if len(methods) > 0:
         out += "## Method Descriptions\n\n"
@@ -371,11 +371,11 @@ def process_xml(f_xml, f_out, module_class_names):
                 if text != "":
                     out += text
                     out += "\n"
-            
+
             out += "\n"
 
     # Footer
-    out += "_Generated on " + strftime("%b %d, %Y", gmtime()) + "_\n" 
+    out += "_Generated on " + strftime("%b %d, %Y", gmtime()) + "_\n"
     #Full time stamp "%Y-%m-%d %H:%M:%S %z"
 
     if f_out == '-':
@@ -405,7 +405,7 @@ def process_xml_folder(src_dir, dst_dir, verbose):
     class_names = []
     for xml_file in xml_files:
         class_names.append(xml_file.stem)
-    
+
     for src in xml_files:
         dest = dst_dir / (src.stem + ".md")
         if verbose:
@@ -437,7 +437,7 @@ if __name__ == "__main__":
     # Print to screen if no output
     if len(sys.argv) < 3:
         outfile = "-"
-    else: 
+    else:
         outfile = sys.argv[2]
 
     process_xml(infile, outfile, [])

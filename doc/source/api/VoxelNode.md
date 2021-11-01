@@ -5,14 +5,14 @@ Inherits: [Spatial](https://docs.godotengine.org/en/stable/classes/class_spatial
 
 Base class for voxel volumes.
 
-## Properties: 
+## Properties:
 
 
-Type              | Name                       | Default 
+Type              | Name                       | Default
 ----------------- | -------------------------- | --------
-`VoxelGenerator`  | [generator](#i_generator)  |         
-`VoxelMesher`     | [mesher](#i_mesher)        |         
-`VoxelStream`     | [stream](#i_stream)        |         
+`VoxelGenerator`  | [generator](#i_generator)  |
+`VoxelMesher`     | [mesher](#i_mesher)        |
+`VoxelStream`     | [stream](#i_stream)        |
 <p></p>
 
 ## Property Descriptions

@@ -5,7 +5,7 @@ Inherits: [Reference](https://docs.godotengine.org/en/stable/classes/class_refer
 
 
 
-## Description: 
+## Description:
 
 Utility class allowing to reproduce simple move-and-slide logic using only voxel AABBs, similar to Minecraft physics. This class may only be used with blocky voxels.
 
@@ -18,26 +18,26 @@ global_translate(motion)
 
 ```
 
-## Methods: 
+## Methods:
 
 
-Return                                                                        | Signature                                                                                                                                                                                                                                                                                                                                                           
+Return                                                                        | Signature
 ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-[int](https://docs.godotengine.org/en/stable/classes/class_int.html)          | [get_collision_mask](#i_get_collision_mask) ( ) const                                                                                                                                                                                                                                                                                                               
-[Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html)  | [get_motion](#i_get_motion) ( [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) pos, [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) motion, [AABB](https://docs.godotengine.org/en/stable/classes/class_aabb.html) aabb, [Node](https://docs.godotengine.org/en/stable/classes/class_node.html) terrain )  
-[void](#)                                                                     | [set_collision_mask](#i_set_collision_mask) ( [int](https://docs.godotengine.org/en/stable/classes/class_int.html) mask )                                                                                                                                                                                                                                           
+[int](https://docs.godotengine.org/en/stable/classes/class_int.html)          | [get_collision_mask](#i_get_collision_mask) ( ) const
+[Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html)  | [get_motion](#i_get_motion) ( [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) pos, [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) motion, [AABB](https://docs.godotengine.org/en/stable/classes/class_aabb.html) aabb, [Node](https://docs.godotengine.org/en/stable/classes/class_node.html) terrain )
+[void](#)                                                                     | [set_collision_mask](#i_set_collision_mask) ( [int](https://docs.godotengine.org/en/stable/classes/class_int.html) mask )
 <p></p>
 
 ## Method Descriptions
 
-- [int](https://docs.godotengine.org/en/stable/classes/class_int.html)<span id="i_get_collision_mask"></span> **get_collision_mask**( ) 
+- [int](https://docs.godotengine.org/en/stable/classes/class_int.html)<span id="i_get_collision_mask"></span> **get_collision_mask**( )
 
 
-- [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html)<span id="i_get_motion"></span> **get_motion**( [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) pos, [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) motion, [AABB](https://docs.godotengine.org/en/stable/classes/class_aabb.html) aabb, [Node](https://docs.godotengine.org/en/stable/classes/class_node.html) terrain ) 
+- [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html)<span id="i_get_motion"></span> **get_motion**( [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) pos, [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) motion, [AABB](https://docs.godotengine.org/en/stable/classes/class_aabb.html) aabb, [Node](https://docs.godotengine.org/en/stable/classes/class_node.html) terrain )
 
 Given a motion vector, returns a modified vector telling you by how much to move your character. This is similar to method KinematicBody.move_and_slide, except you have to apply the movement.
 
-- [void](#)<span id="i_set_collision_mask"></span> **set_collision_mask**( [int](https://docs.godotengine.org/en/stable/classes/class_int.html) mask ) 
+- [void](#)<span id="i_set_collision_mask"></span> **set_collision_mask**( [int](https://docs.godotengine.org/en/stable/classes/class_int.html) mask )
 
 
 _Generated on May 31, 2021_

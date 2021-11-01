@@ -5,37 +5,37 @@ Inherits: [Spatial](https://docs.godotengine.org/en/stable/classes/class_spatial
 
 Spawns items on top of voxel surfaces.
 
-## Description: 
+## Description:
 
 Add-on to voxel nodes, allowing to spawn elements on the surface. These elements are rendered with hardware instancing, can have collisions, and also be persistent. It must be child of a voxel node. At the moment it only supports `VoxelLodTerrain`.
 
-## Properties: 
+## Properties:
 
 
-Type                    | Name                   | Default 
+Type                    | Name                   | Default
 ----------------------- | ---------------------- | --------
-`VoxelInstanceLibrary`  | [library](#i_library)  |         
-`int`                   | [up_mode](#i_up_mode)  | 0       
+`VoxelInstanceLibrary`  | [library](#i_library)  |
+`int`                   | [up_mode](#i_up_mode)  | 0
 <p></p>
 
-## Methods: 
+## Methods:
 
 
-Return                                                                              | Signature                                                           
+Return                                                                              | Signature
 ----------------------------------------------------------------------------------- | --------------------------------------------------------------------
-[int](https://docs.godotengine.org/en/stable/classes/class_int.html)                | [debug_get_block_count](#i_debug_get_block_count) ( ) const         
-[Dictionary](https://docs.godotengine.org/en/stable/classes/class_dictionary.html)  | [debug_get_instance_counts](#i_debug_get_instance_counts) ( ) const 
+[int](https://docs.godotengine.org/en/stable/classes/class_int.html)                | [debug_get_block_count](#i_debug_get_block_count) ( ) const
+[Dictionary](https://docs.godotengine.org/en/stable/classes/class_dictionary.html)  | [debug_get_instance_counts](#i_debug_get_instance_counts) ( ) const
 <p></p>
 
-## Enumerations: 
+## Enumerations:
 
-enum **UpMode**: 
+enum **UpMode**:
 
 - **UP_MODE_POSITIVE_Y** = **0**
 - **UP_MODE_SPHERE** = **1**
 
 
-## Constants: 
+## Constants:
 
 - **MAX_LOD** = **8**
 
@@ -49,10 +49,10 @@ enum **UpMode**:
 
 ## Method Descriptions
 
-- [int](https://docs.godotengine.org/en/stable/classes/class_int.html)<span id="i_debug_get_block_count"></span> **debug_get_block_count**( ) 
+- [int](https://docs.godotengine.org/en/stable/classes/class_int.html)<span id="i_debug_get_block_count"></span> **debug_get_block_count**( )
 
 
-- [Dictionary](https://docs.godotengine.org/en/stable/classes/class_dictionary.html)<span id="i_debug_get_instance_counts"></span> **debug_get_instance_counts**( ) 
+- [Dictionary](https://docs.godotengine.org/en/stable/classes/class_dictionary.html)<span id="i_debug_get_instance_counts"></span> **debug_get_instance_counts**( )
 
 
 _Generated on May 31, 2021_

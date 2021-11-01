@@ -4,7 +4,6 @@
 #include <core/math/math_defs.h>
 
 namespace VoxelConstants {
-
 // These constants are chosen so you don't accidentally blow up resource usage
 static const float MINIMUM_LOD_DISTANCE = 16.f;
 static const float MAXIMUM_LOD_DISTANCE = 128.f;
@@ -34,7 +33,6 @@ static const float QUANTIZED_SDF_16_BITS_SCALE_INV = 1.f / 0.002f;
 static const unsigned int DEFAULT_BLOCK_SIZE_PO2 = 4;
 
 static const float DEFAULT_COLLISION_MARGIN = 0.04f;
-
 } // namespace VoxelConstants
 
 #endif // VOXEL_CONSTANTS_H

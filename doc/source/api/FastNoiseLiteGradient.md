@@ -5,37 +5,37 @@ Inherits: [Resource](https://docs.godotengine.org/en/stable/classes/class_resour
 
 Generates coherent and fractal noise gradients using the [FastNoiseLite](https://github.com/Auburn/FastNoise) library.
 
-## Properties: 
+## Properties:
 
 
-Type     | Name                                         | Default 
+Type     | Name                                         | Default
 -------- | -------------------------------------------- | --------
-`float`  | [amplitude](#i_amplitude)                    | 30.0    
-`float`  | [fractal_gain](#i_fractal_gain)              | 0.5     
-`float`  | [fractal_lacunarity](#i_fractal_lacunarity)  | 2.0     
-`int`    | [fractal_octaves](#i_fractal_octaves)        | 3       
-`int`    | [fractal_type](#i_fractal_type)              | 0       
-`int`    | [noise_type](#i_noise_type)                  | 2       
-`float`  | [period](#i_period)                          | 64.0    
-`int`    | [rotation_type_3d](#i_rotation_type_3d)      | 0       
-`int`    | [seed](#i_seed)                              | 0       
+`float`  | [amplitude](#i_amplitude)                    | 30.0
+`float`  | [fractal_gain](#i_fractal_gain)              | 0.5
+`float`  | [fractal_lacunarity](#i_fractal_lacunarity)  | 2.0
+`int`    | [fractal_octaves](#i_fractal_octaves)        | 3
+`int`    | [fractal_type](#i_fractal_type)              | 0
+`int`    | [noise_type](#i_noise_type)                  | 2
+`float`  | [period](#i_period)                          | 64.0
+`int`    | [rotation_type_3d](#i_rotation_type_3d)      | 0
+`int`    | [seed](#i_seed)                              | 0
 <p></p>
 
-## Enumerations: 
+## Enumerations:
 
-enum **NoiseType**: 
+enum **NoiseType**:
 
 - **TYPE_OPEN_SIMPLEX_2** = **0**
 - **TYPE_OPEN_SIMPLEX_2_REDUCED** = **1**
 - **TYPE_VALUE** = **2**
 
-enum **FractalType**: 
+enum **FractalType**:
 
 - **FRACTAL_NONE** = **0**
 - **FRACTAL_DOMAIN_WARP_PROGRESSIVE** = **1**
 - **FRACTAL_DOMAIN_WARP_INDEPENDENT** = **2**
 
-enum **RotationType3D**: 
+enum **RotationType3D**:
 
 - **ROTATION_3D_NONE** = **0**
 - **ROTATION_3D_IMPROVE_XY_PLANES** = **1**

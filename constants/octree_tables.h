@@ -2,7 +2,6 @@
 #define OCTREE_TABLES_H
 
 namespace OctreeTables {
-
 //  Corners:                                    Octants:
 //
 //         6---------------18--------------7       o---o---o
@@ -29,7 +28,6 @@ namespace OctreeTables {
 
 // The order is important for some algorithms (DMC)
 const int g_octant_position[8][3]{
-
 	{ 0, 0, 0 },
 	{ 1, 0, 0 },
 	{ 1, 0, 1 },
@@ -40,7 +38,6 @@ const int g_octant_position[8][3]{
 	{ 1, 1, 1 },
 	{ 0, 1, 1 }
 };
-
 } // namespace OctreeTables
 
 #endif // OCTREE_TABLES_H

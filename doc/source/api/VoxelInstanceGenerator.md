@@ -5,43 +5,43 @@ Inherits: [Resource](https://docs.godotengine.org/en/stable/classes/class_resour
 
 Decides where to spawn instances on top of a voxel surface.
 
-## Description: 
+## Description:
 
 Generates the necessry information to spawn instances on top of a voxel surface. This may be used by a [VoxelInstancer](VoxelInstancer.md).
 
 Note: to generate voxels, see [VoxelGenerator](VoxelGenerator.md).
 
-## Properties: 
+## Properties:
 
 
-Type             | Name                                             | Default     
+Type             | Name                                             | Default
 ---------------- | ------------------------------------------------ | ------------
-`float`          | [density](#i_density)                            | 0.1         
-`int`            | [emit_mode](#i_emit_mode)                        | 0           
-`float`          | [max_height](#i_max_height)                      | 3.40282e+38 
-`float`          | [max_scale](#i_max_scale)                        | 1.0         
-`float`          | [max_slope_degrees](#i_max_slope_degrees)        | 180.0       
-`float`          | [min_height](#i_min_height)                      | 1.17549e-38 
-`float`          | [min_scale](#i_min_scale)                        | 1.0         
-`float`          | [min_slope_degrees](#i_min_slope_degrees)        | 0.0         
-`FastNoiseLite`  | [noise](#i_noise)                                |             
-`int`            | [noise_dimension](#i_noise_dimension)            | 1           
-`float`          | [noise_on_scale](#i_noise_on_scale)              | 0.0         
-`float`          | [offset_along_normal](#i_offset_along_normal)    | 0.0         
-`bool`           | [random_vertical_flip](#i_random_vertical_flip)  | false       
-`int`            | [scale_distribution](#i_scale_distribution)      | 1           
-`float`          | [vertical_alignment](#i_vertical_alignment)      | 1.0         
+`float`          | [density](#i_density)                            | 0.1
+`int`            | [emit_mode](#i_emit_mode)                        | 0
+`float`          | [max_height](#i_max_height)                      | 3.40282e+38
+`float`          | [max_scale](#i_max_scale)                        | 1.0
+`float`          | [max_slope_degrees](#i_max_slope_degrees)        | 180.0
+`float`          | [min_height](#i_min_height)                      | 1.17549e-38
+`float`          | [min_scale](#i_min_scale)                        | 1.0
+`float`          | [min_slope_degrees](#i_min_slope_degrees)        | 0.0
+`FastNoiseLite`  | [noise](#i_noise)                                |
+`int`            | [noise_dimension](#i_noise_dimension)            | 1
+`float`          | [noise_on_scale](#i_noise_on_scale)              | 0.0
+`float`          | [offset_along_normal](#i_offset_along_normal)    | 0.0
+`bool`           | [random_vertical_flip](#i_random_vertical_flip)  | false
+`int`            | [scale_distribution](#i_scale_distribution)      | 1
+`float`          | [vertical_alignment](#i_vertical_alignment)      | 1.0
 <p></p>
 
-## Enumerations: 
+## Enumerations:
 
-enum **EmitMode**: 
+enum **EmitMode**:
 
 - **EMIT_FROM_VERTICES** = **0**
 - **EMIT_FROM_FACES** = **1**
 - **EMIT_MODE_COUNT** = **2**
 
-enum **Distribution**: 
+enum **Distribution**:
 
 - **DISTRIBUTION_LINEAR** = **0**
 - **DISTRIBUTION_QUADRATIC** = **1**
@@ -49,7 +49,7 @@ enum **Distribution**:
 - **DISTRIBUTION_QUINTIC** = **3**
 - **DISTRIBUTION_COUNT** = **4**
 
-enum **Dimension**: 
+enum **Dimension**:
 
 - **DIMENSION_2D** = **0**
 - **DIMENSION_3D** = **1**

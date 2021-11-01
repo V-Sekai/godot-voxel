@@ -5,17 +5,17 @@ Inherits: [Object](https://docs.godotengine.org/en/stable/classes/class_object.h
 
 Singleton handling common voxel processing in background threads.
 
-## Methods: 
+## Methods:
 
 
-Return                                                                              | Signature                      
+Return                                                                              | Signature
 ----------------------------------------------------------------------------------- | -------------------------------
-[Dictionary](https://docs.godotengine.org/en/stable/classes/class_dictionary.html)  | [get_stats](#i_get_stats) ( )  
+[Dictionary](https://docs.godotengine.org/en/stable/classes/class_dictionary.html)  | [get_stats](#i_get_stats) ( )
 <p></p>
 
 ## Method Descriptions
 
-- [Dictionary](https://docs.godotengine.org/en/stable/classes/class_dictionary.html)<span id="i_get_stats"></span> **get_stats**( ) 
+- [Dictionary](https://docs.godotengine.org/en/stable/classes/class_dictionary.html)<span id="i_get_stats"></span> **get_stats**( )
 
 Gets debug information about shared voxel processing.
 

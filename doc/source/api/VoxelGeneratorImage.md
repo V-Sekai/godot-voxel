@@ -5,13 +5,13 @@ Inherits: [VoxelGeneratorHeightmap](VoxelGeneratorHeightmap.md)
 
 
 
-## Properties: 
+## Properties:
 
 
-Type     | Name                             | Default 
+Type     | Name                             | Default
 -------- | -------------------------------- | --------
-`bool`   | [blur_enabled](#i_blur_enabled)  | false   
-`Image`  | [image](#i_image)                |         
+`bool`   | [blur_enabled](#i_blur_enabled)  | false
+`Image`  | [image](#i_image)                |
 <p></p>
 
 ## Property Descriptions

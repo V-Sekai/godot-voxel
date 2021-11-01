@@ -15,7 +15,6 @@
 #include <string.h>
 
 namespace {
-
 inline uint8_t *allocate_channel_data(uint32_t size) {
 #ifdef VOXEL_BUFFER_USE_MEMORY_POOL
 	return VoxelMemoryPool::get_singleton()->allocate(size);
@@ -110,7 +109,6 @@ inline real_t raw_voxel_to_real(uint64_t value, VoxelBuffer::Depth depth) {
 			return 0;
 	}
 }
-
 } // namespace
 
 const char *VoxelBuffer::CHANNEL_ID_HINT_STRING = "Type,Sdf,Color,Indices,Weights,Data5,Data6,Data7";

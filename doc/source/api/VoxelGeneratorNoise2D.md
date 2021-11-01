@@ -5,13 +5,13 @@ Inherits: [VoxelGeneratorHeightmap](VoxelGeneratorHeightmap.md)
 
 
 
-## Properties: 
+## Properties:
 
 
-Type                | Name               | Default 
+Type                | Name               | Default
 ------------------- | ------------------ | --------
-`Curve`             | [curve](#i_curve)  |         
-`OpenSimplexNoise`  | [noise](#i_noise)  |         
+`Curve`             | [curve](#i_curve)  |
+`OpenSimplexNoise`  | [noise](#i_noise)  |
 <p></p>
 
 ## Property Descriptions

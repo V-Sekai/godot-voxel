@@ -51,7 +51,6 @@ void VoxelLibrary::load_default() {
 
 bool VoxelLibrary::_set(const StringName &p_name, const Variant &p_value) {
 	//	if(p_name == "voxels/max") {
-
 	//		int v = p_value;
 	//		_max_count = CLAMP(v, 0, MAX_VOXEL_TYPES);
 	//		for(int i = _max_count; i < MAX_VOXEL_TYPES; ++i) {
@@ -71,7 +70,6 @@ bool VoxelLibrary::_set(const StringName &p_name, const Variant &p_value) {
 
 bool VoxelLibrary::_get(const StringName &p_name, Variant &r_ret) const {
 	//	if(p_name == "voxels/max") {
-
 	//		r_ret = _max_count;
 	//		return true;
 

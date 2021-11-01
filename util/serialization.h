@@ -4,7 +4,6 @@
 #include "span.h"
 
 namespace VoxelUtility {
-
 enum Endianess {
 	ENDIANESS_BIG_ENDIAN,
 	ENDIANESS_LITTLE_ENDIAN
@@ -122,7 +121,6 @@ struct MemoryReader {
 		return m.f;
 	}
 };
-
 } // namespace VoxelUtility
 
 #endif // VOXEL_UTIL_SERIALIZATION_H

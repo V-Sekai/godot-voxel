@@ -1,7 +1,6 @@
 #include "cube_tables.h"
 
 namespace Cube {
-
 // The following tables respect the following conventions
 //
 //    7-------6
@@ -209,5 +208,4 @@ const VoxelVector3i g_ordered_moore_area_3d[MOORE_AREA_3D_COUNT] = {
 	VoxelVector3i(0, 1, 1),
 	VoxelVector3i(1, 1, 1)
 };
-
 } // namespace Cube

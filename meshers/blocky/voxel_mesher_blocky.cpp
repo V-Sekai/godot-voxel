@@ -7,7 +7,6 @@
 
 // Utility functions
 namespace {
-
 template <typename T>
 void raw_copy_to(Vector<T> &to, const Vector<T> &from) {
 	to.resize(from.size());
@@ -46,7 +45,6 @@ inline bool contributes_to_ao(const VoxelLibrary::BakedData &lib, uint32_t voxel
 	}
 	return true;
 }
-
 } // namespace
 
 template <typename Type_T>

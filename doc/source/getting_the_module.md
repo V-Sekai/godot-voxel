@@ -33,7 +33,7 @@ These steps will walk you through creating a custom build of Godot with the Voxe
 ### Build Godot
 
 1. Download and compile the [Godot source](https://github.com/godotengine/godot) by following [the official guide](https://docs.godotengine.org/en/latest/development/compiling/index.html). If you want to regularly update your build (recommended), clone the repository with Git instead of downloading a zip file.
-1. Make sure to select the appropriate branches. If you want to use the latest Voxel Tools, the matching Godot branch is `3.2`. If there is a versioned Voxel Tools branch (e.g. `godot3.1`), that is intended to match the corresponding version of Godot. 
+1. Make sure to select the appropriate branches. If you want to use the latest Voxel Tools, the matching Godot branch is `3.2`. If there is a versioned Voxel Tools branch (e.g. `godot3.1`), that is intended to match the corresponding version of Godot.
 1. Build Godot before adding this or any other modules and make sure it produces an executable.
 1. Run the newly built executable found in `godot/bin`. Look under Help/About and confirm that the version string indicates you are running a development version (e.g. `3.2dev.custom_build.ee5ba3e`).
 
@@ -42,7 +42,7 @@ These steps will walk you through creating a custom build of Godot with the Voxe
 
 1. Download or clone the repository for [Voxel Tools](https://github.com/Zylann/godot_voxel). Use Git to clone the repository if you want to make it easy to update your builds (recommended).
 1. Make sure to select the branch that corresponds with Godot's branch.
-1. Place the Voxel Tools directory inside your Godot source tree, in the `godot/modules` directory. 
+1. Place the Voxel Tools directory inside your Godot source tree, in the `godot/modules` directory.
 1. Rename the Voxel Tools folder to `voxel`. When correct, the files (e.g. README.md) will be located in `godot/modules/voxel`. **This is important!**
 1. Rebuild Godot and make sure it produces an executable.
 1. Test that your build has Voxel support:

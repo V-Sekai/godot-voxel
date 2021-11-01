@@ -5,14 +5,14 @@ Inherits: [Reference](https://docs.godotengine.org/en/stable/classes/class_refer
 
 Result of a raycast performed with method VoxelTool.raycast
 
-## Properties: 
+## Properties:
 
 
-Type       | Name                                       | Default            
+Type       | Name                                       | Default
 ---------- | ------------------------------------------ | -------------------
-`float`    | [distance](#i_distance)                    | 0.0                
-`Vector3`  | [position](#i_position)                    | Vector3( 0, 0, 0 ) 
-`Vector3`  | [previous_position](#i_previous_position)  | Vector3( 0, 0, 0 ) 
+`float`    | [distance](#i_distance)                    | 0.0
+`Vector3`  | [position](#i_position)                    | Vector3( 0, 0, 0 )
+`Vector3`  | [previous_position](#i_previous_position)  | Vector3( 0, 0, 0 )
 <p></p>
 
 ## Property Descriptions

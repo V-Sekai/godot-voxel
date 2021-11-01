@@ -12,7 +12,6 @@ bool voxel_raycast(
 		Vector3i &out_prev_pos,
 		float &out_distance_along_ray,
 		float &out_distance_along_ray_prev) {
-
 	VOXEL_PROFILE_SCOPE();
 
 	const float g_infinite = 9999999;

@@ -36,7 +36,7 @@ def update_classes_xml(custom_godot_path, godot_repo_root, verbose=False):
 
     if verbose:
         print("Found Godot at: %s" % godot_executable)
-    
+
     # Dump XML files from Godot
     args = [str(godot_executable), ' --doctool ', str(godot_repo_root)]
     if verbose:
@@ -89,7 +89,7 @@ def update_mkdocs_file(mkdocs_config_fpath, md_classes_dir):
 
     with open(mkdocs_config_fpath, 'r', encoding='utf-8') as f:
         lines = f.readlines()
-    
+
     processed_lines = []
     in_generated_section = False
 
@@ -173,7 +173,7 @@ def main():
     if must_run_doctool:
         update_classes_xml(godot_executable, godot_repo_root, verbose)
         did_something = True
-    
+
     if must_update_mkdocs_config:
         update_mkdocs_file(mkdocs_config_path, md_path)
         did_something = True
