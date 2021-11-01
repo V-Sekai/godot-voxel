@@ -784,8 +784,8 @@ void VoxelBuffer::for_each_voxel_metadata(Callable callback) const {
                       String("FuncRef call failed at {0}").format(varray(key)));
     // TODO Can't provide detailed error because FuncRef doesn't give us access
     // to the object ERR_FAIL_COND_MSG(err.error != Variant::CallError::CALL_OK,
-    // false, 		Variant::get_call_error_text(callback->get_object(), method_name,
-    // nullptr, 0, err));
+    // false, 		Variant::get_call_error_text(callback->get_object(),
+    // method_name, nullptr, 0, err));
 
     elem = elem->next();
   }
@@ -806,8 +806,8 @@ void VoxelBuffer::for_each_voxel_metadata_in_area(Callable callback,
                       String("FuncRef call failed at {0}").format(varray(key)));
     // TODO Can't provide detailed error because FuncRef doesn't give us access
     // to the object ERR_FAIL_COND_MSG(err.error != Variant::CallError::CALL_OK,
-    // false, 		Variant::get_call_error_text(callback->get_object(), method_name,
-    // nullptr, 0, err));
+    // false, 		Variant::get_call_error_text(callback->get_object(),
+    // method_name, nullptr, 0, err));
   });
 }
 

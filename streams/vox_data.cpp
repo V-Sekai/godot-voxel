@@ -159,8 +159,8 @@ static Basis parse_basis(uint8_t data) {
   VoxelVector3i magica_x, magica_y, magica_z;
   transpose(x, y, z, magica_x, magica_y, magica_z);
   // PRINT_VERBOSE(String("---\nX: {0}\nY: {1}\nZ: {2}")
-  // 					  .format(varray(magica_x.to_vec3(), magica_y.to_vec3(),
-  // magica_z.to_vec3())));
+  // 					  .format(varray(magica_x.to_vec3(),
+  // magica_y.to_vec3(), magica_z.to_vec3())));
   magica_x = magica_to_opengl(magica_x);
   magica_y = magica_to_opengl(magica_y);
   magica_z = magica_to_opengl(magica_z);
