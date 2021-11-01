@@ -142,21 +142,6 @@ void test_voxel_data_map_copy() {
   buffer2->create(box.size);
 
   map.copy(box.pos, **buffer2, (1 << channel));
-
-  // for (int y = 0; y < buffer2->get_size().y; ++y) {
-  // 	String line = String("y={0} | ").format(varray(y));
-  // 	for (int x = 0; x < buffer2->get_size().x; ++x) {
-  // 		const int v = buffer2->get_voxel(VoxelVector3i(x, y, 5),
-  // channel); 		if (v == default_value) { 			line += "- ";
-  // } else if (v ==
-  // voxel_value) { 			line += "O "; 		} else { 			line +=
-  // "X
-  // ";
-  // 		}
-  // 	}
-  // 	print_line(line);
-  // }
-
   ERR_FAIL_COND(!buffer->equals(**buffer2));
 }
 
@@ -194,39 +179,6 @@ void test_copy_3d_region_zxy() {
   const VoxelVector3i src_min(2, 1, 0);
   const VoxelVector3i src_max(5, 4, 3);
   copy_3d_region_zxy(dsts, dst_size, dst_min, srcs, src_size, src_min, src_max);
-
-  /*for (pos.y = src_min.y; pos.y < src_max.y; ++pos.y) {
-          String s;
-          for (pos.x = src_min.x; pos.x < src_max.x; ++pos.x) {
-                  const uint16_t v = srcs[pos.get_zxy_index(src_size)];
-                  if (v < 10) {
-                          s += String("{0}   ").format(varray(v));
-                  } else if (v < 100) {
-                          s += String("{0}  ").format(varray(v));
-                  } else {
-                          s += String("{0} ").format(varray(v));
-                  }
-          }
-          print_line(s);
-  }
-  print_line("----");
-  const VoxelVector3i dst_max = dst_min + (src_max - src_min);
-  pos = VoxelVector3i();
-  for (pos.y = dst_min.y; pos.y < dst_max.y; ++pos.y) {
-          String s;
-          for (pos.x = dst_min.x; pos.x < dst_max.x; ++pos.x) {
-                  const uint16_t v = dsts[pos.get_zxy_index(dst_size)];
-                  if (v < 10) {
-                          s += String("{0}   ").format(varray(v));
-                  } else if (v < 100) {
-                          s += String("{0}  ").format(varray(v));
-                  } else {
-                          s += String("{0} ").format(varray(v));
-                  }
-          }
-          print_line(s);
-  }*/
-
   VoxelVector3i pos;
   for (pos.z = src_min.z; pos.z < src_max.z; ++pos.z) {
     for (pos.x = src_min.x; pos.x < src_max.x; ++pos.x) {
