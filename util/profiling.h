@@ -21,19 +21,22 @@
 #define VOXEL_PROFILE_SCOPE_NAMED(name)
 #define VOXEL_PROFILE_MARK_FRAME()
 #define VOXEL_PROFILE_PLOT(name, number)
-// Name must be const char*. An internal copy will be made so it can be temporary.
+// Name must be const char*. An internal copy will be made so it can be
+// temporary.
 #define VOXEL_PROFILE_SET_THREAD_NAME(name)
 
 #endif
 
 /*
-To add Tracy support, clone it under thirdparty/tracy, and add the following lines in core/SCsub:
+To add Tracy support, clone it under thirdparty/tracy, and add the following
+lines in core/SCsub:
 
 ```
 # tracy library
 env.Append(CPPDEFINES="TRACY_ENABLE")
 env_thirdparty.Append(CPPDEFINES="TRACY_ENABLE")
-env_thirdparty.add_source_files(env.core_sources, ["#thirdparty/tracy/TracyClient.cpp"])
+env_thirdparty.add_source_files(env.core_sources,
+["#thirdparty/tracy/TracyClient.cpp"])
 ```
 */
 

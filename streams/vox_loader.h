@@ -8,15 +8,17 @@ class VoxelColorPalette;
 
 // Simple loader for MagicaVoxel
 class VoxelVoxLoader : public RefCounted {
-	GDCLASS(VoxelVoxLoader, RefCounted);;
+  GDCLASS(VoxelVoxLoader, RefCounted);
+  ;
 
 public:
-	Error load_from_file(String fpath, Ref<VoxelBuffer> voxels, Ref<VoxelColorPalette> palette);
-	// TODO Have chunked loading for better memory usage
-	// TODO Saving
+  Error load_from_file(String fpath, Ref<VoxelBuffer> voxels,
+                       Ref<VoxelColorPalette> palette);
+  // TODO Have chunked loading for better memory usage
+  // TODO Saving
 
 private:
-	static void _bind_methods();
+  static void _bind_methods();
 };
 
 #endif // VOX_LOADER_H

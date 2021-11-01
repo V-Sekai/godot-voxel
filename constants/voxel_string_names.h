@@ -5,31 +5,29 @@
 
 class VoxelStringNames {
 private:
-	static VoxelStringNames *g_singleton;
+  static VoxelStringNames *g_singleton;
 
 public:
-	inline static VoxelStringNames *get_singleton() {
-		return g_singleton;
-	}
+  inline static VoxelStringNames *get_singleton() { return g_singleton; }
 
-	static void create_singleton();
-	static void destroy_singleton();
+  static void create_singleton();
+  static void destroy_singleton();
 
-	VoxelStringNames();
+  VoxelStringNames();
 
-	StringName _emerge_block;
-	StringName _immerge_block;
-	StringName _generate_block;
-	StringName _get_used_channels_mask;
+  StringName _emerge_block;
+  StringName _immerge_block;
+  StringName _generate_block;
+  StringName _get_used_channels_mask;
 
-	StringName block_loaded;
-	StringName block_unloaded;
+  StringName block_loaded;
+  StringName block_unloaded;
 
-	StringName store_colors_in_texture;
+  StringName store_colors_in_texture;
 
-	StringName u_transition_mask;
-	StringName u_block_local_transform;
-	StringName u_lod_fade;
+  StringName u_transition_mask;
+  StringName u_block_local_transform;
+  StringName u_lod_fade;
 };
 
 #endif // VOXEL_STRING_NAMES_H
