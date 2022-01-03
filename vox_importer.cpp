@@ -138,7 +138,8 @@ Node *VoxelVoxImporter::import_scene(const String &p_path, uint32_t p_flags, int
 	mesher.instantiate();
 	mesher->set_color_mode(VoxelMesherCubes::COLOR_MESHER_PALETTE);
 	mesher->set_palette(palette);
-	mesher->set_greedy_meshing_enabled(false);
+	mesher->set_greedy_meshing_enabled(true);
+	mesher->set_store_colors_in_texture(true);
 
 	FixedArray<Ref<StandardMaterial3D>, 2> materials;
 	for (unsigned int i = 0; i < materials.size(); ++i) {
