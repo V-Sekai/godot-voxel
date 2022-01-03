@@ -186,7 +186,7 @@ void build_voxel_mesh_as_simple_cubes(
 					arrays.normals.push_back(n);
 
 					const unsigned int index_offset = index_offsets[material_index];
-					ERR_FAIL_COND(za >= 3 || side >= 2);
+					ERR_FAIL_COND(za >= 3 || side >= 3);
 					const uint8_t *lut = g_indices_lut[za][side];
 					for (unsigned int i = 0; i < 6; ++i) {
 						arrays.indices.push_back(index_offset + lut[i]);
