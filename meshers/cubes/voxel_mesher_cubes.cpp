@@ -186,7 +186,8 @@ void build_voxel_mesh_as_simple_cubes(
 					arrays.normals.push_back(n);
 
 					const unsigned int index_offset = index_offsets[material_index];
-					ERR_FAIL_COND(za >= 3 || side >= 3);
+					ERR_FAIL_INDEX(za, 3);
+					ERR_FAIL_INDEX(side, 2);
 					const uint8_t *lut = g_indices_lut[za][side];
 					for (unsigned int i = 0; i < 6; ++i) {
 						arrays.indices.push_back(index_offset + lut[i]);
@@ -382,7 +383,8 @@ void build_voxel_mesh_as_greedy_cubes(
 					arrays.normals.push_back(n);
 
 					const unsigned int index_offset = index_offsets[material_index];
-					CRASH_COND(za >= 3 || m.side >= 2);
+					ERR_FAIL_INDEX(za, 3);
+					ERR_FAIL_INDEX(m.side, 2);
 					const uint8_t *lut = g_indices_lut[za][m.side];
 					for (unsigned int i = 0; i < 6; ++i) {
 						arrays.indices.push_back(index_offset + lut[i]);
@@ -605,7 +607,8 @@ void build_voxel_mesh_as_greedy_cubes_atlased(
 							image_info.size_x * image_info.size_y);
 
 					const unsigned int index_offset = index_offsets[material_index];
-					CRASH_COND(za >= 3 || m.side >= 2);
+					ERR_FAIL_INDEX(za, 3);
+					ERR_FAIL_INDEX(m.side, 2);
 					const uint8_t *lut = g_indices_lut[za][m.side];
 					for (unsigned int i = 0; i < 6; ++i) {
 						arrays.indices.push_back(index_offset + lut[i]);
