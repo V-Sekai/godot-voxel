@@ -1,11 +1,8 @@
-SQLite format
-================
+# SQLite format
 
 This page describes the database schema used by `VoxelStreamSQLite`.
 
-
-Schema
---------
+## Schema
 
 ### `meta`
 
@@ -20,7 +17,6 @@ Contains general info about the volume. There is only one row inside it.
 
 - `version` is the version of the schema. Currently `0`.
 - `block_size_po2` is the size of blocks as a power of two. They are expected to be always the same. By default it is `4` (for blocks of 16x16x16).
-
 
 ### `blocks`
 
@@ -38,7 +34,6 @@ Contains every block of the volume. There can be thousands of them.
 - `vb` contains compressed voxel data using the [Block format](block_format_v2.md).
 - `instances` contains compressed instance data using the [Instance format](instances_format.md).
 
-
 ### `channels`
 
 ```
@@ -51,5 +46,4 @@ channels {
 Contains general info about which channel formats should be expected in the volume. There is one row per used channel.
 
 !!! warn
-    Currently this table is actually not used, because the engine still needs work to manage formats in general. For now the database accepts blocks of any formats since they are standalone since version 3, but ideally they must be consistent.
-
+Currently this table is actually not used, because the engine still needs work to manage formats in general. For now the database accepts blocks of any formats since they are standalone since version 3, but ideally they must be consistent.

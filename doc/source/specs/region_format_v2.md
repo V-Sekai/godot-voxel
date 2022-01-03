@@ -1,8 +1,7 @@
-Region format
-==================
+# Region format
 
 !!! warn
-    This document is about an old version of the format. You may check the most recent version.
+This document is about an old version of the format. You may check the most recent version.
 
 Version: 2
 
@@ -10,9 +9,7 @@ Regions allows to save large 3D voxel volumes in a format suitable for frequent 
 This format is inspired by https://www.seedofandromeda.com/blogs/1-creating-a-region-file-system-for-a-voxel-game
 It is implemented by `VoxelStreamRegionFiles`, which can be found in https://github.com/Zylann/godot_voxel/blob/master/streams/voxel_stream_region_files.cpp
 
-
-Coordinate spaces
--------------------
+## Coordinate spaces
 
 This format uses 3 different coordinate spaces. Each one can be converted to another by using a multiplier.
 
@@ -22,9 +19,7 @@ This format uses 3 different coordinate spaces. Each one can be converted to ano
 
 Powers of two may be used as multipliers.
 
-
-File structure
-----------------
+## File structure
 
 A region save is organized in multiple files, and is contained within a root directory containing them.
 Under that directory, is located two things:
@@ -38,22 +33,20 @@ LOD folders then contain region files for that LOD.
 Each region file is named using the following convention: `r.X.Y.Z.vxr`, where X, Y and Z are coordinates of the region, in the region coordinate space.
 
 - `world/`
-	- `meta.vxrm`
-	- `regions/`
-		- `lod0/`
-			- `r.0.0.0.vxr`
-			- `r.1.6.0.vxr`
-			- `r.32.-2.-6.vxr`
-			- ...
-		- `lod1/`
-			- ...
-		- `lod2/`
-			- ...
-		- ...
+  - `meta.vxrm`
+  - `regions/`
+    - `lod0/`
+      - `r.0.0.0.vxr`
+      - `r.1.6.0.vxr`
+      - `r.32.-2.-6.vxr`
+      - ...
+    - `lod1/`
+      - ...
+    - `lod2/`
+      - ...
+    - ...
 
-
-Meta file
-------------
+## Meta file
 
 The meta file under the root directory contains global information about all voxel data. It is currently using JSON, but may not be edited by hand.
 
@@ -65,15 +58,13 @@ It must contain the following fields:
 - `region_size_po2`: size of regions in blocks, as an integer power of two (4 for 16, 5 for 32 etc). Regions are always cubic.
 - `sector_size`: size of a sector within a region file, as a strictly positive integer. See region format for more information.
 - `channel_depths`: array of 8 integers, representing the bit depth of each voxel channel:
-	- `0`: 8 bits
-	- `1`: 16 bits
-	- `2`: 32 bits
-	- `3`: 64 bits
-	- See block format for more information.
+  - `0`: 8 bits
+  - `1`: 16 bits
+  - `2`: 32 bits
+  - `3`: 64 bits
+  - See block format for more information.
 
-
-Region file
--------------
+## Region file
 
 Region files are binary, little-endian. They are composed of a prologue, header, and sector data.
 
@@ -95,6 +86,7 @@ It starts with four 8-bit characters: `VXR_`, followed by one byte representing 
 
 The header is a sequence of 32-bit integers. Each integer represents information about where a block is in the file, and how big it is. The count of that sequence is the number of blocks a region can contain, and is the same in all regions. The index of elements in that sequence is calculated from 3D block positions, in ZXY order. The index for a block can be obtained with the formula `y + block_size * (x + block_size * z)`.
 Each integer contains two informations:
+
 - The first byte is the number of sectors the block is spanning. Obtained as `n & 0xff`.
 - The 3 other bytes are the index to the first sector. Obtained as `n >> 8`.
 
@@ -106,6 +98,7 @@ Blocks are stored in those sectors. A block can span one or more sectors.
 The file is partitionned in this way to allow frequently writing blocks of variable size without having to often shift consecutive contents.
 
 When we need to load a block, the address where block information starts will be the following:
+
 ```
 header_size + first_sector_index * sector_size
 ```
@@ -113,7 +106,7 @@ header_size + first_sector_index * sector_size
 Once we have the address of the block, the first 4 bytes at this address will contain the size of the written data.
 
 !!! note
-	those 4 bytes are included in the total block size when the number of occupied sectors is determined.
+those 4 bytes are included in the total block size when the number of occupied sectors is determined.
 
 ```
 RegionBlockData
@@ -123,15 +116,11 @@ RegionBlockData
 
 The obtained buffer can be read using the block format.
 
-
-Block format
---------------
+## Block format
 
 See [Block format](block_format_v1.md)
 
-
-Current Issues
-----------------
+## Current Issues
 
 Although this format is currently implemented and usable, it has known issues.
 

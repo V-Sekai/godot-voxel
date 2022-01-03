@@ -2,7 +2,6 @@
 
 Inherits: [VoxelStream](VoxelStream.md)
 
-
 Loads and saves blocks as individual files under a directory.
 
 ## Description:
@@ -11,10 +10,10 @@ Loads and saves blocks to the filesystem, under a directory. Each block gets its
 
 ## Properties:
 
+| Type     | Name                      | Default |
+| -------- | ------------------------- | ------- |
+| `String` | [directory](#i_directory) | ""      |
 
-Type      | Name                       | Default
---------- | -------------------------- | --------
-`String`  | [directory](#i_directory)  | ""
 <p></p>
 
 ## Property Descriptions

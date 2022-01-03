@@ -1,9 +1,9 @@
-Instancing
-=============
+# Instancing
 
 The module provides an instancing system with the [VoxelInstancer](api/VoxelInstancer.md) node. This node must be added as child of a voxel terrain. It allows to spawn 3D models on top of the terrain's surface, which can later be removed when modified.
 
 It can spawn two different kinds of objects:
+
 - **Multimesh instances**. They can be extremely numerous, and can optionally have collision.
 - **Scene instances**. They use regular scenes, however it is much slower so should be tuned to low numbers.
 
@@ -11,9 +11,7 @@ This system is primarily intented at natural spawning: grass, rocks, trees and o
 
 This feature is currently only available under `VoxelLodTerrain`.
 
-
-VoxelInstanceLibrary
----------------------
+## VoxelInstanceLibrary
 
 ### Library setup
 
@@ -28,8 +26,7 @@ In this menu, you can add items to the library by clicking `VoxelInstanceLibrary
 Items created this way come with a default setup, so you should be able to see something appear on top of the voxel surface.
 
 !!! note
-    If you are making a planet, you may want to set the `up_mode` of `VoxelInstancer` to `Sphere` mode. This will tell the instancer where the upward direction is, and will align the items according to the local origin of the terrain.
-
+If you are making a planet, you may want to set the `up_mode` of `VoxelInstancer` to `Sphere` mode. This will tell the instancer where the upward direction is, and will align the items according to the local origin of the terrain.
 
 ### Block LOD
 
@@ -41,7 +38,7 @@ Usually landscapes may be composed of multiple layers so that the closer you get
 
 ![Screenshot of landscape using layers of instances](images/landscape_with_instances.png)
 
-There is a balance to consider when choosing the appropriate `lod_index`: currently, larger indexes are *much more imprecise*, because they work on top of a lower-resolution mesh. When getting closer, it's possible that such instances are seen floating above ground, or sinking into it. This mostly happens in areas with sharp changes such as ridges, crevices or caves:
+There is a balance to consider when choosing the appropriate `lod_index`: currently, larger indexes are _much more imprecise_, because they work on top of a lower-resolution mesh. When getting closer, it's possible that such instances are seen floating above ground, or sinking into it. This mostly happens in areas with sharp changes such as ridges, crevices or caves:
 
 ![Screemshot of misaligned instances](images/misaligned_instances.png)
 
@@ -54,8 +51,7 @@ Sometimes it might not be enough, so this problem still has to be worked out in 
 - Load edited voxels for the entire world at once so they can be queried even from far distance (takes more memory)
 
 !!! note
-    When making grass or other items, it may be a good idea to fade meshes based on distance from the camera using a custom shader, so they won't disappear abruptly. Using a ground texture of similar colors also helps to make it blend.
-
+When making grass or other items, it may be a good idea to fade meshes based on distance from the camera using a custom shader, so they won't disappear abruptly. Using a ground texture of similar colors also helps to make it blend.
 
 ### Mesh LOD
 
@@ -74,15 +70,13 @@ The distance at which a LOD will be chosen is currently hardcoded, because it de
 If you need fewer LODs, you can assign twice the same mesh. This system is quite rigid because in Godot 4 it might be changed to only have a single slot dedicated to impostor meshes. Indeed, Godot 4 might support LOD on meshes, but it is not planned for the last LODs to become impostors, so this should still be possible to achieve.
 
 !!! note
-    Impostor meshes are simple quads that can fake the presence of the real model over far distances. For example, this is a really fast way to render forests from afar, while being able to use detailed trees when coming closer.
-
+Impostor meshes are simple quads that can fake the presence of the real model over far distances. For example, this is a really fast way to render forests from afar, while being able to use detailed trees when coming closer.
 
 ### Edition
 
 Editing instances manually in the editor is not supported yet. It is only possible to define where instances spawn by using procedural generation.
 
 It is however possible to remove them from within the game, when digging the ground they spawned on.
-
 
 ### Persistence
 
@@ -93,7 +87,6 @@ The ID of persistent items is important, because it will be used in saved data. 
 At time of writing, only [VoxelStreamSQLite](api/VoxelStreamSQLite.md) supports saving instances.
 
 The save format is described in [this document](specs/instances_format.md).
-
 
 ### Setting up a Multimesh item from a scene
 
@@ -110,6 +103,7 @@ This conversion process expects your scene to follow a specific structure:
 ```
 
 Materials can be setup in two ways:
+
 - `material_override` on the MeshInstance
 - Materials on the mesh resource directly
 
@@ -124,11 +118,9 @@ Instancing scenes is supported by adding items of type `VoxelInstanceLibraryScen
 This freedom has a high price compared to multimesh instances. Adding many instances can become slow quickly, so the default density of these items is lower when you create them from the editor. It is strongly recommended to not use too complex scenes, because depending on the settings, it can lead to a freeze or crash of Godot if your computer cannot handle too many instances.
 
 !!! warning
-    If you add a scene to the library and then try to load that library from that same scene, Godot will crash. This is a cyclic reference and is hard to detect in all cases at the moment.
+If you add a scene to the library and then try to load that library from that same scene, Godot will crash. This is a cyclic reference and is hard to detect in all cases at the moment.
 
-
-Procedural generation
------------------------
+## Procedural generation
 
 ### Built-in generator
 
@@ -142,8 +134,6 @@ Persistent instances located in a block that was edited in the game will no long
 
 The feature is recent and the API may still change, so this is not available to scripts at the moment.
 
-
-Streaming events (advanced)
-----------------------------
+## Streaming events (advanced)
 
 `VoxelInstancer` knows when to spawn things by registering itself to its parent's block events. This is currently not available to the script API of `VoxelLodTerrain`, but may be added in the future.

@@ -2,15 +2,14 @@
 
 Inherits: [VoxelTool](VoxelTool.md)
 
-
 Implementation of [VoxelTool](VoxelTool.md) optimized for uses on [VoxelTerrain](VoxelTerrain.md).
 
 ## Methods:
 
+| Return    | Signature                                                                                                                                                                                                                                                                                                                                                                                               |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [void](#) | [run_blocky_random_tick](#i_run_blocky_random_tick) ( [AABB](https://docs.godotengine.org/en/stable/classes/class_aabb.html) area, [int](https://docs.godotengine.org/en/stable/classes/class_int.html) voxel_count, [FuncRef](https://docs.godotengine.org/en/stable/classes/class_funcref.html) callback, [int](https://docs.godotengine.org/en/stable/classes/class_int.html) batch_count=16 ) const |
 
-Return     | Signature
----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-[void](#)  | [run_blocky_random_tick](#i_run_blocky_random_tick) ( [AABB](https://docs.godotengine.org/en/stable/classes/class_aabb.html) area, [int](https://docs.godotengine.org/en/stable/classes/class_int.html) voxel_count, [FuncRef](https://docs.godotengine.org/en/stable/classes/class_funcref.html) callback, [int](https://docs.godotengine.org/en/stable/classes/class_int.html) batch_count=16 ) const
 <p></p>
 
 ## Method Descriptions

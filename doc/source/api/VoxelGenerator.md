@@ -2,15 +2,14 @@
 
 Inherits: [Resource](https://docs.godotengine.org/en/stable/classes/class_resource.html)
 
-
 Base class to all voxel procedural generators. If you want to define a custom one with a script, this is the class you should extend from. All implementations must be thread safe.
 
 ## Methods:
 
+| Return    | Signature                                                                                                                                                                                                                                                 |
+| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [void](#) | [generate_block](#i_generate_block) ( [VoxelBuffer](VoxelBuffer.md) out_buffer, [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) origin_in_voxels, [int](https://docs.godotengine.org/en/stable/classes/class_int.html) lod ) |
 
-Return     | Signature
----------- | -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-[void](#)  | [generate_block](#i_generate_block) ( [VoxelBuffer](VoxelBuffer.md) out_buffer, [Vector3](https://docs.godotengine.org/en/stable/classes/class_vector3.html) origin_in_voxels, [int](https://docs.godotengine.org/en/stable/classes/class_int.html) lod )
 <p></p>
 
 ## Method Descriptions

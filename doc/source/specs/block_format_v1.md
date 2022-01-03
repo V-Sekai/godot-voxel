@@ -1,16 +1,13 @@
-Block format
-====================
+# Block format
 
 !!! warn
-    This document is about an old version of the format. You may check the most recent version.
+This document is about an old version of the format. You may check the most recent version.
 
 This page describes the binary format used by default in this module to serialize voxel blocks to files, network or databases.
 
 This format has no version (version 1 is assumed).
 
-
-Specification
-----------------
+## Specification
 
 ### Top-levels
 
@@ -51,6 +48,7 @@ If compression is `COMPRESSION_NONE` (0), the data will be an array of N bytes, 
 The 3D indexing of that data is also in order `ZXY`.
 
 If compression is `COMPRESSION_UNIFORM` (1), the data will be a single voxel value, which means all voxels in the block have that same value. Unused channels will always use this mode. The value can span a variable number of bytes depending on the depth of the current channel:
+
 - 1 byte if 8-bit
 - 2 bytes if 16-bits
 - 4 bytes if 32-bits
@@ -89,9 +87,7 @@ VoxelMetadata
 
 At the very end, block data finishes with a sequence of 4 bytes, which once read into a `uint32_t` integer must match the value `0x900df00d`. If that condition isn't fulfilled, the block must be assumed corrupted.
 
-
-Current Issues
-----------------
+## Current Issues
 
 Although this format is currently implemented and usable, it has known issues.
 

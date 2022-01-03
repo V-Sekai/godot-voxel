@@ -2,9 +2,6 @@
 
 Inherits: [Reference](https://docs.godotengine.org/en/stable/classes/class_reference.html)
 
-
-
-
 ## Description:
 
 Low-level utility to save and load the data within a [VoxelBuffer](VoxelBuffer.md). This can be useful to send data over the network, or to store it in a file.
@@ -35,11 +32,11 @@ serializer.deserialize(stream_peer_buffer, voxels, size, true)
 
 ## Methods:
 
+| Return                                                               | Signature                                                                                                                                                                                                                                                                                                                           |
+| -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [void](#)                                                            | [deserialize](#i_deserialize) ( [StreamPeer](https://docs.godotengine.org/en/stable/classes/class_streampeer.html) peer, [VoxelBuffer](VoxelBuffer.md) voxel_buffer, [int](https://docs.godotengine.org/en/stable/classes/class_int.html) size, [bool](https://docs.godotengine.org/en/stable/classes/class_bool.html) decompress ) |
+| [int](https://docs.godotengine.org/en/stable/classes/class_int.html) | [serialize](#i_serialize) ( [StreamPeer](https://docs.godotengine.org/en/stable/classes/class_streampeer.html) peer, [VoxelBuffer](VoxelBuffer.md) voxel_buffer, [bool](https://docs.godotengine.org/en/stable/classes/class_bool.html) compress )                                                                                  |
 
-Return                                                                | Signature
---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-[void](#)                                                             | [deserialize](#i_deserialize) ( [StreamPeer](https://docs.godotengine.org/en/stable/classes/class_streampeer.html) peer, [VoxelBuffer](VoxelBuffer.md) voxel_buffer, [int](https://docs.godotengine.org/en/stable/classes/class_int.html) size, [bool](https://docs.godotengine.org/en/stable/classes/class_bool.html) decompress )
-[int](https://docs.godotengine.org/en/stable/classes/class_int.html)  | [serialize](#i_serialize) ( [StreamPeer](https://docs.godotengine.org/en/stable/classes/class_streampeer.html) peer, [VoxelBuffer](VoxelBuffer.md) voxel_buffer, [bool](https://docs.godotengine.org/en/stable/classes/class_bool.html) compress )
 <p></p>
 
 ## Method Descriptions

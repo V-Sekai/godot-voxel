@@ -1,11 +1,8 @@
-Scripting
-=============
+# Scripting
 
 This page shows some examples in how to use the scripting API.
 
-
-Editing the terrain
-----------------------
+## Editing the terrain
 
 ### Using [VoxelTool](api/VoxelTool.md)
 
@@ -37,11 +34,9 @@ voxel_tool.channel = VoxelBuffer.CHANNEL_COLOR
 When a terrain is streaming blocks in and out, it is not possible to edit past loaded borders. Either you will get an error, or nothing will happen.
 You can test if the area you want to access or edit is available by calling `VoxelTool.is_area_editable()`.
 
-
 ### LOD limitation
 
 Similarly to bounds limitation, when you use LOD with `VoxelLodTerrain`, it is not possible to access or edit voxels beyond the first LOD level. Past this level, voxel data is no longer available at full resolution.
-
 
 ### Editing performance
 
@@ -49,14 +44,12 @@ In general, editing voxels one by one is the slowest. It is ok for actually gett
 
 See [Access to voxels and multithreading](access_to_voxels_and_multithreading.md)
 
-
-Custom generator
-------------------
+## Custom generator
 
 You can provide your own voxel generator by extending `VoxelGeneratorScript` in either GDScript, C# or C++.
 
 !!! note
-    custom generators can also be created without scripts, using [VoxelGeneratorGraph](generators.md)
+custom generators can also be created without scripts, using [VoxelGeneratorGraph](generators.md)
 
 ### Example
 
@@ -98,7 +91,6 @@ Make sure to have a `VoxelViewer` node in the scene under the camera, and you sh
 ![Custom stream](images/custom-stream.jpg)
 
 Though `VoxelBuffer.fill()` is probably not what you want to use, the above is a quick example. Generate_block generally gives you a block of 16x16x16 cubes to fill all at once, so you may also use `VoxelBuffer.set_voxel()` to specify each one individually. You can change the channel to `VoxelBuffer.CHANNEL_SDF` to get smooth voxels using another mesher such as `VoxelMesherTransvoxel`.
-
 
 ### Thread-safety
 
@@ -151,7 +143,6 @@ func _notification(what: int):
 
 Image.lock() won't be required anymore in Godot 4.
 
-
 ### Accessing neighbors to generate structures
 
 Generators cannot access neighbor blocks, because they may be dependent on neighbors themselves, and may, or may not be available yet. It's also bad for performance to have threads interdepend on others. A solution to overcome this is to use a seed to drive every calculations so results are predictable.
@@ -172,11 +163,9 @@ In this approach, it is possible that a tree might be generated multiple times f
 This logic has been implemented [in this demo](https://github.com/Zylann/voxelgame/blob/2fa552abfdf52c688bbec27edd676018a31373e0/project/blocky_game/generator/generator.gd#L144).
 
 !!! note
-    If the structure to generate is larger, then instead of using chunk size as a reference grid, use a larger grid, and use intersecting cells instead so there are less checks to do. If it's a complex structure, it can get subdivided in smaller bounding boxes, to avoid generating everything during the first pass, and only generate it partially when it intersects the chunk.
+If the structure to generate is larger, then instead of using chunk size as a reference grid, use a larger grid, and use intersecting cells instead so there are less checks to do. If it's a complex structure, it can get subdivided in smaller bounding boxes, to avoid generating everything during the first pass, and only generate it partially when it intersects the chunk.
 
-
-Custom stream
----------------
+## Custom stream
 
 Making a custom stream works similarly to a custom generator.
 
@@ -185,9 +174,6 @@ See
 
 TODO Script example of a custom stream
 
-
-Creating a terrain node
---------------------------
+## Creating a terrain node
 
 TODO
-

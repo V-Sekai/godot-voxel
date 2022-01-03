@@ -1,11 +1,8 @@
-Blocky terrains
-=====================
+# Blocky terrains
 
 This page focuses more in detail on blocky terrains, Minecraft-like, or made of cubes.
 
-
-`VoxelMesherBlocky`
----------------------
+## `VoxelMesherBlocky`
 
 ### Creating voxel types
 
@@ -15,15 +12,11 @@ TODO
 
 TODO
 
-
-`VoxelMesherCubes`
-------------------
+## `VoxelMesherCubes`
 
 TODO
 
-
-Fast collisions alternative
-------------------------------
+## Fast collisions alternative
 
 ### Move and slide
 
@@ -53,7 +46,7 @@ func _physics_process(delta):
 ```
 
 !!! note
-	this technique mainly works if you use `VoxelMesherBlocky`, because it gets information about which block is collidable from the `VoxelLibrary` used with it. It might have some limited support in other meshers though.
+this technique mainly works if you use `VoxelMesherBlocky`, because it gets information about which block is collidable from the `VoxelLibrary` used with it. It might have some limited support in other meshers though.
 
 ### Raycast
 
@@ -69,4 +62,3 @@ if hit != null:
     # and can be used to access the value of the voxel with other functions of `VoxelTool`
     print("Hit voxel ", hit.position)
 ```
-

@@ -2,7 +2,6 @@
 
 Inherits: [Spatial](https://docs.godotengine.org/en/stable/classes/class_spatial.html)
 
-
 Attach this as a child node of characters, so the voxel world will know where to load blocks around them.
 
 If no viewer is present in the world, nothing will generate.
@@ -13,12 +12,12 @@ The voxel world uses the position and options of all the [VoxelViewer](VoxelView
 
 ## Properties:
 
+| Type   | Name                                          | Default |
+| ------ | --------------------------------------------- | ------- |
+| `bool` | [requires_collisions](#i_requires_collisions) | false   |
+| `bool` | [requires_visuals](#i_requires_visuals)       | true    |
+| `int`  | [view_distance](#i_view_distance)             | 128     |
 
-Type    | Name                                           | Default
-------- | ---------------------------------------------- | --------
-`bool`  | [requires_collisions](#i_requires_collisions)  | false
-`bool`  | [requires_visuals](#i_requires_visuals)        | true
-`int`   | [view_distance](#i_view_distance)              | 128
 <p></p>
 
 ## Property Descriptions

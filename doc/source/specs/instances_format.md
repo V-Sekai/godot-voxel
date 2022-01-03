@@ -1,10 +1,8 @@
-Instance block format
-=======================
+# Instance block format
 
 This page describes the binary format used by the module to save instances to files or databases.
 
-Specification
----------------
+## Specification
 
 ### Compressed container
 
@@ -14,7 +12,6 @@ Compressed data starts with one byte. Depending on its value, what follows is di
 
 - 0: no compression. Following bytes can be read as as block format directly. This is rarely used and could be for debugging.
 - 1: LZ4 compression. The next big-endian 32-bit unsigned integer is the size of the decompressed data, and following bytes are compressed data using LZ4 default parameters. This mode is used by default.
-
 
 ### Binary data
 

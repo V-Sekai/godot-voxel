@@ -1,13 +1,10 @@
-Module development
-=====================
+# Module development
 
 This page will give some info about the module's internals.
 
 The source code of the module can be found on [Github](https://github.com/Zylann/godot_voxel).
 
-
-Contributing
---------------
+## Contributing
 
 To contribute to the module, you need to clone the repo using [Git](https://git-scm.com/), and create your branch on Github so you'll be able to make Pull Requests.
 
@@ -28,34 +25,33 @@ To contribute to the main pages, make your change to `.md` files located under t
 To contribute to the class reference (API), you may edit XML files under `doc/classes` instead, similarly to how it's done for regular Godot modules or core classes.
 
 After an XML file has been changed, it can be converted into its Markdown counterpart by using the `build.py` script in `doc/tools`, using this command:
+
 ```
 python build.py -a
 ```
 
-Layers
--------
+## Layers
 
 The module is divided in several layers, each with different dependencies. Because of this, it is possible to use `VoxelMesher`, `VoxelGenerator` or `VoxelStream` standalone, without needing to use a `VoxelTerrain` node for example.
 
-Directory      | Description
--------------- | -------------------------------------------------------------------------------------------------------
-edition/       | High-level utilities to access and modify voxels. May depend on voxel nodes.
-editor/        | Editor-specific code. May also depend on voxel nodes.
-generators/    | Procedural generators. They only depend on voxel storage and math.
-meshers/       | Only depends on voxel storage, math and some Godot graphics APIs.
-streams/       | Files handling code. Only depends on filesystem and storage.
-util/          | Generic utility functions and structures. They don't depend on voxel stuff.
-thirdparty/    | Third-party libraries, in source code form. They are compiled statically so Godot remains a single executable.
-server/        | Contains task management. Depends on meshers, streams, storage but not directly on nodes.
-storage/       | Storage and memory data structures.
-terrain/       | Contains all the nodes. Depends on the rest of the module, except editor-only parts.
-tests/         | Contains tests. These run when Godot starts if enabled in the build script.
-doc/           | Contains documentation
+| Directory   | Description                                                                                                    |
+| ----------- | -------------------------------------------------------------------------------------------------------------- |
+| edition/    | High-level utilities to access and modify voxels. May depend on voxel nodes.                                   |
+| editor/     | Editor-specific code. May also depend on voxel nodes.                                                          |
+| generators/ | Procedural generators. They only depend on voxel storage and math.                                             |
+| meshers/    | Only depends on voxel storage, math and some Godot graphics APIs.                                              |
+| streams/    | Files handling code. Only depends on filesystem and storage.                                                   |
+| util/       | Generic utility functions and structures. They don't depend on voxel stuff.                                    |
+| thirdparty/ | Third-party libraries, in source code form. They are compiled statically so Godot remains a single executable. |
+| server/     | Contains task management. Depends on meshers, streams, storage but not directly on nodes.                      |
+| storage/    | Storage and memory data structures.                                                                            |
+| terrain/    | Contains all the nodes. Depends on the rest of the module, except editor-only parts.                           |
+| tests/      | Contains tests. These run when Godot starts if enabled in the build script.                                    |
+| doc/        | Contains documentation                                                                                         |
 
 <p></p>
 
-Tests
--------
+## Tests
 
 Tests are not mandatory, but if there is time to make new ones, it's good to have.
 
@@ -63,9 +59,7 @@ The module recently includes a `tests/` folder, which contains unit tests. At ti
 
 No test framework is used at the moment, instead they just run by either printing an error when they fail or not. In Godot 4 the Doctest framework is used, so we may see if we can migrate to that later.
 
-
-Threads
----------
+## Threads
 
 The module uses several background thread pools to process voxels. The number of threads is currently hardcoded, but it is planned to make it detect CPU concurrency automatically, and expose maximum thread counts in Project Settings.
 
@@ -77,9 +71,7 @@ The module uses several background thread pools to process voxels. The number of
 
 Threads are managed in [VoxelServer](api/VoxelServer.md).
 
-
-Code guidelines
------------------
+## Code guidelines
 
 For the most part, use `clang-format` and follow Godot conventions.
 
@@ -114,7 +106,6 @@ For the most part, use `clang-format` and follow Godot conventions.
 - If possible, avoid plain arrays like `int a[42]`. Debuggers don't catch overruns on them. Prefer using wrappers such as `FixedArray` and `Span` (or `std::array` and `std::span` once [this](https://github.com/godotengine/godot/issues/31608) is fixed)
 - Use `uint32_t`, `uint16_t`, `uint8_t` in case integer size matters.
 
-
 ### Error handling
 
 - No exceptions
@@ -143,9 +134,7 @@ In performance-critical areas which run a lot:
 - Don't leave random prints. For verbose mode you may also use `PRINT_VERBOSE()` instead of `print_verbose()`.
 - Use `int` as argument for functions exposed to scripts if they don't need to exceed 2^31, even if they are never negative, so errors are clearer if the user makes a mistake
 
-
-Debugging
-----------
+## Debugging
 
 ### Command line arguments
 
@@ -161,33 +150,33 @@ Example of options setup in in VSCode `launch.json` on Windows:
 
 ```json
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "(Windows) Launch",
-            "type": "cppvsdbg", // For MSVC
-            //"type": "cppdbg", // For GDB
-            "request": "launch",
-            "program": "${workspaceFolder}/bin/godot.windows.tools.64.exe", // debug
-            //"program": "${workspaceFolder}/bin/godot.windows.opt.tools.64.exe", // release_debug
-            "args": [
-                "-v", // Verbose output
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "(Windows) Launch",
+      "type": "cppvsdbg", // For MSVC
+      //"type": "cppdbg", // For GDB
+      "request": "launch",
+      "program": "${workspaceFolder}/bin/godot.windows.tools.64.exe", // debug
+      //"program": "${workspaceFolder}/bin/godot.windows.opt.tools.64.exe", // release_debug
+      "args": [
+        "-v" // Verbose output
 
-                //"-e", // Editor mode
+        //"-e", // Editor mode
 
-                //"--debug-collisions",
+        //"--debug-collisions",
 
-                // Run a specific scene
-                //"local_tests/sqlite/test_sqlite.tscn",
-                //"local_tests/texturing/test_textured_terrain.tscn"
-                //"local_tests/texturing/test_texturing.tscn"
-            ],
-            "stopAtEntry": false,
-            "cwd": "D:/PROJETS/INFO/GODOT/Games/SolarSystem/Project",
-            "environment": [],
-            "visualizerFile": "${workspaceFolder}/modules/voxel/voxel.natvis"
-        }
-    ]
+        // Run a specific scene
+        //"local_tests/sqlite/test_sqlite.tscn",
+        //"local_tests/texturing/test_textured_terrain.tscn"
+        //"local_tests/texturing/test_texturing.tscn"
+      ],
+      "stopAtEntry": false,
+      "cwd": "D:/PROJETS/INFO/GODOT/Games/SolarSystem/Project",
+      "environment": [],
+      "visualizerFile": "${workspaceFolder}/modules/voxel/voxel.natvis"
+    }
+  ]
 }
 ```
 
@@ -210,19 +199,19 @@ Godot and the voxel module both use their own container types, in addition to ST
 To fix this, it is usually possible to provide your debugger a file listing special patterns to inspect these types in a more user-friendly way.
 
 In VSCode, the cpp-tools extension supports Natvis files. Godot comes with such a file in `platform/windows/godot.natvis`. To get pretty printing for Godot types, in your `launch.json` file, add the following line:
+
 ```json
             "visualizerFile": "${workspaceFolder}/platform/windows/godot.natvis"
 ```
 
 Unfortunately, only one file can be provided at the moment. [An issue is open](https://github.com/Microsoft/vscode-cpptools/issues/925) to request support for multiple files.
 That means if you also want pretty-printing for structures of the voxel module, you have to replace the natvis path with the following:
+
 ```json
             "visualizerFile": "${workspaceFolder}/modules/voxel/voxel.natvis"
 ```
 
-
-Profile with Tracy
--------------------
+## Profile with Tracy
 
 This module contains macros to profile specific code sections. By default, these macros expand to [Tracy Profiler](https://github.com/wolfpld/tracy) zones. It allows to check how long code takes to run, and displays it in a timeline.
 
@@ -237,6 +226,7 @@ The macros are profiler-agnostic, so if you want to use another profiler it is p
 You need to include `utility/profiling.h` to access the macros.
 
 To profile a whole function:
+
 ```cpp
 void some_function() {
     VOXEL_PROFILE_SCOPE();
@@ -245,6 +235,7 @@ void some_function() {
 ```
 
 To profile part of a function:
+
 ```cpp
 void some_function() {
     // Some code...
@@ -285,6 +276,6 @@ env_thirdparty.add_source_files(env.core_sources, ["#thirdparty/tracy/TracyClien
 Once you are done profiling, don't forget to remove these lines, otherwise profiling data will accumulate in memory without being retrieved.
 
 !!! note
-    Tracy has a concept of frame mark, which is usually provided by the application, to tell the profiler when each frame begins. Godot does not provide profiling macros natively, so the frame mark was hacked into `VoxelServer` process function. This allows to see frames of the main thread in the timeline, but they will be offset from their real beginning.
+Tracy has a concept of frame mark, which is usually provided by the application, to tell the profiler when each frame begins. Godot does not provide profiling macros natively, so the frame mark was hacked into `VoxelServer` process function. This allows to see frames of the main thread in the timeline, but they will be offset from their real beginning.
 
 This way of integrating Tracy was based on this [commit by vblanco](https://github.com/vblanco20-1/godot/commit/2c5613abb8c9fdb5c4bfe3b52fdb665a91b43579)

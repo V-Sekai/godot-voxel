@@ -1,11 +1,8 @@
-Smooth terrains
-===================
+# Smooth terrains
 
 It is possible to work with smooth-looking terrains, using signed distance fields and `VoxelMesherTransvoxel`.
 
-
-Signed distance fields
--------------------------
+## Signed distance fields
 
 ### Concept
 
@@ -15,16 +12,13 @@ TODO
 
 TODO
 
-
-Transvoxel
------------
+## Transvoxel
 
 ### Definition
 
 Transvoxel is an extension of Marching Cubes that can be used to create smooth meshes from voxel data. The advantage of this algorithm is to integrate stitching of different levels of details without causing cracks, so it can be used to render very large landscapes.
 
 For more information, visit [https://transvoxel.org/](https://transvoxel.org/).
-
 
 ### Smooth stitches in vertex shader
 
@@ -63,9 +57,7 @@ void vertex() {
 
 Research issue which led to this code: [Issue #2](https://github.com/Zylann/godot_voxel/issues/2)
 
-
-Texturing
------------
+## Texturing
 
 Texturing a voxel surface can be more difficult than classic 3D meshes, because the geometry isn't known in advance, and can have almost any shape. So in this section we'll review ways to solve UV-mapping, procedural techniques and blending textures from voxel data.
 
@@ -91,11 +83,9 @@ In the shader parameters, add your two albedo maps, and optionally normal, and A
 
 ![Textured terrain](images/textured-terrain.jpg)
 
-
 ### Procedural texturing
 
 Voxel data is heavy, so if texturing rules of your game are simple enough to be determined from a shader and don't impact gameplay, you won't need to define any extra data in the voxels. For example, you can check the normal of a terrain surface to blend between a grass and rock texture, and use snow above a certain height.
-
 
 ### 4-blend over 16 textures
 
@@ -132,7 +122,6 @@ The mesher will include texturing information in the `UV` attribute of vertices.
 - `UV.y` will contain 4 weights, again encoded as 4 bytes.
 
 Each index tell which texture needs to be used, and each weight respectively tells how much of that texture should be blended. It is essentially the same as a classic color splatmap, except textures can vary. One minor downside is that you cannot blend more than 4 textures per voxel, so if this happens, it might cause artifacts. But in practice, it is assumed this case is so infrequent it can be ignored.
-
 
 #### Shader
 
@@ -222,21 +211,17 @@ void fragment() {
 ![Smooth voxel painting prototype](images/smooth_voxel_painting_on_plane.png)
 
 !!! note
-	If you only need 4 textures, then you can leave indices to their default values (which contains `0,1,2,3`) and only use weights. When using `VoxelTool`, you may only use texture indices 0, 1, 2 or 3. Texture arrays are less relevant in this case.
-
+If you only need 4 textures, then you can leave indices to their default values (which contains `0,1,2,3`) and only use weights. When using `VoxelTool`, you may only use texture indices 0, 1, 2 or 3. Texture arrays are less relevant in this case.
 
 ### Recommended Reading
 
 - [SpatialMaterial](https://docs.godotengine.org/en/stable/classes/class_spatialmaterial.html) - demonstrates many of the shader options available in Godot.
 - [Shading Index](https://docs.godotengine.org/en/stable/tutorials/shading/index.html) - tutorials and the shader language API
 - Shader API Reference - some of the most frequently accessed references
-	- [Shading Language](https://docs.godotengine.org/en/stable/tutorials/shading/shading_reference/shading_language.html)
-	- [SpatialShader](https://docs.godotengine.org/en/stable/tutorials/shading/shading_reference/spatial_shader.html)
+  - [Shading Language](https://docs.godotengine.org/en/stable/tutorials/shading/shading_reference/shading_language.html)
+  - [SpatialShader](https://docs.godotengine.org/en/stable/tutorials/shading/shading_reference/spatial_shader.html)
 
-
-
-Shading
----------
+## Shading
 
 By default smooth voxels also produce smooth meshes by sharing vertices. This also contributes to meshes being smaller in memory.
 
@@ -260,9 +245,7 @@ This can be done by saturating SDF values in the voxel generator: they have to b
 
 You may also make shading hard-edged in your shader for better results.
 
-
-Level of detail (LOD)
------------------------
+## Level of detail (LOD)
 
 `VoxelLodTerrain` implements dynamic level of detail for smooth terrain.
 
@@ -292,7 +275,7 @@ float get_hash(vec2 c) {
 }
 ```
 
-And *at the end* of `fragment()`, add this:
+And _at the end_ of `fragment()`, add this:
 
 ```glsl
 // Discard pixels progressively.
@@ -316,6 +299,6 @@ Note: this is an example of implementation. There might be more optimized ways t
 This will discard such that pixels of the two meshes will be complementary without overlap. `discard` is used so the mesh can remain rendered in the same pass (usually the opaque pass).
 
 This technique is still imperfect because of several limitations:
+
 - Transition meshes used to stitch blocks of different LOD are currently not faded. Doing so requires much more work, and in fact, the way these meshes are handled in the first place could be simplified if Godot allowed more fine-grained access to `ArrayMesh`, like switching to another index buffer without re-uploading the entire mesh.
 - Shadow maps still create self-shadowing. While both meshes are rendered to cross-fade, one of them will eventually project shadows on the other. This creates a lot of noisy patches. Turning off shadows from one of them does not fix the other, and turning shadows off completely will make shadows pop. I haven't found a solution yet. See https://github.com/godotengine/godot-proposals/issues/692#issuecomment-782331429
-

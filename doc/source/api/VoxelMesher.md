@@ -2,7 +2,6 @@
 
 Inherits: [Resource](https://docs.godotengine.org/en/stable/classes/class_resource.html)
 
-
 Base class for all meshing algorithms.
 
 ## Description:
@@ -11,12 +10,12 @@ In order to be rendered by Godot, voxels can be transformed into a mesh. There a
 
 ## Methods:
 
+| Return                                                                 | Signature                                                                                                                                                      |
+| ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Mesh](https://docs.godotengine.org/en/stable/classes/class_mesh.html) | [build_mesh](#i_build_mesh) ( [VoxelBuffer](VoxelBuffer.md) voxel_buffer, [Array](https://docs.godotengine.org/en/stable/classes/class_array.html) materials ) |
+| [int](https://docs.godotengine.org/en/stable/classes/class_int.html)   | [get_maximum_padding](#i_get_maximum_padding) ( ) const                                                                                                        |
+| [int](https://docs.godotengine.org/en/stable/classes/class_int.html)   | [get_minimum_padding](#i_get_minimum_padding) ( ) const                                                                                                        |
 
-Return                                                                  | Signature
------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------
-[Mesh](https://docs.godotengine.org/en/stable/classes/class_mesh.html)  | [build_mesh](#i_build_mesh) ( [VoxelBuffer](VoxelBuffer.md) voxel_buffer, [Array](https://docs.godotengine.org/en/stable/classes/class_array.html) materials )
-[int](https://docs.godotengine.org/en/stable/classes/class_int.html)    | [get_maximum_padding](#i_get_maximum_padding) ( ) const
-[int](https://docs.godotengine.org/en/stable/classes/class_int.html)    | [get_minimum_padding](#i_get_minimum_padding) ( ) const
 <p></p>
 
 ## Method Descriptions

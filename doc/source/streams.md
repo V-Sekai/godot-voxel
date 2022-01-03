@@ -1,11 +1,8 @@
-Streams
-========
+# Streams
 
 `VoxelStream` allows to save and load voxel data to a file or a directory structure, using various kinds of implementations. They don't hold voxel data in memory, they are just an access point.
 
-
-Stream types
-----------------
+## Stream types
 
 A few different types are available, each with slightly different features.
 
@@ -17,9 +14,7 @@ A few different types are available, each with slightly different features.
 
 There is currently no stream implementation using an existing file format (like `.vox` for example), mainly because the current API expects the ability to load data in chunks.
 
-
-Using streams for savegames
-----------------------------
+## Using streams for savegames
 
 Streams were created initially to serve as a database for saves. Games using voxel technology for terrain are often persistent, so there has to be a place on disk where to save the changes, and reload them back.
 
@@ -35,17 +30,13 @@ Saving only occurs under the following conditions:
 - The block gets unloaded when too far away
 - `save_modified_blocks()` is called on the terrain node (you may want to call this when the player saves, or quits the game)
 
-
-Using streams in the Godot Editor
-----------------------------------
+## Using streams in the Godot Editor
 
 At the moment, streams can run in the editor, but they behave the same as if the game was running. If you modify anything, blocks will eventually get saved under the same conditions as seen earlier. If you want to preserve your game saves, either leave the `stream` property unassigned, or you can assign a "development save" on the stream in the editor. Then, assign a different path from within your game to the real save (using script).
 
 If you use the same save files between game and editor, there is a risk of conflict when you run the game: it will try to open files which are already opened and locked by the editor. To workaround this, either use different files, or close the scene before running the game. See [issue 283](https://github.com/Zylann/godot_voxel/issues/283).
 
-
-Save format specifications
-----------------------------
+## Save format specifications
 
 - [Region format](specs/region_format_v3.md)
 - [Block format](specs/block_format_v2.md)

@@ -1,8 +1,6 @@
-Editor
-============
+# Editor
 
-Previewing in the editor
----------------------------
+## Previewing in the editor
 
 ![Screemshot of the editor](images/editor_preview_smooth_2d_noise_terrain.png)
 
@@ -17,8 +15,7 @@ The whole terrain can be told to re-mesh or re-load by using one of the options 
 ![Re-generate menu](images/menu_regenerate.png)
 
 !!! warning
-    If you use a script on either [VoxelGeneratorScript](api/VoxelGeneratorScript.md) or [VoxelStreamScript](api/VoxelStreamScript.md), the `run_stream_in_editor` option will automatically turn off and the volume will not be visible. If a script gets modified while it is used by a thread in the editor, unpredictable bugs can happen. You can force it by enabling the option, but you have to make sure no change happens. This limitation is tracked in [issue177](https://github.com/Zylann/godot_voxel/issues/177).
-
+If you use a script on either [VoxelGeneratorScript](api/VoxelGeneratorScript.md) or [VoxelStreamScript](api/VoxelStreamScript.md), the `run_stream_in_editor` option will automatically turn off and the volume will not be visible. If a script gets modified while it is used by a thread in the editor, unpredictable bugs can happen. You can force it by enabling the option, but you have to make sure no change happens. This limitation is tracked in [issue177](https://github.com/Zylann/godot_voxel/issues/177).
 
 ### Camera options
 
@@ -29,11 +26,8 @@ Blocks will only load around the node's origin by default. If the volume is very
 This option exists for large volumes because they need to stream blocks in and out as you move around. While this is often done in a controlled manner in a game, in the editor the camera could be moving very fast without any restriction, which can demand much more work for the CPU.
 You can monitor the amount of ongoing tasks in the bottom panel, while the node is selected.
 
-
-Editing
---------
+## Editing
 
 Editing voxel volumes in the Godot Editor is not supported yet. This feature may be implemented in the future.
 
 Terrains can be edited in-game using scripts and [VoxelTool](scripting.md).
-

@@ -2,15 +2,14 @@
 
 Inherits: [Object](https://docs.godotengine.org/en/stable/classes/class_object.html)
 
-
 Singleton handling common voxel processing in background threads.
 
 ## Methods:
 
+| Return                                                                             | Signature                     |
+| ---------------------------------------------------------------------------------- | ----------------------------- |
+| [Dictionary](https://docs.godotengine.org/en/stable/classes/class_dictionary.html) | [get_stats](#i_get_stats) ( ) |
 
-Return                                                                              | Signature
------------------------------------------------------------------------------------ | -------------------------------
-[Dictionary](https://docs.godotengine.org/en/stable/classes/class_dictionary.html)  | [get_stats](#i_get_stats) ( )
 <p></p>
 
 ## Method Descriptions

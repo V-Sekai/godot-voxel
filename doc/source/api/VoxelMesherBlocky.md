@@ -2,7 +2,6 @@
 
 Inherits: [VoxelMesher](VoxelMesher.md)
 
-
 Produces a mesh by batching models corresponding to each voxel value, similar to games like Minecraft or StarMade.
 
 ## Description:
@@ -11,23 +10,20 @@ Occluded faces are removed from the result, and some degree of ambient occlusion
 
 ## Properties:
 
+| Type           | Name                                        | Default |
+| -------------- | ------------------------------------------- | ------- |
+| `VoxelLibrary` | [library](#i_library)                       |
+| `float`        | [occlusion_darkness](#i_occlusion_darkness) | 0.8     |
+| `bool`         | [occlusion_enabled](#i_occlusion_enabled)   | true    |
 
-Type            | Name                                         | Default
---------------- | -------------------------------------------- | --------
-`VoxelLibrary`  | [library](#i_library)                        |
-`float`         | [occlusion_darkness](#i_occlusion_darkness)  | 0.8
-`bool`          | [occlusion_enabled](#i_occlusion_enabled)    | true
 <p></p>
 
 ## Property Descriptions
 
 - [VoxelLibrary](VoxelLibrary.md)<span id="i_library"></span> **library**
 
-
 - [float](https://docs.godotengine.org/en/stable/classes/class_float.html)<span id="i_occlusion_darkness"></span> **occlusion_darkness** = 0.8
 
-
 - [bool](https://docs.godotengine.org/en/stable/classes/class_bool.html)<span id="i_occlusion_enabled"></span> **occlusion_enabled** = true
-
 
 _Generated on May 31, 2021_

@@ -1,5 +1,4 @@
-Voxel block format
-====================
+# Voxel block format
 
 Version: 2
 
@@ -16,9 +15,7 @@ Overall the format can be more standalone than before, where information had to 
 
 There is no migration available from version 1.
 
-
-Specification
-----------------
+## Specification
 
 ### Compressed container
 
@@ -39,7 +36,7 @@ The obtained data then contains the actual block.
 It starts with version number `2` in one byte, then some metadata and the actual voxels.
 
 !!! note
-    The size and formats are present to make the format standalone. When used within a chunked container like region files, it is recommended to check if they match the format expected for the volume as a whole.
+The size and formats are present to make the format standalone. When used within a chunked container like region files, it is recommended to check if they match the format expected for the volume as a whole.
 
 ```
 BlockData
@@ -66,8 +63,7 @@ Channel
 
 Depth can be 0 (8-bit), 1 (16-bit), 2 (32-bit) or 3 (64-bit).
 
-If compression is `COMPRESSION_NONE` (0), `data` will be an array of N*S bytes, where N is the number of voxels inside a block, multiplied by the number of bytes corresponding to the bit depth. For example, a block of size 16x16x16 and a channel of 32-bit depth will have `16*16*16*4` bytes to load from the file into this channel.
-The 3D indexing of that data is in order `ZXY`.
+If compression is `COMPRESSION_NONE` (0), `data` will be an array of N*S bytes, where N is the number of voxels inside a block, multiplied by the number of bytes corresponding to the bit depth. For example, a block of size 16x16x16 and a channel of 32-bit depth will have `16*16*16*4`bytes to load from the file into this channel. The 3D indexing of that data is in order`ZXY`.
 
 If compression is `COMPRESSION_UNIFORM` (1), the data will be a single voxel value, which means all voxels in the block have that same value. Unused channels will always use this mode. The value spans the same number of bytes defined by the depth.
 
@@ -105,11 +101,9 @@ VoxelMetadata
 At the very end, block data finishes with a sequence of 4 bytes, which once read into a `uint32_t` integer must match the value `0x900df00d`. If that condition isn't fulfilled, the block must be assumed corrupted.
 
 !!! note
-    On little-endian architectures (mostly desktop), binary editors will not show the epilogue as `0x900df00d`, but as `0x0df00d90` instead.
+On little-endian architectures (mostly desktop), binary editors will not show the epilogue as `0x900df00d`, but as `0x0df00d90` instead.
 
-
-Current Issues
-----------------
+## Current Issues
 
 Although this format is currently implemented and usable, it has known issues.
 

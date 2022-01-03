@@ -1,11 +1,8 @@
-Overview
-===========
+# Overview
 
 This section explains the main concepts used in this voxel engine and which parts implement them.
 
-
-What voxels are
-------------------
+## What voxels are
 
 ![Cubes and marching cubes](images/cubes_and_marching_cubes.png)
 
@@ -22,11 +19,9 @@ In this engine, a voxel is a specific point in space holding some values. Those 
 Voxels can be obtained by either deciding their values manually on a grid, or by defining procedural rules to generate them from anywhere, like fractal noise or Signed-Distance-Field formulas.
 
 !!! note
-    Although this engine started as a way to generate terrains, it is not the only thing you can do with it. Because of this, you will often find the word "volume" instead of "terrain" in this documentation, to designate objects composed of voxels.
+Although this engine started as a way to generate terrains, it is not the only thing you can do with it. Because of this, you will often find the word "volume" instead of "terrain" in this documentation, to designate objects composed of voxels.
 
-
-Generating voxels
-------------------
+## Generating voxels
 
 Voxels span 3 dimensions, so contrary to images, storing them can take up way more memory as volumes get bigger. This is why it important to think about procedural sources of voxels, because they don't cost any memory and can be accessed at any resolution.
 
@@ -41,9 +36,7 @@ Types of generators include:
 - [VoxelGeneratorScript](api/VoxelGeneratorScript.md): allows to implement the generation logic with a script. Will likely be slower than the other options, unless you use C# or GDNative.
 - And some others
 
-
-Storing voxels
----------------
+## Storing voxels
 
 ![Block map storage schema](images/block_map_storage.png)
 
@@ -60,11 +53,9 @@ The engine uses the first channels, while others are unused for now. Each channe
 Finally, a simple optimization is applied so that if a channel is filled with the same value, it won't allocate memory and instead store just that value. This way, areas such as the sky don't take up memory.
 
 !!! warning
-    There is a class called [Voxel](api/Voxel.md), but it is actually only used for blocky meshing. It is not a general-purpose voxel value, and will be renamed in the future to avoid confusion.
+There is a class called [Voxel](api/Voxel.md), but it is actually only used for blocky meshing. It is not a general-purpose voxel value, and will be renamed in the future to avoid confusion.
 
-
-Saving voxels to disk
------------------------
+## Saving voxels to disk
 
 ![Raw region file seen as an image](images/region_file_seen_as_image.png)
 
@@ -73,9 +64,7 @@ When players make edits to the world or when you want to sculpt a terrain in the
 This module implements this functionality with [VoxelStream](api/VoxelStream.md). Similarly to generators, a stream allows to request blocks of voxels so that it's not necessary to load the entire thing at once. But also, it allows to send back blocks of voxels to save them.
 This block-based approach is especially useful if the world is very large. In contrast, smaller volumes might just be loaded all at once. Subclasses may implement it in various ways, often using compressed files.
 
-
-Turning voxels into meshes
-----------------------------
+## Turning voxels into meshes
 
 ![Cubes and wireframe](images/cubes_and_wireframe.png)
 
@@ -88,9 +77,7 @@ There are several ways to produce polygons from voxel data, and the engine provi
 - [VoxelMesherTransvoxel](api/VoxelMesherTransvoxel.md): instead of making cubes, this one uses the SDF value to produce a smooth surface, based on the [Transvoxel](https://transvoxel.org/) algorithm. It can also produce transition meshes, which is useful to stitch together two meshes of different level of detail.
 - [VoxelMesherDMC](api/VoxelMesherDMC.md): variant using dual marching cubes to produce a smooth surface, [as explained in these articles](https://www.volume-gfx.com/volume-rendering/). However this implementation is no longer maintained.
 
-
-Putting it together with nodes
--------------------------------
+## Putting it together with nodes
 
 ![Game screenshots](images/game_examples.png)
 
@@ -99,7 +86,7 @@ So far, we could consider that there are enough tools to use voxels within games
 Turning a bunch of voxels into a mesh is ok for a model or a small piece of land, however it won't scale well with large editable terrains. It gets more tricky if that terrain needs to have a large view distance. Very often, the proposed solution is to split it into chunks, eventually using variable level of detail, and properly update parts of that terrain when they are modified by players. This is what the `VoxelTerrain*` nodes do, by putting together the tools seen before, and using threads to run heavy operations in the background.
 
 !!! note
-    In this engine, "Chunks" are actually called "Blocks". They typically represent cubes of 16x16x16 voxels. Some options are specified in blocks, rather than spatial units.
+In this engine, "Chunks" are actually called "Blocks". They typically represent cubes of 16x16x16 voxels. Some options are specified in blocks, rather than spatial units.
 
 There are two main types of terrains supported by the engine:
 
@@ -110,4 +97,3 @@ There are two main types of terrains supported by the engine:
 Both kinds of terrains can be edited in real time, and only the edited parts will be re-meshed dynamically. A helper class [VoxelTool](api/VoxelTool.md) is exposed to the script API to simplify the process of editing voxels, which can be obtained by using `get_voxel_tool()` methods. It allows to set single voxels, dig around or blend simple shapes such as spheres or boxes. The same concept of channels seen earlier is available on this API, so depending on the type of mesher you are using, you may want to edit either `TYPE`, `SDF` or `COLOR` channels.
 
 Finally, for these terrains to load, it is required to place at least one [VoxelViewer](api/VoxelViewer.md) node in the world. These may be placed typically as child of the player, or the main `Camera`. They tell the voxel engine where to load voxels, how far, and give priority to mesh updates happening near them.
-
