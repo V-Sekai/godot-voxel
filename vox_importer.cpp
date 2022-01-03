@@ -11,66 +11,25 @@
 #include <scene/resources/mesh.h>
 #include <scene/resources/packed_scene.h>
 
-String VoxelVoxImporter::get_importer_name() const {
-  return "VoxelVoxImporter";
-}
-
-String VoxelVoxImporter::get_visible_name() const { return "VoxelVoxImporter"; }
-
-void VoxelVoxImporter::get_recognized_extensions(
-    List<String> *p_extensions) const {
-  p_extensions->push_back("vox");
-}
-
-String VoxelVoxImporter::get_preset_name(int p_idx) const { return "Default"; }
-
-int VoxelVoxImporter::get_preset_count() const { return 1; }
-
-String VoxelVoxImporter::get_save_extension() const { return "tscn"; }
-
-String VoxelVoxImporter::get_resource_type() const { return "PackedScene"; }
-
-void VoxelVoxImporter::get_import_options(List<ImportOption> *r_options,
-                                          int p_preset) const {
-  VoxelStringNames *sn = VoxelStringNames::get_singleton();
-  r_options->push_back(ImportOption(
-      PropertyInfo(Variant::BOOL, sn->store_colors_in_texture), true));
-}
-
-bool VoxelVoxImporter::get_option_visibility(
-    const String &p_option, const Map<StringName, Variant> &p_options) const {
-  return true;
-}
-
-static void add_mesh_instance(Ref<Mesh> mesh, Node *parent, Node *owner,
-                              Vector3 offset) {
-  MeshInstance3D *mesh_instance = memnew(MeshInstance3D);
-  mesh_instance->set_mesh(mesh);
-  parent->add_child(mesh_instance);
-  mesh_instance->set_owner(owner);
-  mesh_instance->set_position(offset);
-  // TODO Colliders? Needs conventions or attributes probably
-}
-
-struct VoxMesh {
-  Ref<Mesh> mesh;
-  Vector3 pivot;
-};
-
-static Error process_scene_node_recursively(const vox::Data &data, int node_id,
-                                            Node3D *parent_node,
-                                            Node3D *&root_node, int depth,
-                                            const Vector<VoxMesh> &meshes) {
-  //
+Error VoxelVoxImporter::process_scene_node_recursively(const vox::Data &data, int node_id,
+                                                       Node3D *parent_node,
+                                                       Node3D *&root_node, int depth,
+                                                       const Vector<VoxMesh> &meshes)
+{
   ERR_FAIL_COND_V(depth > 10, ERR_INVALID_DATA);
   const vox::Node *vox_node = data.get_node(node_id);
 
-  switch (vox_node->type) {
-  case vox::Node::TYPE_TRANSFORM: {
+  switch (vox_node->type)
+  {
+  case vox::Node::TYPE_TRANSFORM:
+  {
     Node3D *node = memnew(Node3D);
-    if (root_node == nullptr) {
+    if (root_node == nullptr)
+    {
       root_node = node;
-    } else {
+    }
+    else
+    {
       ERR_FAIL_COND_V(parent_node == nullptr, ERR_BUG);
       parent_node->add_child(node);
       node->set_owner(root_node);
@@ -81,19 +40,24 @@ static Error process_scene_node_recursively(const vox::Data &data, int node_id,
                                     vox_transform_node->position.to_vec3()));
     process_scene_node_recursively(data, vox_transform_node->child_node_id,
                                    node, root_node, depth + 1, meshes);
-  } break;
+  }
+  break;
 
-  case vox::Node::TYPE_GROUP: {
+  case vox::Node::TYPE_GROUP:
+  {
     const vox::GroupNode *vox_group_node =
         reinterpret_cast<const vox::GroupNode *>(vox_node);
-    for (unsigned int i = 0; i < vox_group_node->child_node_ids.size(); ++i) {
+    for (unsigned int i = 0; i < vox_group_node->child_node_ids.size(); ++i)
+    {
       const int child_node_id = vox_group_node->child_node_ids[i];
       process_scene_node_recursively(data, child_node_id, parent_node,
                                      root_node, depth + 1, meshes);
     }
-  } break;
+  }
+  break;
 
-  case vox::Node::TYPE_SHAPE: {
+  case vox::Node::TYPE_SHAPE:
+  {
     ERR_FAIL_COND_V(parent_node == nullptr, ERR_BUG);
     ERR_FAIL_COND_V(root_node == nullptr, ERR_BUG);
     const vox::ShapeNode *vox_shape_node =
@@ -102,7 +66,8 @@ static Error process_scene_node_recursively(const vox::Data &data, int node_id,
     ERR_FAIL_COND_V(mesh_data.mesh.is_null(), ERR_BUG);
     const Vector3 offset = -mesh_data.pivot;
     add_mesh_instance(mesh_data.mesh, parent_node, root_node, offset);
-  } break;
+  }
+  break;
 
   default:
     ERR_FAIL_V(ERR_INVALID_DATA);
@@ -112,16 +77,18 @@ static Error process_scene_node_recursively(const vox::Data &data, int node_id,
   return OK;
 }
 
-static Ref<Mesh>
-build_mesh(VoxelBuffer &voxels, VoxelMesher &mesher,
-           std::vector<unsigned int> &surface_index_to_material,
-           Ref<Image> &out_atlas) {
+Ref<Mesh>
+VoxelVoxImporter::build_mesh(VoxelBuffer &voxels, VoxelMesher &mesher,
+                             std::vector<unsigned int> &surface_index_to_material,
+                             Ref<Image> &out_atlas)
+{
   //
   VoxelMesher::Output output;
   VoxelMesher::Input input = {voxels, 0};
   mesher.build(output, input);
 
-  if (output.surfaces.is_empty()) {
+  if (output.surfaces.is_empty())
+  {
     return Ref<ArrayMesh>();
   }
 
@@ -129,15 +96,18 @@ build_mesh(VoxelBuffer &voxels, VoxelMesher &mesher,
   mesh.instantiate();
 
   int surface_index = 0;
-  for (int i = 0; i < output.surfaces.size(); ++i) {
+  for (int i = 0; i < output.surfaces.size(); ++i)
+  {
     Array surface = output.surfaces[i];
 
-    if (surface.is_empty()) {
+    if (surface.is_empty())
+    {
       continue;
     }
 
     CRASH_COND(surface.size() != Mesh::ARRAY_MAX);
-    if (!is_surface_triangulated(surface)) {
+    if (!is_surface_triangulated(surface))
+    {
       continue;
     }
 
@@ -146,25 +116,31 @@ build_mesh(VoxelBuffer &voxels, VoxelMesher &mesher,
     ++surface_index;
   }
 
-  if (output.atlas_image.is_valid()) {
+  if (output.atlas_image.is_valid())
+  {
     out_atlas = output.atlas_image;
   }
 
   return mesh;
 }
+void VoxelVoxImporter::add_mesh_instance(Ref<Mesh> mesh, Node *parent, Node *owner,
+                                         Vector3 offset)
+{
+  MeshInstance3D *mesh_instance = memnew(MeshInstance3D);
+  mesh_instance->set_mesh(mesh);
+  parent->add_child(mesh_instance);
+  mesh_instance->set_owner(owner);
+  mesh_instance->set_position(offset);
+}
 
-Error VoxelVoxImporter::import(const String &p_source_file,
-                               const String &p_save_path,
-                               const Map<StringName, Variant> &p_options,
-                               List<String> *r_platform_variants,
-                               List<String> *r_gen_files, Variant *r_metadata) {
-  //
-  const bool p_store_colors_in_textures =
-      p_options[VoxelStringNames::get_singleton()->store_colors_in_texture];
-
+Node *VoxelVoxImporter::import_scene(const String &p_path, uint32_t p_flags, int p_bake_fps, List<String> *r_missing_deps, Error *r_err)
+{
   vox::Data data;
-  const Error load_err = data.load_from_file(p_source_file);
-  ERR_FAIL_COND_V(load_err != OK, load_err);
+  const Error load_err = data.load_from_file(p_path);
+  if (r_err){
+    *r_err = load_err;
+  }
+  ERR_FAIL_COND_V(load_err != OK, nullptr);
 
   Vector<VoxMesh> meshes;
   meshes.resize(data.get_model_count());
@@ -172,7 +148,8 @@ Error VoxelVoxImporter::import(const String &p_source_file,
   // Get color palette
   Ref<VoxelColorPalette> palette;
   palette.instantiate();
-  for (unsigned int i = 0; i < data.get_palette().size(); ++i) {
+  for (unsigned int i = 0; i < data.get_palette().size(); ++i)
+  {
     Color8 color = data.get_palette()[i];
     palette->set_color8(i, color);
   }
@@ -182,25 +159,21 @@ Error VoxelVoxImporter::import(const String &p_source_file,
   mesher->set_color_mode(VoxelMesherCubes::COLOR_MESHER_PALETTE);
   mesher->set_palette(palette);
   mesher->set_greedy_meshing_enabled(true);
-  mesher->set_store_colors_in_texture(p_store_colors_in_textures);
 
   FixedArray<Ref<StandardMaterial3D>, 2> materials;
-  for (unsigned int i = 0; i < materials.size(); ++i) {
+  for (unsigned int i = 0; i < materials.size(); ++i)
+  {
     Ref<StandardMaterial3D> &mat = materials[i];
     mat.instantiate();
     mat->set_roughness(1.f);
-    if (!p_store_colors_in_textures) {
-      // In this case we store colors in vertices
-      mat->set_flag(StandardMaterial3D::FLAG_ALBEDO_FROM_VERTEX_COLOR, true);
-      mat->set_flag(StandardMaterial3D::FLAG_SRGB_VERTEX_COLOR, true);
-    }
     mat->set_texture_filter(BaseMaterial3D::TEXTURE_FILTER_NEAREST_WITH_MIPMAPS_ANISOTROPIC);
   }
   materials[1]->set_transparency(StandardMaterial3D::TRANSPARENCY_ALPHA);
 
   // Build meshes from voxel models
   for (unsigned int model_index = 0; model_index < data.get_model_count();
-       ++model_index) {
+       ++model_index)
+  {
     const vox::Model &model = data.get_model(model_index);
 
     Ref<VoxelBuffer> voxels;
@@ -209,9 +182,13 @@ Error VoxelVoxImporter::import(const String &p_source_file,
     voxels->decompress_channel(VoxelBuffer::CHANNEL_COLOR);
 
     Span<uint8_t> dst_color_indices;
+    if (r_err)
+    {
+      *r_err = ERR_BUG;
+    }
     ERR_FAIL_COND_V(
         !voxels->get_channel_raw(VoxelBuffer::CHANNEL_COLOR, dst_color_indices),
-        ERR_BUG);
+        nullptr);
     Span<const uint8_t> src_color_indices = to_span_const(model.color_indexes);
     copy_3d_region_zxy(dst_color_indices, voxels->get_size(),
                        VoxelVector3i(VoxelMesherCubes::PADDING),
@@ -223,42 +200,35 @@ Error VoxelVoxImporter::import(const String &p_source_file,
     Ref<Mesh> mesh =
         build_mesh(**voxels, **mesher, surface_index_to_material, atlas);
 
-    if (mesh.is_null()) {
+    if (mesh.is_null())
+    {
       continue;
     }
 
     // Assign materials
-    if (p_store_colors_in_textures) {
-      // Can't share materials at the moment, because each atlas is specific to
-      // its mesh
-      for (unsigned int surface_index = 0;
-           surface_index < surface_index_to_material.size(); ++surface_index) {
-        const unsigned int material_index =
-            surface_index_to_material[surface_index];
-        CRASH_COND(material_index >= materials.size());
-        Ref<BaseMaterial3D> material = materials[material_index]->duplicate();
-        if (atlas.is_valid()) {
-          // TODO Do I absolutely HAVE to load this texture back to memory AND
-          // renderer just so import works??
-          // Ref<Texture> texture = ResourceLoader::load(atlas_path);
-          // TODO THIS IS A WORKAROUND, it is not supposed to be an
-          // ImageTexture... See earlier code, I could not find any way to
-          // reference a separate StreamTexture.
-          Ref<ImageTexture> texture;
-          texture.instantiate();
-          texture->create_from_image(atlas);
-          material->set_texture(BaseMaterial3D::TEXTURE_ALBEDO, texture);
-        }
-        mesh->surface_set_material(surface_index, material);
+    // Can't share materials at the moment, because each atlas is specific to
+    // its mesh
+    for (unsigned int surface_index = 0;
+         surface_index < surface_index_to_material.size(); ++surface_index)
+    {
+      const unsigned int material_index =
+          surface_index_to_material[surface_index];
+      CRASH_COND(material_index >= materials.size());
+      Ref<BaseMaterial3D> material = materials[material_index]->duplicate();
+      if (atlas.is_valid())
+      {
+        // TODO Do I absolutely HAVE to load this texture back to memory AND
+        // renderer just so import works??
+        // Ref<Texture> texture = ResourceLoader::load(atlas_path);
+        // TODO THIS IS A WORKAROUND, it is not supposed to be an
+        // ImageTexture... See earlier code, I could not find any way to
+        // reference a separate StreamTexture.
+        Ref<ImageTexture> texture;
+        texture.instantiate();
+        texture->create_from_image(atlas);
+        material->set_texture(BaseMaterial3D::TEXTURE_ALBEDO, texture);
       }
-    } else {
-      for (unsigned int surface_index = 0;
-           surface_index < surface_index_to_material.size(); ++surface_index) {
-        const unsigned int material_index =
-            surface_index_to_material[surface_index];
-        CRASH_COND(material_index >= materials.size());
-        mesh->surface_set_material(surface_index, materials[material_index]);
-      }
+      mesh->surface_set_material(surface_index, material);
     }
 
     VoxMesh mesh_info;
@@ -272,13 +242,15 @@ Error VoxelVoxImporter::import(const String &p_source_file,
   }
 
   Node3D *root_node = nullptr;
-  if (data.get_root_node_id() != -1) {
+  if (data.get_root_node_id() != -1)
+  {
     // Convert scene graph into a node tree
     process_scene_node_recursively(data, data.get_root_node_id(), nullptr,
                                    root_node, 0, meshes);
-    ERR_FAIL_COND_V(root_node == nullptr, ERR_INVALID_DATA);
-
-  } else if (meshes.size() > 0) {
+    ERR_FAIL_COND_V(root_node == nullptr, nullptr);
+  }
+  else if (meshes.size() > 0)
+  {
     // Some vox files don't have a scene graph
     root_node = memnew(Node3D);
     const VoxMesh &mesh0 = meshes[0];
@@ -286,29 +258,20 @@ Error VoxelVoxImporter::import(const String &p_source_file,
   }
 
   // Save meshes
-  for (int model_index = 0; model_index < meshes.size(); ++model_index) {
+  for (int model_index = 0; model_index < meshes.size(); ++model_index)
+  {
     Ref<Mesh> mesh = meshes[model_index].mesh;
     String res_save_path =
-        String("{0}.model{1}.mesh").format(varray(p_save_path, model_index));
-    // `FLAG_CHANGE_PATH` did not do what I thought it did.
+        String("{0}.model{1}.mesh").format(varray(p_path, model_index));
     mesh->set_path(res_save_path);
     const Error mesh_save_err = ResourceSaver::save(res_save_path, mesh);
+    if (r_err)
+    {
+      *r_err = mesh_save_err;
+    }
     ERR_FAIL_COND_V_MSG(
-        mesh_save_err != OK, mesh_save_err,
+        mesh_save_err != OK, nullptr,
         String("Failed to save {0}").format(varray(res_save_path)));
   }
-
-  root_node->set_name(p_save_path.get_file().get_basename());
-
-  // Save scene
-  Ref<PackedScene> scene;
-  scene.instantiate();
-  scene->pack(root_node);
-  String scene_save_path = p_save_path + ".tscn";
-  const Error save_err = ResourceSaver::save(scene_save_path, scene);
-  memdelete(root_node);
-  ERR_FAIL_COND_V_MSG(save_err != OK, save_err,
-                      "Cannot save scene to file '" + scene_save_path);
-
-  return OK;
+  return root_node;
 }

@@ -1,30 +1,49 @@
 #ifndef VOX_IMPORTER_H
 #define VOX_IMPORTER_H
 
+#include "editor/import/resource_importer_scene.h"
 #include <editor/import/editor_import_plugin.h>
 
-class VoxelVoxImporter : public ResourceImporter {
-  GDCLASS(VoxelVoxImporter, ResourceImporter)
-public:
-  String get_importer_name() const override;
-  String get_visible_name() const override;
-  void get_recognized_extensions(List<String> *p_extensions) const override;
-  String get_preset_name(int p_idx) const override;
-  int get_preset_count() const override;
-  String get_save_extension() const override;
-  String get_resource_type() const override;
-  // float get_priority() const override;
-  // int get_import_order() const override;
-  void get_import_options(List<ImportOption> *r_options,
-                          int p_preset = 0) const override;
-  bool get_option_visibility(
-      const String &p_option,
-      const Map<StringName, Variant> &p_options) const override;
+#include "streams/vox_data.h"
 
-  Error import(const String &p_source_file, const String &p_save_path,
-               const Map<StringName, Variant> &p_options,
-               List<String> *r_platform_variants, List<String> *r_gen_files,
-               Variant *r_metadata = nullptr) override;
+class VoxelBuffer;
+class VoxelMesher;
+class VoxelVoxImporter : public EditorSceneFormatImporter
+{
+  GDCLASS(VoxelVoxImporter, EditorSceneFormatImporter);
+
+struct VoxMesh
+{
+  Ref<Mesh> mesh;
+  Vector3 pivot;
+};
+
+  static Error process_scene_node_recursively(const vox::Data &data, int node_id,
+                                                       Node3D *parent_node,
+                                                       Node3D *&root_node, int depth,
+                                                       const Vector<VoxMesh> &meshes);
+  static void add_mesh_instance(Ref<Mesh> mesh, Node *parent, Node *owner,
+                                Vector3 offset);
+  static Ref<Mesh>
+  build_mesh(VoxelBuffer &voxels, VoxelMesher &mesher,
+             std::vector<unsigned int> &surface_index_to_material,
+             Ref<Image> &out_atlas);
+
+public:
+  virtual uint32_t get_import_flags() const override
+  {
+    return IMPORT_SCENE;
+  }
+  virtual void get_extensions(List<String> *r_extensions) const override
+  {
+    if (r_extensions == nullptr){
+      return;
+    }
+    r_extensions->push_back("vox");
+  }
+  virtual Node *import_scene(const String &p_path, uint32_t p_flags, int p_bake_fps, List<String> *r_missing_deps = nullptr, Error *r_err = nullptr) override;
+  virtual Ref<Animation> import_animation(const String &p_path, uint32_t p_flags, int p_bake_fps) override { return Ref<Animation>(); }
+  VoxelVoxImporter() {}
 };
 
 #endif // VOX_IMPORTER_H
