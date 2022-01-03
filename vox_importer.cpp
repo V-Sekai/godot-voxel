@@ -34,7 +34,7 @@ void VoxelVoxImporter::get_import_options(List<ImportOption> *r_options,
                                           int p_preset) const {
   VoxelStringNames *sn = VoxelStringNames::get_singleton();
   r_options->push_back(ImportOption(
-      PropertyInfo(Variant::BOOL, sn->store_colors_in_texture), false));
+      PropertyInfo(Variant::BOOL, sn->store_colors_in_texture), true));
 }
 
 bool VoxelVoxImporter::get_option_visibility(
@@ -153,91 +153,6 @@ build_mesh(VoxelBuffer &voxels, VoxelMesher &mesher,
   return mesh;
 }
 
-/*static Error save_stex(const Ref<Image> &p_image, const String &p_to_path,
-                bool p_mipmaps, int p_texture_flags, bool p_streamable,
-                bool p_detect_3d, bool p_detect_srgb) {
-        //
-        FileAccess *f = FileAccess::open(p_to_path, FileAccess::WRITE);
-        ERR_FAIL_NULL_V(f, ERR_CANT_OPEN);
-        f->store_8('G');
-        f->store_8('D');
-        f->store_8('S');
-        f->store_8('T'); //godot streamable texture
-
-        f->store_16(p_image->get_width());
-        f->store_16(0);
-        f->store_16(p_image->get_height());
-        f->store_16(0);
-
-        f->store_32(p_texture_flags);
-
-        uint32_t format = 0;
-
-        if (p_streamable) {
-                format |= StreamTexture::FORMAT_BIT_STREAM;
-        }
-        if (p_mipmaps) {
-                format |= StreamTexture::FORMAT_BIT_HAS_MIPMAPS; //mipmaps bit
-        }
-        if (p_detect_3d) {
-                format |= StreamTexture::FORMAT_BIT_DETECT_3D;
-        }
-        if (p_detect_srgb) {
-                format |= StreamTexture::FORMAT_BIT_DETECT_SRGB;
-        }
-
-        // COMPRESS_LOSSLESS
-
-        const bool lossless_force_png =
-ProjectSettings::get_singleton()->get("rendering/lossless_compression/force_png");
-        // Note: WebP has a size limit
-        const bool use_webp = !lossless_force_png && p_image->get_width() <=
-16383 && p_image->get_height() <= 16383; Ref<Image> image =
-p_image->duplicate(); if (p_mipmaps) { image->generate_mipmaps(); } else {
-                image->clear_mipmaps();
-        }
-
-        const int mmc = image->get_mipmap_count() + 1;
-
-        if (use_webp) {
-                format |= StreamTexture::FORMAT_BIT_WEBP;
-        } else {
-                format |= StreamTexture::FORMAT_BIT_PNG;
-        }
-        f->store_32(format);
-        f->store_32(mmc);
-
-        for (int i = 0; i < mmc; i++) {
-                if (i > 0) {
-                        image->shrink_x2();
-                }
-
-                PoolVector<uint8_t> data;
-                if (use_webp) {
-                        data = Image::webp_lossless_packer(image);
-                } else {
-                        data = Image::png_packer(image);
-                }
-                const int data_len = data.size();
-                f->store_32(data_len);
-
-                PoolVector<uint8_t>::Read r = data.read();
-                f->store_buffer(r.ptr(), data_len);
-        }
-
-        memdelete(f);
-        return OK;
-}*/
-
-// template <typename K, typename T>
-// static T try_get(const Map<K, T> &map, const K &key, T defval) {
-// 	const Map<K, T>::Element *e = map.find(key);
-// 	if (e != nullptr) {
-// 		return e->value();
-// 	}
-// 	return defval;
-// }
-
 Error VoxelVoxImporter::import(const String &p_source_file,
                                const String &p_save_path,
                                const Map<StringName, Variant> &p_options,
@@ -277,7 +192,9 @@ Error VoxelVoxImporter::import(const String &p_source_file,
     if (!p_store_colors_in_textures) {
       // In this case we store colors in vertices
       mat->set_flag(StandardMaterial3D::FLAG_ALBEDO_FROM_VERTEX_COLOR, true);
+      mat->set_flag(StandardMaterial3D::FLAG_SRGB_VERTEX_COLOR, true);
     }
+    mat->set_texture_filter(BaseMaterial3D::TEXTURE_FILTER_NEAREST_WITH_MIPMAPS_ANISOTROPIC);
   }
   materials[1]->set_transparency(StandardMaterial3D::TRANSPARENCY_ALPHA);
 
@@ -309,23 +226,6 @@ Error VoxelVoxImporter::import(const String &p_source_file,
     if (mesh.is_null()) {
       continue;
     }
-
-    // Save atlas
-    // TODO Saving atlases separately is impossible because of
-    // https://github.com/godotengine/godot/issues/51163 Instead, I do like
-    // ResourceImporterScene: I leave them UNCOMPRESSED inside the materials...
-    /*String atlas_path;
-    if (atlas.is_valid()) {
-            atlas_path = String("{0}.atlas{1}.stex").format(varray(p_save_path,
-    model_index)); const Error save_stex_err = save_stex(atlas, atlas_path,
-    false, 0, true, true, true); ERR_FAIL_COND_V_MSG(save_stex_err != OK,
-    save_stex_err, String("Failed to save {0}").format(varray(atlas_path)));
-    }*/
-
-    // DEBUG
-    // if (atlas.is_valid()) {
-    // 	atlas->save_png(String("debug_atlas{0}.png").format(varray(model_index)));
-    // }
 
     // Assign materials
     if (p_store_colors_in_textures) {
