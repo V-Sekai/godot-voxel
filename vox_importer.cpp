@@ -5,6 +5,8 @@
 #include "streams/vox_data.h"
 #include "util/godot/funcs.h"
 
+#include "scene/3d/importer_mesh_instance_3d.h"
+#include "scene/resources/importer_mesh.h"
 #include <core/io/file_access.h>
 #include <scene/3d/mesh_instance_3d.h>
 #include <scene/3d/node_3d.h>
@@ -65,7 +67,7 @@ Error VoxelVoxImporter::process_scene_node_recursively(const vox::Data &data, in
 	return OK;
 }
 
-Ref<Mesh>
+Ref<ImporterMesh>
 VoxelVoxImporter::build_mesh(VoxelBuffer &voxels, VoxelMesher &mesher,
 		std::vector<unsigned int> &surface_index_to_material,
 		Ref<Image> &out_atlas) {
@@ -75,10 +77,10 @@ VoxelVoxImporter::build_mesh(VoxelBuffer &voxels, VoxelMesher &mesher,
 	mesher.build(output, input);
 
 	if (output.surfaces.is_empty()) {
-		return Ref<ArrayMesh>();
+		return Ref<ImporterMesh>();
 	}
 
-	Ref<ArrayMesh> mesh;
+	Ref<ImporterMesh> mesh;
 	mesh.instantiate();
 
 	int surface_index = 0;
@@ -93,8 +95,7 @@ VoxelVoxImporter::build_mesh(VoxelBuffer &voxels, VoxelMesher &mesher,
 		if (!is_surface_triangulated(surface)) {
 			continue;
 		}
-
-		mesh->add_surface_from_arrays(output.primitive_type, surface, Array());
+		mesh->add_surface(output.primitive_type, surface, Array(), Dictionary());
 		surface_index_to_material.push_back(i);
 		++surface_index;
 	}
@@ -105,9 +106,9 @@ VoxelVoxImporter::build_mesh(VoxelBuffer &voxels, VoxelMesher &mesher,
 
 	return mesh;
 }
-void VoxelVoxImporter::add_mesh_instance(Ref<Mesh> mesh, Node *parent, Node *owner,
+void VoxelVoxImporter::add_mesh_instance(Ref<ImporterMesh> mesh, Node *parent, Node *owner,
 		Vector3 offset) {
-	MeshInstance3D *mesh_instance = memnew(MeshInstance3D);
+	ImporterMeshInstance3D *mesh_instance = memnew(ImporterMeshInstance3D);
 	mesh_instance->set_mesh(mesh);
 	parent->add_child(mesh_instance);
 	mesh_instance->set_owner(owner);
@@ -175,20 +176,19 @@ Node *VoxelVoxImporter::import_scene(const String &p_path, uint32_t p_flags, int
 
 		std::vector<unsigned int> surface_index_to_material;
 		Ref<Image> atlas;
-		Ref<Mesh> mesh =
+		Ref<ImporterMesh> mesh =
 				build_mesh(**voxels, **mesher, surface_index_to_material, atlas);
 
 		if (mesh.is_null()) {
 			continue;
 		}
 
-
 		for (unsigned int surface_index = 0;
-			surface_index < surface_index_to_material.size(); ++surface_index) {
+				surface_index < surface_index_to_material.size(); ++surface_index) {
 			const unsigned int material_index =
-				surface_index_to_material[surface_index];
+					surface_index_to_material[surface_index];
 			CRASH_COND(material_index >= materials.size());
-			mesh->surface_set_material(surface_index, materials[material_index]);
+			mesh->set_surface_material(surface_index, materials[material_index]);
 		}
 
 		VoxMesh mesh_info;

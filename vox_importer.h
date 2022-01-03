@@ -2,6 +2,8 @@
 #define VOX_IMPORTER_H
 
 #include "editor/import/resource_importer_scene.h"
+#include "scene/3d/importer_mesh_instance_3d.h"
+#include "scene/resources/importer_mesh.h"
 #include <editor/import/editor_import_plugin.h>
 
 #include "streams/vox_data.h"
@@ -12,7 +14,7 @@ class VoxelVoxImporter : public EditorSceneFormatImporter {
 	GDCLASS(VoxelVoxImporter, EditorSceneFormatImporter);
 
 	struct VoxMesh {
-		Ref<Mesh> mesh;
+		Ref<ImporterMesh> mesh;
 		Vector3 pivot;
 	};
 
@@ -20,9 +22,9 @@ class VoxelVoxImporter : public EditorSceneFormatImporter {
 			Node3D *parent_node,
 			Node3D *&root_node, int depth,
 			const Vector<VoxMesh> &meshes);
-	static void add_mesh_instance(Ref<Mesh> mesh, Node *parent, Node *owner,
+	static void add_mesh_instance(Ref<ImporterMesh> mesh, Node *parent, Node *owner,
 			Vector3 offset);
-	static Ref<Mesh>
+	static Ref<ImporterMesh>
 	build_mesh(VoxelBuffer &voxels, VoxelMesher &mesher,
 			std::vector<unsigned int> &surface_index_to_material,
 			Ref<Image> &out_atlas);
