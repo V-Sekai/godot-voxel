@@ -3,6 +3,7 @@
 #include "../../util/funcs.h"
 #include "../../util/profiling.h"
 #include "core/math/geometry_2d.h"
+#include "scene/resources/surface_tool.h"
 
 namespace {
 // 2-----3
@@ -187,8 +188,8 @@ void build_voxel_mesh_as_simple_cubes(
 
 					const unsigned int index_offset = index_offsets[material_index];
 					ERR_FAIL_INDEX(za, 3);
-					ERR_FAIL_INDEX(side, 2);
-					const uint8_t *lut = g_indices_lut[za][side];
+					ERR_FAIL_COND(side != Cube::SIDE_BACK && side != Cube::SIDE_FRONT);
+					const uint8_t *lut = g_indices_lut[za][side == Cube::SIDE_FRONT ? 0 : 1];
 					for (unsigned int i = 0; i < 6; ++i) {
 						arrays.indices.push_back(index_offset + lut[i]);
 					}
@@ -956,9 +957,6 @@ void VoxelMesherCubes::build(VoxelMesher::Output &output,
 			break;
 	}
 
-	// TODO We could return a single byte array and use Mesh::add_surface down the
-	// line?
-
 	for (unsigned int i = 0; i < MATERIAL_COUNT; ++i) {
 		const Arrays &arrays = cache.arrays_per_material[i];
 
@@ -990,8 +988,11 @@ void VoxelMesherCubes::build(VoxelMesher::Output &output,
 					mesh_arrays[Mesh::ARRAY_TEX_UV] = uvs;
 				}
 			}
-
-			output.surfaces.push_back(mesh_arrays);
+			Ref<SurfaceTool> st;
+			st.instantiate();
+			st->create_from_triangle_arrays(mesh_arrays);
+			st->index();
+			output.surfaces.push_back(st->commit_to_arrays());
 
 		} else {
 			// Empty
