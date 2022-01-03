@@ -138,14 +138,15 @@ Node *VoxelVoxImporter::import_scene(const String &p_path, uint32_t p_flags, int
 	mesher->set_color_mode(VoxelMesherCubes::COLOR_MESHER_PALETTE);
 	mesher->set_palette(palette);
 	mesher->set_greedy_meshing_enabled(false);
-	mesher->set_store_colors_in_texture(true);
+	mesher->set_store_colors_in_texture(false);
 
 	FixedArray<Ref<StandardMaterial3D>, 2> materials;
 	for (unsigned int i = 0; i < materials.size(); ++i) {
 		Ref<StandardMaterial3D> &mat = materials[i];
 		mat.instantiate();
 		mat->set_roughness(1.f);
-		mat->set_texture_filter(BaseMaterial3D::TEXTURE_FILTER_NEAREST_WITH_MIPMAPS_ANISOTROPIC);
+		mat->set_flag(StandardMaterial3D::FLAG_ALBEDO_FROM_VERTEX_COLOR, true);
+		mat->set_flag(StandardMaterial3D::FLAG_SRGB_VERTEX_COLOR, true);
 	}
 	materials[1]->set_transparency(StandardMaterial3D::TRANSPARENCY_ALPHA);
 
@@ -181,31 +182,13 @@ Node *VoxelVoxImporter::import_scene(const String &p_path, uint32_t p_flags, int
 			continue;
 		}
 
-		// Assign materials
+
 		for (unsigned int surface_index = 0;
-				surface_index < surface_index_to_material.size(); ++surface_index) {
+			surface_index < surface_index_to_material.size(); ++surface_index) {
 			const unsigned int material_index =
-					surface_index_to_material[surface_index];
-			if (material_index >= materials.size()) {
-				if (r_err) {
-					*r_err = ERR_BUG;
-					return nullptr;
-				}
-			}
-			Ref<BaseMaterial3D> material = materials[material_index]->duplicate();
-			if (atlas.is_valid()) {
-				// TODO Do I absolutely HAVE to load this texture back to memory AND
-				// renderer just so import works??
-				// Ref<Texture> texture = ResourceLoader::load(atlas_path);
-				// TODO THIS IS A WORKAROUND, it is not supposed to be an
-				// ImageTexture... See earlier code, I could not find any way to
-				// reference a separate StreamTexture.
-				Ref<ImageTexture> texture;
-				texture.instantiate();
-				texture->create_from_image(atlas);
-				material->set_texture(BaseMaterial3D::TEXTURE_ALBEDO, texture);
-			}
-			mesh->surface_set_material(surface_index, material);
+				surface_index_to_material[surface_index];
+			CRASH_COND(material_index >= materials.size());
+			mesh->surface_set_material(surface_index, materials[material_index]);
 		}
 
 		VoxMesh mesh_info;
