@@ -9,16 +9,24 @@
 #include "storage/voxel_memory_pool.h"
 #include "streams/vox_loader.h"
 #include "util/macros.h"
+#include "editor/editor_node.h"
 
 #include <core/config/engine.h>
 
-#ifdef TOOLS_ENABLED
 #include "editor/editor_plugin.h"
 #include "vox_editor_plugin.h"
-#endif
+#include "vox_importer.h"
 
 #ifdef VOXEL_RUN_TESTS
 #include "tests/tests.h"
+#endif
+
+#ifndef _3D_DISABLED
+static void _editor_init() {
+	Ref<VoxelVoxImporter> import_vox;
+	import_vox.instantiate();
+	ResourceImporterScene::get_singleton()->add_importer(import_vox);
+}
 #endif
 
 void register_voxel_mesh_types() {
@@ -46,6 +54,14 @@ void register_voxel_mesh_types() {
   ClassDB::register_virtual_class<VoxelMesher>();
   ClassDB::register_class<VoxelMesherBlocky>();
   ClassDB::register_class<VoxelMesherCubes>();
+  
+#ifndef _3D_DISABLED
+	ClassDB::APIType prev_api = ClassDB::get_current_api();
+	ClassDB::set_current_api(ClassDB::API_EDITOR);
+	GDREGISTER_CLASS(VoxelVoxImporter);
+	ClassDB::set_current_api(prev_api);
+	EditorNode::add_init_callback(_editor_init);
+#endif
 
   // Reminder: how to create a singleton accessible from scripts:
   // Engine::get_singleton()->add_singleton(Engine::Singleton("SingletonName",singleton_instance));
