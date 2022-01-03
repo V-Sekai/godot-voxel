@@ -117,10 +117,10 @@ void VoxelVoxImporter::add_mesh_instance(Ref<Mesh> mesh, Node *parent, Node *own
 Node *VoxelVoxImporter::import_scene(const String &p_path, uint32_t p_flags, int p_bake_fps, List<String> *r_missing_deps, Error *r_err) {
 	vox::Data data;
 	const Error load_err = data.load_from_file(p_path);
-	if (r_err) {
+	if (load_err != OK && r_err) {
 		*r_err = load_err;
+		return nullptr;
 	}
-	ERR_FAIL_COND_V(load_err != OK, nullptr);
 
 	Vector<VoxMesh> meshes;
 	meshes.resize(data.get_model_count());
@@ -160,12 +160,12 @@ Node *VoxelVoxImporter::import_scene(const String &p_path, uint32_t p_flags, int
 		voxels->decompress_channel(VoxelBuffer::CHANNEL_COLOR);
 
 		Span<uint8_t> dst_color_indices;
-		if (r_err) {
-			*r_err = ERR_BUG;
+		if (!voxels->get_channel_raw(VoxelBuffer::CHANNEL_COLOR, dst_color_indices)) {
+			if (r_err) {
+				*r_err = ERR_BUG;
+			}
+			return nullptr;
 		}
-		ERR_FAIL_COND_V(
-				!voxels->get_channel_raw(VoxelBuffer::CHANNEL_COLOR, dst_color_indices),
-				nullptr);
 		Span<const uint8_t> src_color_indices = to_span_const(model.color_indexes);
 		copy_3d_region_zxy(dst_color_indices, voxels->get_size(),
 				VoxelVector3i(VoxelMesherCubes::PADDING),
@@ -182,13 +182,16 @@ Node *VoxelVoxImporter::import_scene(const String &p_path, uint32_t p_flags, int
 		}
 
 		// Assign materials
-		// Can't share materials at the moment, because each atlas is specific to
-		// its mesh
 		for (unsigned int surface_index = 0;
 				surface_index < surface_index_to_material.size(); ++surface_index) {
 			const unsigned int material_index =
 					surface_index_to_material[surface_index];
-			CRASH_COND(material_index >= materials.size());
+			if (material_index >= materials.size()) {
+				if (r_err) {
+					*r_err = ERR_BUG;
+					return nullptr;
+				}
+			}
 			Ref<BaseMaterial3D> material = materials[material_index]->duplicate();
 			if (atlas.is_valid()) {
 				// TODO Do I absolutely HAVE to load this texture back to memory AND
@@ -213,15 +216,13 @@ Node *VoxelVoxImporter::import_scene(const String &p_path, uint32_t p_flags, int
 		meshes.write[model_index] = mesh_info;
 	}
 
-	Node3D *root_node = nullptr;
+	Node3D *root_node = memnew(Node3D);
 	if (data.get_root_node_id() != -1) {
 		// Convert scene graph into a node tree
-		process_scene_node_recursively(data, data.get_root_node_id(), nullptr,
+		process_scene_node_recursively(data, data.get_root_node_id(), root_node,
 				root_node, 0, meshes);
-		ERR_FAIL_COND_V(root_node == nullptr, nullptr);
 	} else if (meshes.size() > 0) {
 		// Some vox files don't have a scene graph
-		root_node = memnew(Node3D);
 		const VoxMesh &mesh0 = meshes[0];
 		add_mesh_instance(mesh0.mesh, root_node, root_node, Vector3());
 	}
