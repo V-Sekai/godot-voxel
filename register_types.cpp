@@ -21,7 +21,7 @@
 #include "tests/tests.h"
 #endif
 
-void register_vox_types() {
+void register_voxel_mesh_types() {
   VoxelMemoryPool::create_singleton();
   VoxelStringNames::create_singleton();
 
@@ -65,7 +65,7 @@ void register_vox_types() {
 #endif
 }
 
-void unregister_vox_types() {
+void unregister_voxel_mesh_types() {
   // At this point, the GDScript module has nullified
   // GDScriptLanguage::singleton!! That means it's impossible to free scripts
   // still referenced by VoxelServer. And that can happen, because users can
