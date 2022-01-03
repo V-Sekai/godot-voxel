@@ -64,7 +64,6 @@ void build_voxel_mesh_as_simple_cubes(
 				&out_arrays_per_material,
 		const Span<Voxel_T> voxel_buffer, const VoxelVector3i block_size,
 		Color_F color_func) {
-	//
 	ERR_FAIL_COND(
 			block_size.x < static_cast<int>(2 * VoxelMesherCubes::PADDING) ||
 			block_size.y < static_cast<int>(2 * VoxelMesherCubes::PADDING) ||
@@ -187,7 +186,7 @@ void build_voxel_mesh_as_simple_cubes(
 					arrays.normals.push_back(n);
 
 					const unsigned int index_offset = index_offsets[material_index];
-					CRASH_COND(za >= 3 || side >= 2);
+					ERR_FAIL_COND(za >= 3 || side >= 2);
 					const uint8_t *lut = g_indices_lut[za][side];
 					for (unsigned int i = 0; i < 6; ++i) {
 						arrays.indices.push_back(index_offset + lut[i]);
