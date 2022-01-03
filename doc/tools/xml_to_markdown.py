@@ -34,31 +34,31 @@ def make_type(name, module_class_names):
 # Assumes text is dedented
 def format_regular_text(text, module_class_names):
     # Doubling line endings otherwise Mkdocs doesn't give us enough space
-    text = text.replace('\n', '\n\n').replace('[code]', '`').replace('[/code]', '`')
+    text = text.replace("\n", "\n\n").replace("[code]", "`").replace("[/code]", "`")
     s = ""
     while True:
-        i = text.find('[')
+        i = text.find("[")
         if i == -1:
             s += text
             break
         s += text[:i]
-        text = text[i + 1:]
-        i = text.find(']')
+        text = text[i + 1 :]
+        i = text.find("]")
         # There must be a closing bracket
         assert i != -1
         cmd = text[:i]
-        text = text[i + 1:]
+        text = text[i + 1 :]
 
-        if cmd.startswith('url='):
+        if cmd.startswith("url="):
             # [url=xxx]text[/url]
-            url = cmd[len('url='):]
-            i = text.find('[/url]')
+            url = cmd[len("url=") :]
+            i = text.find("[/url]")
             assert i != -1
             link_text = text[:i]
             s += make_link(link_text, url)
-            text = text[i + len('[/url]'):]
+            text = text[i + len("[/url]") :]
 
-        elif cmd.find(' ') == -1:
+        elif cmd.find(" ") == -1:
             # [typename]
             s += make_type(cmd, module_class_names)
         else:
@@ -76,7 +76,7 @@ def dedent(text):
             continue
         count = 0
         for c in line:
-            if c == '\t':
+            if c == "\t":
                 count += 1
             else:
                 break
@@ -96,22 +96,22 @@ def make_text(text, module_class_names):
             s += format_regular_text(text, module_class_names)
             break
         s += format_regular_text(text[:i], module_class_names)
-        text = text[i + len("[codeblock]"):]
+        text = text[i + len("[codeblock]") :]
         s += "```gdscript"
         i = text.find("[/codeblock]")
         # There must be a closing tag
         assert i != -1
-        s += re.sub(r'^\s\s', '', text[:i])
-        text = text[i + len("[/codeblock]"):]
+        s += re.sub(r"^\s\s", "", text[:i])
+        text = text[i + len("[/codeblock]") :]
         s += "\n```"
     return s.strip()
 
 
 def make_single_line_text(text):
     s = text.strip()
-    s = re.sub(r'\s\s+', r' ', s)
-    s = s.replace("[code]", '`')
-    s = s.replace("[/code]", '`')
+    s = re.sub(r"\s\s+", r" ", s)
+    s = s.replace("[code]", "`")
+    s = s.replace("[/code]", "`")
     return s
 
 
@@ -126,7 +126,7 @@ def make_table(table):
         for i, text in enumerate(row):
             column_widths[i] = max(len(text), column_widths[i])
     column_widths = [w + 1 for w in column_widths]
-    #total_width = sum(column_widths) + len(column_widths) + 1
+    # total_width = sum(column_widths) + len(column_widths) + 1
     s = "\n"
     for row_index, row in enumerate(table):
         for column_index, text in enumerate(row):
@@ -156,9 +156,14 @@ def make_arglist(args, module_class_names):
     for arg_index, arg in enumerate(args):
         if arg_index > 0:
             s += ","
-        s += " " + make_type(arg.attrib['type'], module_class_names) + " " + arg.attrib['name']
-        if 'default' in arg.attrib:
-            s += "=" + arg.attrib['default']
+        s += (
+            " "
+            + make_type(arg.attrib["type"], module_class_names)
+            + " "
+            + arg.attrib["name"]
+        )
+        if "default" in arg.attrib:
+            s += "=" + arg.attrib["default"]
     s += " )"
     return s
 
@@ -167,7 +172,7 @@ def make_arglist(args, module_class_names):
 def make_constants(items):
     s = ""
     for item in items:
-        s += "- **" + item.attrib['name'] + "** = **" + item.attrib['value'] + "**"
+        s += "- **" + item.attrib["name"] + "** = **" + item.attrib["value"] + "**"
         text = item.text.strip()
         if text != "":
             s += " --- " + make_single_line_text(item.text)
@@ -176,7 +181,7 @@ def make_constants(items):
 
 
 def make_custom_internal_link(name):
-    assert name.find(' ') == -1
+    assert name.find(" ") == -1
     return make_link(name, "#i_" + name)
 
 
@@ -189,7 +194,7 @@ def make_custom_internal_anchor(name):
 # `f_out` is the path to the destination file. Use '-' for to print to stdout.
 # `module_class_names` is a list of strings. Each string is a class name.
 def process_xml(f_xml, f_out, module_class_names):
-    #print("Parsing", f_xml)
+    # print("Parsing", f_xml)
 
     # Parse XML
     tree = ET.parse(f_xml)
@@ -199,39 +204,41 @@ def process_xml(f_xml, f_out, module_class_names):
         sys.exit(1)
 
     # Header
-    out = "# " + root.attrib['name'] + "\n\n"
-    out += "Inherits: " + make_type(root.attrib['inherits'], module_class_names) + "\n\n"
+    out = "# " + root.attrib["name"] + "\n\n"
+    out += (
+        "Inherits: " + make_type(root.attrib["inherits"], module_class_names) + "\n\n"
+    )
     out += "\n"
-    out += make_text(root.find('brief_description').text, module_class_names) + "\n\n"
+    out += make_text(root.find("brief_description").text, module_class_names) + "\n\n"
 
-    text = make_text(root.find('description').text, module_class_names)
+    text = make_text(root.find("description").text, module_class_names)
     if text != "":
         out += "## Description: \n\n" + text + "\n\n"
 
     # Tutorials
-    tutorials = root.find('tutorials')
+    tutorials = root.find("tutorials")
     if tutorials is not None:
-        links = tutorials.findall('link')
+        links = tutorials.findall("link")
         if len(links) > 0:
             out += "## Tutorials: \n\n"
             for link in links:
-                out += "- [" + link.attrib['title'] + "](" + link.text + ")\n"
+                out += "- [" + link.attrib["title"] + "](" + link.text + ")\n"
 
     # Properties summary
     members = []
-    members_container = root.find('members')
+    members_container = root.find("members")
     if members_container is not None:
-        members = members_container.findall('member')
+        members = members_container.findall("member")
         if len(members) > 0:
             out += "## Properties: \n\n"
             table = [["Type", "Name", "Default"]]
             for member in members:
                 row = [
-                    "`" + member.attrib['type'] + "`",
-                    make_custom_internal_link(member.attrib['name'])
+                    "`" + member.attrib["type"] + "`",
+                    make_custom_internal_link(member.attrib["name"]),
                 ]
-                if 'default' in member.attrib:
-                    row.append(member.attrib['default'])
+                if "default" in member.attrib:
+                    row.append(member.attrib["default"])
                 else:
                     row.append("")
                 table.append(row)
@@ -240,9 +247,9 @@ def process_xml(f_xml, f_out, module_class_names):
 
     # Methods summary
     methods = []
-    methods_container = root.find('methods')
+    methods_container = root.find("methods")
     if methods_container is not None:
-        methods = methods_container.findall('method')
+        methods = methods_container.findall("method")
 
         if len(methods) > 0:
             out += "## Methods: \n\n"
@@ -250,19 +257,19 @@ def process_xml(f_xml, f_out, module_class_names):
 
             # TODO Remove from list if it's a getter/setter of a property
             for method in methods:
-                signature = make_custom_internal_link(method.attrib['name']) + " "
-                args = method.findall('argument')
+                signature = make_custom_internal_link(method.attrib["name"]) + " "
+                args = method.findall("argument")
                 signature += make_arglist(args, module_class_names)
                 signature += " "
 
-                if 'qualifiers' in method.attrib:
-                    signature += method.attrib['qualifiers']
+                if "qualifiers" in method.attrib:
+                    signature += method.attrib["qualifiers"]
 
-                return_node = method.find('return')
+                return_node = method.find("return")
 
                 row = [
-                    make_type(return_node.attrib['type'], module_class_names),
-                    signature
+                    make_type(return_node.attrib["type"], module_class_names),
+                    signature,
                 ]
                 table.append(row)
 
@@ -271,22 +278,22 @@ def process_xml(f_xml, f_out, module_class_names):
 
     # Signals
     signals = []
-    signals_container = root.find('signals')
+    signals_container = root.find("signals")
     if signals_container is not None:
-        signals = signals_container.findall('signal')
+        signals = signals_container.findall("signal")
 
         if len(signals) > 0:
             out += "## Signals: \n\n"
 
             for signal in signals:
                 out += "- "
-                out += signal.attrib['name']
+                out += signal.attrib["name"]
 
-                args = signal.findall('argument')
+                args = signal.findall("argument")
                 out += make_arglist(args, module_class_names)
                 out += " \n\n"
 
-                desc = signal.find('description')
+                desc = signal.find("description")
                 if desc is not None:
                     text = make_text(desc.text, module_class_names)
                     if text != "":
@@ -294,16 +301,16 @@ def process_xml(f_xml, f_out, module_class_names):
                         out += "\n\n"
 
     # Enumerations and constants
-    constants_container = root.find('constants')
+    constants_container = root.find("constants")
     if constants_container is not None:
-        generic_constants = constants_container.findall('constant')
+        generic_constants = constants_container.findall("constant")
 
         enums = {}
         constants = []
 
         for generic_constant in generic_constants:
-            if 'enum' in generic_constant.attrib:
-                name = generic_constant.attrib['enum']
+            if "enum" in generic_constant.attrib:
+                name = generic_constant.attrib["enum"]
                 if name in enums:
                     enum_items = enums[name]
                 else:
@@ -335,10 +342,16 @@ def process_xml(f_xml, f_out, module_class_names):
         out += "## Property Descriptions\n\n"
 
         for member in members:
-            out += "- " + make_type(member.attrib['type'], module_class_names) \
-                + make_custom_internal_anchor(member.attrib['name']) + " **" + member.attrib['name'] + "**"
-            if 'default' in member.attrib:
-                out += " = " + member.attrib['default']
+            out += (
+                "- "
+                + make_type(member.attrib["type"], module_class_names)
+                + make_custom_internal_anchor(member.attrib["name"])
+                + " **"
+                + member.attrib["name"]
+                + "**"
+            )
+            if "default" in member.attrib:
+                out += " = " + member.attrib["default"]
             out += "\n\n"
 
             if member.text is not None:
@@ -354,18 +367,24 @@ def process_xml(f_xml, f_out, module_class_names):
         out += "## Method Descriptions\n\n"
 
         for method in methods:
-            return_node = method.find('return')
-            out += "- " + make_type(return_node.attrib['type'], module_class_names) \
-                + make_custom_internal_anchor(method.attrib['name']) + " **" + method.attrib['name'] + "**"
-            args = method.findall('argument')
+            return_node = method.find("return")
+            out += (
+                "- "
+                + make_type(return_node.attrib["type"], module_class_names)
+                + make_custom_internal_anchor(method.attrib["name"])
+                + " **"
+                + method.attrib["name"]
+                + "**"
+            )
+            args = method.findall("argument")
             out += make_arglist(args, module_class_names)
             out += " "
-            if 'qualifiers' in method.attrib:
-                signature += method.attrib['qualifiers']
+            if "qualifiers" in method.attrib:
+                signature += method.attrib["qualifiers"]
 
             out += "\n\n"
 
-            desc = method.find('description')
+            desc = method.find("description")
             if desc is not None:
                 text = make_text(desc.text, module_class_names)
                 if text != "":
@@ -376,12 +395,12 @@ def process_xml(f_xml, f_out, module_class_names):
 
     # Footer
     out += "_Generated on " + strftime("%b %d, %Y", gmtime()) + "_\n"
-    #Full time stamp "%Y-%m-%d %H:%M:%S %z"
+    # Full time stamp "%Y-%m-%d %H:%M:%S %z"
 
-    if f_out == '-':
+    if f_out == "-":
         print(out)
     else:
-        outfile = open(f_out, mode='a', encoding='utf-8')
+        outfile = open(f_out, mode="a", encoding="utf-8")
         outfile.write(out)
 
 
@@ -414,8 +433,8 @@ def process_xml_folder(src_dir, dst_dir, verbose):
         count += 1
         doc_files.append(dest)
 
-    #generate_class_index(output_path, doc_files, verbose)
-    #count += 1
+    # generate_class_index(output_path, doc_files, verbose)
+    # count += 1
 
     print("Generated %d files in %s." % (count, dst_dir))
 
@@ -441,4 +460,3 @@ if __name__ == "__main__":
         outfile = sys.argv[2]
 
     process_xml(infile, outfile, [])
-

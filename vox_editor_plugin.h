@@ -4,9 +4,9 @@
 #include <editor/editor_plugin.h>
 
 class VoxEditorPlugin : public EditorPlugin {
-  GDCLASS(VoxEditorPlugin, EditorPlugin)
+	GDCLASS(VoxEditorPlugin, EditorPlugin)
 public:
-  VoxEditorPlugin(EditorNode *p_node);
+	VoxEditorPlugin(EditorNode *p_node);
 };
 
 #endif // VOX_EDITOR_PLUGIN_H

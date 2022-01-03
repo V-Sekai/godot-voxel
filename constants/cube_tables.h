@@ -7,58 +7,58 @@
 namespace Cube {
 // Index convention used in some lookup tables
 enum Side {
-  SIDE_LEFT = 0,
-  SIDE_RIGHT,
-  SIDE_BOTTOM,
-  SIDE_TOP,
-  // TODO I would like to swap the Z ones because it's inconsistent with
-  // coordinates...
-  SIDE_BACK,
-  SIDE_FRONT,
+	SIDE_LEFT = 0,
+	SIDE_RIGHT,
+	SIDE_BOTTOM,
+	SIDE_TOP,
+	// TODO I would like to swap the Z ones because it's inconsistent with
+	// coordinates...
+	SIDE_BACK,
+	SIDE_FRONT,
 
-  SIDE_COUNT
+	SIDE_COUNT
 };
 // Alias to the above for clarity, fixing some interpretation problems regarding
 // the side_normals table...
 enum SideAxis {
-  SIDE_POSITIVE_X = 0,
-  SIDE_NEGATIVE_X,
-  SIDE_NEGATIVE_Y,
-  SIDE_POSITIVE_Y,
-  SIDE_NEGATIVE_Z,
-  SIDE_POSITIVE_Z
+	SIDE_POSITIVE_X = 0,
+	SIDE_NEGATIVE_X,
+	SIDE_NEGATIVE_Y,
+	SIDE_POSITIVE_Y,
+	SIDE_NEGATIVE_Z,
+	SIDE_POSITIVE_Z
 };
 
 // Index convention used in some lookup tables
 enum Edge {
-  EDGE_BOTTOM_BACK = 0,
-  EDGE_BOTTOM_RIGHT,
-  EDGE_BOTTOM_FRONT,
-  EDGE_BOTTOM_LEFT,
-  EDGE_BACK_LEFT,
-  EDGE_BACK_RIGHT,
-  EDGE_FRONT_RIGHT,
-  EDGE_FRONT_LEFT,
-  EDGE_TOP_BACK,
-  EDGE_TOP_RIGHT,
-  EDGE_TOP_FRONT,
-  EDGE_TOP_LEFT,
+	EDGE_BOTTOM_BACK = 0,
+	EDGE_BOTTOM_RIGHT,
+	EDGE_BOTTOM_FRONT,
+	EDGE_BOTTOM_LEFT,
+	EDGE_BACK_LEFT,
+	EDGE_BACK_RIGHT,
+	EDGE_FRONT_RIGHT,
+	EDGE_FRONT_LEFT,
+	EDGE_TOP_BACK,
+	EDGE_TOP_RIGHT,
+	EDGE_TOP_FRONT,
+	EDGE_TOP_LEFT,
 
-  EDGE_COUNT
+	EDGE_COUNT
 };
 
 // Index convention used in some lookup tables
 enum Corner {
-  CORNER_BOTTOM_BACK_LEFT = 0,
-  CORNER_BOTTOM_BACK_RIGHT,
-  CORNER_BOTTOM_FRONT_RIGHT,
-  CORNER_BOTTOM_FRONT_LEFT,
-  CORNER_TOP_BACK_LEFT,
-  CORNER_TOP_BACK_RIGHT,
-  CORNER_TOP_FRONT_RIGHT,
-  CORNER_TOP_FRONT_LEFT,
+	CORNER_BOTTOM_BACK_LEFT = 0,
+	CORNER_BOTTOM_BACK_RIGHT,
+	CORNER_BOTTOM_FRONT_RIGHT,
+	CORNER_BOTTOM_FRONT_LEFT,
+	CORNER_TOP_BACK_LEFT,
+	CORNER_TOP_BACK_RIGHT,
+	CORNER_TOP_FRONT_RIGHT,
+	CORNER_TOP_FRONT_LEFT,
 
-  CORNER_COUNT
+	CORNER_COUNT
 };
 
 extern const Vector3 g_corner_position[CORNER_COUNT];
