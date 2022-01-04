@@ -1,6 +1,6 @@
 # `.vox` Import Tools for Godot
 
-A C++ module for importing `.vox` scenes in Godot Engine.
+A C++ module for importing `.vox` scenes in Godot Engine based on https://github.com/Zylann/godot_voxel.
 
 ## Supporters
 
