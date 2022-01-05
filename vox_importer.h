@@ -37,8 +37,8 @@ public:
 		ERR_FAIL_NULL(r_extensions);
 		r_extensions->push_back("vox");
 	}
-	virtual Node *import_scene(const String &p_path, uint32_t p_flags, int p_bake_fps, List<String> *r_missing_deps = nullptr, Error *r_err = nullptr) override;
-	virtual Ref<Animation> import_animation(const String &p_path, uint32_t p_flags, int p_bake_fps) override { return Ref<Animation>(); }
+	virtual Node *import_scene(const String &p_path, uint32_t p_flags, const Map<StringName, Variant> &p_options, int p_bake_fps, List<String> *r_missing_deps = nullptr, Error *r_err = nullptr) override;
+	virtual Ref<Animation> import_animation(const String &p_path, uint32_t p_flags, const Map<StringName, Variant> &p_options, int p_bake_fps) override { return Ref<Animation>(); }
 	VoxelVoxImporter() {}
 };
 
