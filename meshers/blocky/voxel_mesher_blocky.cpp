@@ -370,12 +370,6 @@ thread_local VoxelMesherBlocky::Cache VoxelMesherBlocky::_cache;
 
 VoxelMesherBlocky::VoxelMesherBlocky() {
 	set_padding(PADDING, PADDING);
-
-	// Default library, less steps to setup in editor
-	Ref<VoxelLibrary> library;
-	library.instantiate();
-	library->load_default();
-	_parameters.library = library;
 }
 
 VoxelMesherBlocky::~VoxelMesherBlocky() {}
