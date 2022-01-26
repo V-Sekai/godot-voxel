@@ -10,8 +10,8 @@
 
 inline float sdf_box(const Vector3 pos, const Vector3 extents) {
 	Vector3 d = pos.abs() - extents;
-	return min(max(d.x, max(d.y, d.z)), 0.f) +
-			Vector3(max(d.x, 0.f), max(d.y, 0.f), max(d.z, 0.f)).length();
+	return MIN(MAX(d.x, MAX(d.y, d.z)), 0.f) +
+			Vector3(MAX(d.x, 0.f), MAX(d.y, 0.f), MAX(d.z, 0.f)).length();
 }
 
 inline Interval sdf_box(const Interval &x, const Interval &y, const Interval &z,
@@ -38,12 +38,12 @@ inline Interval sdf_torus(const Interval &x, const Interval &y,
 }
 
 inline float sdf_union(float a, float b) {
-	return min(a, b);
+	return MIN(a, b);
 }
 
 // Subtracts SDF b from SDF a
 inline float sdf_subtract(float a, float b) {
-	return max(a, -b);
+	return MAX(a, -b);
 }
 
 inline float sdf_smooth_union(float a, float b, float s) {
