@@ -1,10 +1,6 @@
 Import('env')
 Import('env_modules')
 
-RUN_TESTS = False
-if env['target'] == 'debug':
-	RUN_TESTS = True
-
 env_voxel = env_modules.Clone()
 
 voxel_files = [
@@ -55,13 +51,6 @@ if env["tools"]:
 		"vox/*.cpp",
 	]
 	voxel_files += voxel_editor_files
-
-
-if RUN_TESTS:
-	voxel_files += [
-		"tests/*.cpp"
-	]
-	env_voxel.Append(CPPDEFINES={"VOXEL_RUN_TESTS": 0})
 
 for f in voxel_files:
 	env_voxel.add_source_files(env.modules_sources, f)
