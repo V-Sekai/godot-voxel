@@ -6,7 +6,7 @@
 class VoxEditorPlugin : public EditorPlugin {
 	GDCLASS(VoxEditorPlugin, EditorPlugin)
 public:
-	VoxEditorPlugin(EditorNode *p_node);
+	VoxEditorPlugin();
 };
 
 #endif // VOX_EDITOR_PLUGIN_H
