@@ -2,7 +2,7 @@
 #define VOXEL_FILE_LOCKER_H
 
 #include <core/hash_map.h>
-#include <core/os/file_access.h>
+#include <core/io/file_access.h>
 #include <core/os/mutex.h>
 #include <core/os/rw_lock.h>
 
