@@ -11,7 +11,7 @@ class VoxelRaycastResult : public RefCounted {
 public:
 	VoxelVector3i position;
 	VoxelVector3i previous_position;
-	float distance_along_ray;
+	float distance_along_ray = 0.0f;
 
 private:
 	Vector3 _b_get_position() const;
