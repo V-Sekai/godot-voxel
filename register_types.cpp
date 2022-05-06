@@ -29,7 +29,7 @@ static void _editor_init() {
 }
 #endif
 
-void register_voxel_mesh_types() {
+void initialize_voxel_mesh_module() {
 	VoxelMemoryPool::create_singleton();
 	VoxelStringNames::create_singleton();
 
@@ -81,7 +81,7 @@ void register_voxel_mesh_types() {
 #endif
 }
 
-void unregister_voxel_mesh_types() {
+void uninitialize_voxel_mesh_module() {
 	// At this point, the GDScript module has nullified
 	// GDScriptLanguage::singleton!! That means it's impossible to free scripts
 	// still referenced by VoxelServer. And that can happen, because users can
