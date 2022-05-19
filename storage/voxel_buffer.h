@@ -428,7 +428,7 @@ public:
 
 	template <typename F>
 	void for_each_voxel_metadata_in_area(Box3i box, F callback) const {
-		const Map<VoxelVector3i, Variant>::Element *elem = _voxel_metadata.front();
+		const HashMap<VoxelVector3i, Variant>::Element *elem = _voxel_metadata.front();
 		while (elem != nullptr) {
 			if (box.contains(elem->key())) {
 				callback(elem->key(), elem->value());
@@ -446,7 +446,7 @@ public:
 			VoxelVector3i dst_origin);
 	void copy_voxel_metadata(const VoxelBuffer &src_buffer);
 
-	const Map<VoxelVector3i, Variant> &get_voxel_metadata() const {
+	const HashMap<VoxelVector3i, Variant> &get_voxel_metadata() const {
 		return _voxel_metadata;
 	}
 
@@ -521,7 +521,7 @@ private:
 	VoxelVector3i _size;
 
 	Variant _block_metadata;
-	Map<VoxelVector3i, Variant> _voxel_metadata;
+	HashMap<VoxelVector3i, Variant> _voxel_metadata;
 
 	// TODO It may be preferable to actually move away from storing an RWLock in
 	// every buffer in the future. We should be able to find a solution because

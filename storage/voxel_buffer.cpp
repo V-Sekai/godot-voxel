@@ -759,7 +759,7 @@ void VoxelBuffer::set_block_metadata(Variant meta) {
 
 Variant VoxelBuffer::get_voxel_metadata(VoxelVector3i pos) const {
 	ERR_FAIL_COND_V(!is_position_valid(pos), Variant());
-	const Map<VoxelVector3i, Variant>::Element *elem = _voxel_metadata.find(pos);
+	const HashMap<VoxelVector3i, Variant>::Element *elem = _voxel_metadata.find(pos);
 	if (elem != nullptr) {
 		return elem->value();
 	} else {
@@ -778,7 +778,7 @@ void VoxelBuffer::set_voxel_metadata(VoxelVector3i pos, Variant meta) {
 
 void VoxelBuffer::for_each_voxel_metadata(Callable callback) const {
 	ERR_FAIL_COND(callback.is_null());
-	const Map<VoxelVector3i, Variant>::Element *elem = _voxel_metadata.front();
+	const HashMap<VoxelVector3i, Variant>::Element *elem = _voxel_metadata.front();
 
 	while (elem != nullptr) {
 		const Variant key = elem->key().to_vec3();
@@ -821,9 +821,9 @@ void VoxelBuffer::clear_voxel_metadata() {
 }
 
 void VoxelBuffer::clear_voxel_metadata_in_area(Box3i box) {
-	Map<VoxelVector3i, Variant>::Element *elem = _voxel_metadata.front();
+	HashMap<VoxelVector3i, Variant>::Element *elem = _voxel_metadata.front();
 	while (elem != nullptr) {
-		Map<VoxelVector3i, Variant>::Element *next_elem = elem->next();
+		HashMap<VoxelVector3i, Variant>::Element *next_elem = elem->next();
 		if (box.contains(elem->key())) {
 			_voxel_metadata.erase(elem);
 		}
@@ -842,7 +842,7 @@ void VoxelBuffer::copy_voxel_metadata_in_area(Ref<VoxelBuffer> src_buffer,
 	const VoxelVector3i clipped_dst_offset =
 			dst_origin + clipped_src_box.pos - src_box.pos;
 
-	const Map<VoxelVector3i, Variant>::Element *elem =
+	const HashMap<VoxelVector3i, Variant>::Element *elem =
 			src_buffer->_voxel_metadata.front();
 
 	while (elem != nullptr) {
@@ -859,7 +859,7 @@ void VoxelBuffer::copy_voxel_metadata_in_area(Ref<VoxelBuffer> src_buffer,
 void VoxelBuffer::copy_voxel_metadata(const VoxelBuffer &src_buffer) {
 	ERR_FAIL_COND(src_buffer.get_size() != _size);
 
-	const Map<VoxelVector3i, Variant>::Element *elem =
+	const HashMap<VoxelVector3i, Variant>::Element *elem =
 			src_buffer._voxel_metadata.front();
 
 	while (elem != nullptr) {
