@@ -26,13 +26,13 @@ jobs:
       # Clone our module under the correct directory
       - uses: actions/checkout@v3
         with:
-          path: modules/voxel
+          path: modules/voxel_mesh
 
       # Azure repositories are not reliable, we need to prevent azure giving us packages.
       - name: Make apt sources.list use the default Ubuntu repositories
         run: |
           sudo rm -f /etc/apt/sources.list.d/*
-          sudo cp -f modules/voxel/misc/sources.list /etc/apt/sources.list
+          sudo cp -f modules/voxel_mesh/misc/sources.list /etc/apt/sources.list
           sudo apt-get update
 
       # Install all packages (except scons)
@@ -95,7 +95,7 @@ jobs:
       # Clone our module under the correct directory
       - uses: actions/checkout@v3
         with:
-          path: modules/voxel
+          path: modules/voxel_mesh
 
       # Clone fuzzer
       - name: Checkout Godot fuzzer backend
@@ -107,7 +107,7 @@ jobs:
 
       - name: Copy fuzzer settings
         run: |
-          cp modules/voxel/misc/fuzzer_config.txt fuzzer/settings.txt
+          cp modules/voxel_mesh/misc/fuzzer_config.txt fuzzer/settings.txt
 
       # Download, unzip and setup SwiftShader library
       # See https://github.com/godotengine/regression-test-project/releases/tag/_ci-deps for details
@@ -138,7 +138,7 @@ jobs:
       # HEADLESS
       - name: Run fuzzer Headless
         run: |
-          UBSAN_OPTIONS=suppressions=../modules/voxel/misc/suppressions.supp DRI_PRIME=0 timeout -v 960 xvfb-run bin/godot.linuxbsd.editor.dev.x86_64.san FunctionExecutor.tscn 600 --headless --path fuzzer 2>&1 | tee sanitizers_log.txt || true
+          UBSAN_OPTIONS=suppressions=../modules/voxel_mesh/misc/suppressions.supp DRI_PRIME=0 timeout -v 960 xvfb-run bin/godot.linuxbsd.editor.dev.x86_64.san FunctionExecutor.tscn 600 --headless --path fuzzer 2>&1 | tee sanitizers_log.txt || true
           tail -n 200 sanitizers_log.txt >> project_results.txt
 
       - name: Copy results from fuzzer directory
@@ -153,7 +153,7 @@ jobs:
           echo "func _process(delta):" >> temp.txt
           if [ -f results.txt ]; then
             cat temp.txt results.txt > fuzzer/Node.gd.test || true
-            UBSAN_OPTIONS=suppressions=../modules/voxel/misc/suppressions.supp DRI_PRIME=0 timeout -v 3600 ./reproducer bin/godot.linuxbsd.editor.dev.x86_64.san 60_50 fuzzer --headless
+            UBSAN_OPTIONS=suppressions=../modules/voxel_mesh/misc/suppressions.supp DRI_PRIME=0 timeout -v 3600 ./reproducer bin/godot.linuxbsd.editor.dev.x86_64.san 60_50 fuzzer --headless
           fi
 
       - name: Store reproducer Headless
@@ -174,7 +174,7 @@ jobs:
       # GLES 3
       - name: Run fuzzer GLES3
         run: |
-          UBSAN_OPTIONS=suppressions=../modules/voxel/misc/suppressions.supp DRI_PRIME=0 timeout -v 960 xvfb-run bin/godot.linuxbsd.editor.dev.x86_64.san FunctionExecutor.tscn 600 --rendering-driver opengl3 --audio-driver Dummy --path fuzzer 2>&1 | tee sanitizers_log.txt || true
+          UBSAN_OPTIONS=suppressions=../modules/voxel_mesh/misc/suppressions.supp DRI_PRIME=0 timeout -v 960 xvfb-run bin/godot.linuxbsd.editor.dev.x86_64.san FunctionExecutor.tscn 600 --rendering-driver opengl3 --audio-driver Dummy --path fuzzer 2>&1 | tee sanitizers_log.txt || true
           tail -n 200 sanitizers_log.txt >> project_results.txt
 
       - name: Copy results from fuzzer directory
@@ -189,7 +189,7 @@ jobs:
           echo "func _process(delta):" >> temp.txt
           if [ -f results.txt ]; then
             cat temp.txt results.txt > fuzzer/Node.gd.test || true
-            UBSAN_OPTIONS=suppressions=../modules/voxel/misc/suppressions.supp DRI_PRIME=0 timeout -v 3600 ./reproducer bin/godot.linuxbsd.editor.dev.x86_64.san 60_50 fuzzer --rendering-driver opengl3 --audio-driver Dummy
+            UBSAN_OPTIONS=suppressions=../modules/voxel_mesh/misc/suppressions.supp DRI_PRIME=0 timeout -v 3600 ./reproducer bin/godot.linuxbsd.editor.dev.x86_64.san 60_50 fuzzer --rendering-driver opengl3 --audio-driver Dummy
           fi
 
       - name: Store reproducer Headless
@@ -209,7 +209,7 @@ jobs:
       # Vulkan
       - name: Run fuzzer Vulkan
         run: |
-          VK_ICD_FILENAMES=$(pwd)/vk_swiftshader_icd.json UBSAN_OPTIONS=suppressions=../modules/voxel/misc/suppressions.supp DRI_PRIME=0 timeout -v 960 xvfb-run bin/godot.linuxbsd.editor.dev.x86_64.san FunctionExecutor.tscn 600 --rendering-driver opengl3 --audio-driver Dummy  --path fuzzer 2>&1 | tee sanitizers_log.txt || true
+          VK_ICD_FILENAMES=$(pwd)/vk_swiftshader_icd.json UBSAN_OPTIONS=suppressions=../modules/voxel_mesh/misc/suppressions.supp DRI_PRIME=0 timeout -v 960 xvfb-run bin/godot.linuxbsd.editor.dev.x86_64.san FunctionExecutor.tscn 600 --rendering-driver opengl3 --audio-driver Dummy  --path fuzzer 2>&1 | tee sanitizers_log.txt || true
           tail -n 200 sanitizers_log.txt >> project_results.txt
 
       - name: Copy results from fuzzer directory
@@ -224,7 +224,7 @@ jobs:
           echo "func _process(delta):" >> temp.txt
           if [ -f results.txt ]; then
             cat temp.txt results.txt > fuzzer/Node.gd.test || true
-            VK_ICD_FILENAMES=$(pwd)/vk_swiftshader_icd.json UBSAN_OPTIONS=suppressions=../modules/voxel/misc/suppressions.supp DRI_PRIME=0 timeout -v 3600 ./reproducer bin/godot.linuxbsd.editor.dev.x86_64.san 60_50 fuzzer --rendering-driver opengl3 --audio-driver Dummy
+            VK_ICD_FILENAMES=$(pwd)/vk_swiftshader_icd.json UBSAN_OPTIONS=suppressions=../modules/voxel_mesh/misc/suppressions.supp DRI_PRIME=0 timeout -v 3600 ./reproducer bin/godot.linuxbsd.editor.dev.x86_64.san 60_50 fuzzer --rendering-driver opengl3 --audio-driver Dummy
           fi
 
       - name: Store reproducer Vulkan
@@ -256,4 +256,4 @@ jobs:
 
       - name: Check fuzzer output
         run: |
-          modules/voxel/misc/check_ci_log.py sanitizers_log.txt
+          modules/voxel_mesh/misc/check_ci_log.py sanitizers_log.txt
