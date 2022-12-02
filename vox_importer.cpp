@@ -27,7 +27,7 @@ Error VoxelVoxImporter::process_scene_node_recursively(const vox::Data &data, in
 				root_node = node;
 			} else {
 				ERR_FAIL_COND_V(parent_node == nullptr, ERR_BUG);
-				parent_node->add_child(node);
+				parent_node->add_child(node, true);
 				node->set_owner(root_node);
 			}
 			const vox::TransformNode *vox_transform_node =
@@ -110,7 +110,7 @@ void VoxelVoxImporter::add_mesh_instance(Ref<ImporterMesh> mesh, Node *parent, N
 		Vector3 offset) {
 	ImporterMeshInstance3D *mesh_instance = memnew(ImporterMeshInstance3D);
 	mesh_instance->set_mesh(mesh);
-	parent->add_child(mesh_instance);
+	parent->add_child(mesh_instance, true);
 	mesh_instance->set_owner(owner);
 	mesh_instance->set_position(offset);
 }
