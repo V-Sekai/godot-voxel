@@ -82,13 +82,9 @@ void VoxelMemoryPool::debug_print() {
 	if (_pools.size() == 0) {
 		print_line("No pools created");
 	} else {
-		int i = 0;
-		for(const KeyValue<uint32_t, Pool*> &E : _pools) {
+		for (const KeyValue<uint32_t, Pool *> &E : _pools) {
 			Pool *pool = _pools.get(E.key);
-			print_line(
-					String("Pool {0} for size {1}: {2} blocks")
-							.format(varray(i, *key, SIZE_T_TO_VARIANT(pool->blocks.size()))));
-			++i;
+			print_line(String("Pool for size {1}: {2} blocks").format(varray(E.key, SIZE_T_TO_VARIANT(pool->blocks.size()))));
 		}
 	}
 }
