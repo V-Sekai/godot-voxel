@@ -65,8 +65,8 @@ void VoxelMemoryPool::recycle(uint8_t *block, uint32_t size) {
 void VoxelMemoryPool::clear() {
 	MutexLock lock(_mutex);
 	const uint32_t *key = nullptr;
-	while ((key = _pools.next(key))) {
-		Pool *pool = _pools.get(*key);
+	for (const KeyValue<uint32_t, VoxelMemoryPool::Pool *> &E : _pools) {
+		Pool *pool = _pools.get(E.key);
 		CRASH_COND(pool == nullptr);
 		for (auto it = pool->blocks.begin(); it != pool->blocks.end(); ++it) {
 			uint8_t *ptr = *it;
@@ -85,8 +85,8 @@ void VoxelMemoryPool::debug_print() {
 	} else {
 		const uint32_t *key = nullptr;
 		int i = 0;
-		while ((key = _pools.next(key))) {
-			Pool *pool = _pools.get(*key);
+		for(const KeyValue<uint32_t, Pool*> &E : _pools) {
+			Pool *pool = _pools.get(E.key);
 			print_line(
 					String("Pool {0} for size {1}: {2} blocks")
 							.format(varray(i, *key, SIZE_T_TO_VARIANT(pool->blocks.size()))));
@@ -106,7 +106,7 @@ VoxelMemoryPool::Pool *VoxelMemoryPool::get_or_create_pool(uint32_t size) {
 	if (ppool == nullptr) {
 		pool = memnew(Pool);
 		CRASH_COND(pool == nullptr);
-		_pools.set(size, pool);
+		_pools[size] = pool;
 	} else {
 		pool = *ppool;
 		CRASH_COND(pool == nullptr);

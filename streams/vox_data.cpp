@@ -54,8 +54,9 @@ uint32_t g_default_palette[PALETTE_SIZE] = {
 	0xff555555, 0xff444444, 0xff222222, 0xff111111
 };
 
-static Error parse_string(FileAccess &f, String &s) {
-	const int size = f.get_32();
+static Error parse_string(Ref<FileAccess> f, String &s) {
+	ERR_FAIL_NULL_V(f, FAILED);
+	const int size = f->get_32();
 
 	// Sanity checks
 	ERR_FAIL_COND_V(size < 0, ERR_INVALID_DATA);
@@ -63,7 +64,7 @@ static Error parse_string(FileAccess &f, String &s) {
 
 	static thread_local std::vector<char> bytes;
 	bytes.resize(size);
-	ERR_FAIL_COND_V(f.get_buffer((uint8_t *)bytes.data(), bytes.size()) !=
+	ERR_FAIL_COND_V(f->get_buffer((uint8_t *)bytes.data(), bytes.size()) !=
 					bytes.size(),
 			ERR_PARSE_ERROR);
 
@@ -73,9 +74,9 @@ static Error parse_string(FileAccess &f, String &s) {
 	return OK;
 }
 
-static Error parse_dictionary(FileAccess &f,
+static Error parse_dictionary(Ref<FileAccess> f,
 		std::unordered_map<String, String> &dict) {
-	const int item_count = f.get_32();
+	const int item_count = f->get_32();
 
 	// Sanity checks
 	ERR_FAIL_COND_V(item_count < 0, ERR_INVALID_DATA);
@@ -177,10 +178,10 @@ static Basis parse_basis(uint8_t data) {
 }
 
 Error parse_node_common_header(
-		Node &node, FileAccess &f,
+		Node &node, Ref<FileAccess> f,
 		const std::unordered_map<int, std::unique_ptr<Node>> &scene_graph) {
 	//
-	const int node_id = f.get_32();
+	const int node_id = f->get_32();
 	ERR_FAIL_COND_V_MSG(
 			scene_graph.find(node_id) != scene_graph.end(), ERR_INVALID_DATA,
 			String("Node with ID {0} already exists").format(varray(node_id)));
@@ -217,40 +218,39 @@ Error Data::_load_from_file(String fpath) {
 	PRINT_VERBOSE(String("Loading ") + fpath);
 
 	Error open_err;
-	FileAccessRef f_ref = FileAccess::open(fpath, FileAccess::READ, &open_err);
-	if (f_ref == nullptr) {
+	Ref<FileAccess> f = FileAccess::open(fpath, FileAccess::READ, &open_err);
+	if (f.is_null()) {
 		return open_err;
 	}
-	FileAccess &f = *f_ref;
 
 	char magic[5] = { 0 };
-	ERR_FAIL_COND_V(f.get_buffer((uint8_t *)magic, 4) != 4, ERR_PARSE_ERROR);
+	ERR_FAIL_COND_V(f->get_buffer((uint8_t *)magic, 4) != 4, ERR_PARSE_ERROR);
 	ERR_FAIL_COND_V(strcmp(magic, "VOX ") != 0, ERR_PARSE_ERROR);
 
-	const uint32_t version = f.get_32();
+	const uint32_t version = f->get_32();
 	ERR_FAIL_COND_V(version != 150, ERR_PARSE_ERROR);
 
-	const size_t file_length = f.get_length();
+	const size_t file_length = f->get_length();
 
 	VoxelVector3i last_size;
 
 	clear();
 
-	while (f.get_position() < file_length) {
+	while (f->get_position() < file_length) {
 		char chunk_id[5] = { 0 };
-		ERR_FAIL_COND_V(f.get_buffer((uint8_t *)chunk_id, 4) != 4, ERR_PARSE_ERROR);
+		ERR_FAIL_COND_V(f->get_buffer((uint8_t *)chunk_id, 4) != 4, ERR_PARSE_ERROR);
 
-		const uint32_t chunk_size = f.get_32();
-		f.get_32(); // child_chunks_size
+		const uint32_t chunk_size = f->get_32();
+		f->get_32(); // child_chunks_size
 
 		PRINT_VERBOSE(String("Reading chunk {0} at {1}, size={2}")
-							  .format(varray(chunk_id, f.get_position(), chunk_size)));
+							  .format(varray(chunk_id, f->get_position(), chunk_size)));
 
 		if (strcmp(chunk_id, "SIZE") == 0) {
 			VoxelVector3i size;
-			size.x = f.get_32();
-			size.y = f.get_32();
-			size.z = f.get_32();
+			size.x = f->get_32();
+			size.y = f->get_32();
+			size.z = f->get_32();
 			ERR_FAIL_COND_V(size.x > 256, ERR_PARSE_ERROR);
 			ERR_FAIL_COND_V(size.y > 256, ERR_PARSE_ERROR);
 			ERR_FAIL_COND_V(size.z > 256, ERR_PARSE_ERROR);
@@ -261,14 +261,14 @@ Error Data::_load_from_file(String fpath) {
 			model->color_indexes.resize(last_size.x * last_size.y * last_size.z, 0);
 			model->size = last_size;
 
-			const uint32_t num_voxels = f.get_32();
+			const uint32_t num_voxels = f->get_32();
 
 			for (uint32_t i = 0; i < num_voxels; ++i) {
 				VoxelVector3i pos;
-				pos.x = f.get_8();
-				pos.y = f.get_8();
-				pos.z = f.get_8();
-				const uint32_t c = f.get_8();
+				pos.x = f->get_8();
+				pos.y = f->get_8();
+				pos.z = f->get_8();
+				const uint32_t c = f->get_8();
 				pos = magica_to_opengl(pos);
 				ERR_FAIL_COND_V(pos.x >= model->size.x || pos.x < 0, ERR_PARSE_ERROR);
 				ERR_FAIL_COND_V(pos.y >= model->size.y || pos.y < 0, ERR_PARSE_ERROR);
@@ -282,13 +282,13 @@ Error Data::_load_from_file(String fpath) {
 			_palette[0] = Color8{ 0, 0, 0, 0 };
 			for (uint32_t i = 1; i < _palette.size(); ++i) {
 				Color8 c;
-				c.r = f.get_8();
-				c.g = f.get_8();
-				c.b = f.get_8();
-				c.a = f.get_8();
+				c.r = f->get_8();
+				c.g = f->get_8();
+				c.b = f->get_8();
+				c.a = f->get_8();
 				_palette[i] = c;
 			}
-			f.get_32();
+			f->get_32();
 
 		} else if (strcmp(chunk_id, "nTRN") == 0) {
 			std::unique_ptr<TransformNode> node_ptr =
@@ -310,14 +310,14 @@ Error Data::_load_from_file(String fpath) {
 				node.hidden = false;
 			}
 
-			node.child_node_id = f.get_32();
+			node.child_node_id = f->get_32();
 
-			const int reserved_id = f.get_32();
+			const int reserved_id = f->get_32();
 			ERR_FAIL_COND_V(reserved_id != -1, ERR_INVALID_DATA);
 
-			node.layer_id = f.get_32();
+			node.layer_id = f->get_32();
 
-			const int frame_count = f.get_32();
+			const int frame_count = f->get_32();
 			ERR_FAIL_COND_V(frame_count != 1, ERR_INVALID_DATA);
 
 			// for (int frame_index = 0; frame_index < frame_count; ++frame_index) {
@@ -328,7 +328,7 @@ Error Data::_load_from_file(String fpath) {
 			auto t_it = frame.find("_t");
 			if (t_it != frame.end()) {
 				// It is 3 integers formatted as text
-				Vector<float> coords = t_it->second.split_floats(" ");
+				Vector<double> coords = t_it->second.split_floats(" ");
 				ERR_FAIL_COND_V(coords.size() < 3, ERR_PARSE_ERROR);
 				// PRINT_VERBOSE(String("Pos: {0}, {1}, {2}").format(varray(coords[0],
 				// coords[1], coords[2])));
@@ -356,13 +356,13 @@ Error Data::_load_from_file(String fpath) {
 			Error header_err = parse_node_common_header(node, f, _scene_graph);
 			ERR_FAIL_COND_V(header_err != OK, header_err);
 
-			const unsigned int child_count = f.get_32();
+			const unsigned int child_count = f->get_32();
 			// Sanity check
 			ERR_FAIL_COND_V(child_count > 65536, ERR_INVALID_DATA);
 			node.child_node_ids.resize(child_count);
 
 			for (unsigned int i = 0; i < child_count; ++i) {
-				node.child_node_ids[i] = f.get_32();
+				node.child_node_ids[i] = f->get_32();
 			}
 
 			_scene_graph[node.id] = std::move(node_ptr);
@@ -374,11 +374,11 @@ Error Data::_load_from_file(String fpath) {
 			Error header_err = parse_node_common_header(node, f, _scene_graph);
 			ERR_FAIL_COND_V(header_err != OK, header_err);
 
-			const unsigned int model_count = f.get_32();
+			const unsigned int model_count = f->get_32();
 			ERR_FAIL_COND_V(model_count != 1, ERR_INVALID_DATA);
 
 			// for (unsigned int i = 0; i < model_count; ++i) {
-			node.model_id = f.get_32();
+			node.model_id = f->get_32();
 			ERR_FAIL_COND_V(node.model_id > 65536, ERR_INVALID_DATA);
 			ERR_FAIL_COND_V(node.model_id < 0, ERR_INVALID_DATA);
 
@@ -393,7 +393,7 @@ Error Data::_load_from_file(String fpath) {
 			std::unique_ptr<Layer> layer_ptr = std::make_unique<Layer>();
 			Layer &layer = *layer_ptr;
 
-			const int layer_id = f.get_32();
+			const int layer_id = f->get_32();
 			for (unsigned int i = 0; i < _layers.size(); ++i) {
 				const Layer *existing_layer = _layers[i].get();
 				CRASH_COND(existing_layer == nullptr);
@@ -418,7 +418,7 @@ Error Data::_load_from_file(String fpath) {
 				layer.hidden = false;
 			}
 
-			const int reserved_id = f.get_32();
+			const int reserved_id = f->get_32();
 			ERR_FAIL_COND_V(reserved_id != -1, ERR_INVALID_DATA);
 
 			_layers.push_back(std::move(layer_ptr));
@@ -427,7 +427,7 @@ Error Data::_load_from_file(String fpath) {
 			std::unique_ptr<Material> material_ptr = std::make_unique<Material>();
 			Material &material = *material_ptr;
 
-			const int material_id = f.get_32();
+			const int material_id = f->get_32();
 			ERR_FAIL_COND_V(material_id < 0 ||
 							material_id > static_cast<int>(_palette.size()),
 					ERR_INVALID_DATA);
@@ -494,7 +494,7 @@ Error Data::_load_from_file(String fpath) {
 		} else {
 			PRINT_VERBOSE(String("Skipping chunk ") + chunk_id);
 			// Ignore chunk
-			f.seek(f.get_position() + chunk_size);
+			f->seek(f->get_position() + chunk_size);
 		}
 	}
 

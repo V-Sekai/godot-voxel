@@ -176,9 +176,7 @@ private:
 	// Blocks stored with a spatial hash in all 3D directions.
 	// RELATIONSHIP = 2 because it delivers better performance with this kind of
 	// key and hash (less collisions).
-	HashMap<VoxelVector3i, unsigned int, Vector3iHasher,
-			HashMapComparatorDefault<VoxelVector3i>, 3, 2>
-			_blocks_map;
+	HashMap<VoxelVector3i, unsigned int, Vector3iHasher, HashMapComparatorDefault<VoxelVector3i>> _blocks_map;
 	std::vector<VoxelDataBlock *> _blocks;
 
 	// Voxel access will most frequently be in contiguous areas, so the same

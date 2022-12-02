@@ -14,7 +14,6 @@
 #include <core/config/engine.h>
 
 #include "editor/editor_plugin.h"
-#include "vox_editor_plugin.h"
 #include "vox_importer.h"
 
 #ifdef VOXEL_RUN_TESTS
@@ -25,11 +24,14 @@
 static void _editor_init() {
 	Ref<VoxelVoxImporter> import_vox;
 	import_vox.instantiate();
-	ResourceImporterScene::get_singleton()->add_importer(import_vox);
+	ResourceImporterScene::add_importer(import_vox);
 }
 #endif
 
-void initialize_voxel_mesh_module() {
+void initialize_voxel_mesh_module(ModuleInitializationLevel p_level) {
+	if (p_level != MODULE_INITIALIZATION_LEVEL_EDITOR) {
+		return;
+	}
 	VoxelMemoryPool::create_singleton();
 	VoxelStringNames::create_singleton();
 
@@ -51,7 +53,7 @@ void initialize_voxel_mesh_module() {
 	ClassDB::register_class<VoxelVoxLoader>();
 
 	// Meshers
-	ClassDB::register_virtual_class<VoxelMesher>();
+	ClassDB::register_abstract_class<VoxelMesher>();
 	ClassDB::register_class<VoxelMesherBlocky>();
 	ClassDB::register_class<VoxelMesherCubes>();
 
@@ -74,14 +76,15 @@ void initialize_voxel_mesh_module() {
 	PRINT_VERBOSE(String("Size of VoxelBuffer: {0}")
 						  .format(varray((int)sizeof(VoxelBuffer))));
 
-	EditorPlugins::add_by_type<VoxEditorPlugin>();
-
 #ifdef VOXEL_RUN_TESTS
 	run_voxel_tests();
 #endif
 }
 
-void uninitialize_voxel_mesh_module() {
+void uninitialize_voxel_mesh_module(ModuleInitializationLevel p_level) {
+	if (p_level != MODULE_INITIALIZATION_LEVEL_EDITOR) {
+		return;
+	}
 	// At this point, the GDScript module has nullified
 	// GDScriptLanguage::singleton!! That means it's impossible to free scripts
 	// still referenced by VoxelServer. And that can happen, because users can

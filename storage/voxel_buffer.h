@@ -8,7 +8,7 @@
 #include "funcs.h"
 
 #include "core/object/ref_counted.h"
-#include <core/templates/map.h>
+#include <core/templates/hash_map.h>
 #include <core/templates/vector.h>
 
 class VoxelTool;
@@ -428,12 +428,10 @@ public:
 
 	template <typename F>
 	void for_each_voxel_metadata_in_area(Box3i box, F callback) const {
-		const HashMap<VoxelVector3i, Variant>::Element *elem = _voxel_metadata.front();
-		while (elem != nullptr) {
-			if (box.contains(elem->key())) {
-				callback(elem->key(), elem->value());
+		for (const KeyValue<VoxelVector3i, Variant> &E : _voxel_metadata) {
+			if (box.contains(E.key)) {
+				callback(E.key, E.value);
 			}
-			elem = elem->next();
 		}
 	}
 
@@ -446,7 +444,7 @@ public:
 			VoxelVector3i dst_origin);
 	void copy_voxel_metadata(const VoxelBuffer &src_buffer);
 
-	const HashMap<VoxelVector3i, Variant> &get_voxel_metadata() const {
+	const HashMap<VoxelVector3i, Variant, Vector3iHasher> &get_voxel_metadata() const {
 		return _voxel_metadata;
 	}
 
@@ -521,7 +519,7 @@ private:
 	VoxelVector3i _size;
 
 	Variant _block_metadata;
-	HashMap<VoxelVector3i, Variant> _voxel_metadata;
+	HashMap<VoxelVector3i, Variant, Vector3iHasher> _voxel_metadata;
 
 	// TODO It may be preferable to actually move away from storing an RWLock in
 	// every buffer in the future. We should be able to find a solution because

@@ -1,7 +1,6 @@
 
 def can_build(env, platform):
-  return False and env["tools"]
-
+  return env.editor_build
 
 def configure(env):
 	pass

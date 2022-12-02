@@ -160,7 +160,7 @@ void VoxelDataMap::set_block(VoxelVector3i bpos, VoxelDataBlock *block) {
 #endif
 	unsigned int i = _blocks.size();
 	_blocks.push_back(block);
-	_blocks_map.set(bpos, i);
+	_blocks_map[bpos] = i;
 }
 
 void VoxelDataMap::remove_block_internal(VoxelVector3i bpos,

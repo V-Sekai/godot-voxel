@@ -40,7 +40,7 @@ voxel_files = [
 	"thirdparty/meshoptimizer/*.cpp"
 ]
 
-if env["tools"]:
+if env.editor_build:
 	# Editor-only stuff
 	voxel_editor_files = [
 		"editor/*.cpp",

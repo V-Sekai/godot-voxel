@@ -257,9 +257,9 @@ VoxelVector3i::distance_sq(const VoxelVector3i &other) const {
 // For Godot
 struct Vector3iHasher {
 	static _FORCE_INLINE_ uint32_t hash(const VoxelVector3i &v) {
-		uint32_t hash = hash_djb2_one_32(v.x);
-		hash = hash_djb2_one_32(v.y, hash);
-		return hash_djb2_one_32(v.z, hash);
+		uint32_t hash = hash_murmur3_one_32(v.x);
+		hash = hash_murmur3_one_32(v.y, hash);
+		return hash_murmur3_one_32(v.z, hash);
 	}
 };
 

@@ -759,9 +759,9 @@ void VoxelBuffer::set_block_metadata(Variant meta) {
 
 Variant VoxelBuffer::get_voxel_metadata(VoxelVector3i pos) const {
 	ERR_FAIL_COND_V(!is_position_valid(pos), Variant());
-	const HashMap<VoxelVector3i, Variant>::Element *elem = _voxel_metadata.find(pos);
-	if (elem != nullptr) {
-		return elem->value();
+	const HashMap<VoxelVector3i, Variant, Vector3iHasher>::ConstIterator elem = _voxel_metadata.find(pos);
+	if (elem) {
+		return elem->value;
 	} else {
 		return Variant();
 	}
@@ -778,22 +778,18 @@ void VoxelBuffer::set_voxel_metadata(VoxelVector3i pos, Variant meta) {
 
 void VoxelBuffer::for_each_voxel_metadata(Callable callback) const {
 	ERR_FAIL_COND(callback.is_null());
-	const HashMap<VoxelVector3i, Variant>::Element *elem = _voxel_metadata.front();
-
-	while (elem != nullptr) {
-		const Variant key = elem->key().to_vec3();
-		const Variant *args[2] = { &key, &elem->value() };
+	for (const KeyValue<VoxelVector3i, Variant> &elem : _voxel_metadata) {
+		const Variant key = elem.key.to_vec3();
+		const Variant *args[2] = { &key, &elem.value };
 		Callable::CallError err;
 		Variant retval;
-		callback.call(args, 2, retval, err);
+		callback.callp(args, 2, retval, err);
 		ERR_FAIL_COND_MSG(err.error != Callable::CallError::CALL_OK,
 				String("FuncRef call failed at {0}").format(varray(key)));
 		// TODO Can't provide detailed error because FuncRef doesn't give us access
 		// to the object ERR_FAIL_COND_MSG(err.error != Variant::CallError::CALL_OK,
 		// false, 		Variant::get_call_error_text(callback->get_object(),
 		// method_name, nullptr, 0, err));
-
-		elem = elem->next();
 	}
 }
 
@@ -805,7 +801,7 @@ void VoxelBuffer::for_each_voxel_metadata_in_area(Callable callback,
 		const Variant *args[2] = { &key, &meta };
 		Callable::CallError err;
 		Variant retval;
-		callback.call(args, 2, retval, err);
+		callback.callp(args, 2, retval, err);
 
 		ERR_FAIL_COND_MSG(err.error != Callable::CallError::CALL_OK,
 				String("FuncRef call failed at {0}").format(varray(key)));
@@ -821,13 +817,10 @@ void VoxelBuffer::clear_voxel_metadata() {
 }
 
 void VoxelBuffer::clear_voxel_metadata_in_area(Box3i box) {
-	HashMap<VoxelVector3i, Variant>::Element *elem = _voxel_metadata.front();
-	while (elem != nullptr) {
-		HashMap<VoxelVector3i, Variant>::Element *next_elem = elem->next();
-		if (box.contains(elem->key())) {
-			_voxel_metadata.erase(elem);
+	for (const KeyValue<VoxelVector3i, Variant> &elem : _voxel_metadata) {
+		if (box.contains(elem.key)) {
+			_voxel_metadata.erase(elem.key);
 		}
-		elem = next_elem;
 	}
 }
 
@@ -842,38 +835,29 @@ void VoxelBuffer::copy_voxel_metadata_in_area(Ref<VoxelBuffer> src_buffer,
 	const VoxelVector3i clipped_dst_offset =
 			dst_origin + clipped_src_box.pos - src_box.pos;
 
-	const HashMap<VoxelVector3i, Variant>::Element *elem =
-			src_buffer->_voxel_metadata.front();
-
-	while (elem != nullptr) {
-		const VoxelVector3i src_pos = elem->key();
+	for (const KeyValue<VoxelVector3i, Variant> &elem : src_buffer->_voxel_metadata) {
+		const VoxelVector3i src_pos = elem.key;
 		if (src_box.contains(src_pos)) {
 			const VoxelVector3i dst_pos = src_pos + clipped_dst_offset;
 			CRASH_COND(!is_position_valid(dst_pos));
-			_voxel_metadata[dst_pos] = elem->value().duplicate();
+			_voxel_metadata[dst_pos] = elem.value.duplicate();
 		}
-		elem = elem->next();
 	}
 }
 
 void VoxelBuffer::copy_voxel_metadata(const VoxelBuffer &src_buffer) {
 	ERR_FAIL_COND(src_buffer.get_size() != _size);
 
-	const HashMap<VoxelVector3i, Variant>::Element *elem =
-			src_buffer._voxel_metadata.front();
-
-	while (elem != nullptr) {
-		const VoxelVector3i pos = elem->key();
-		_voxel_metadata[pos] = elem->value().duplicate();
-		elem = elem->next();
+	for (const KeyValue<VoxelVector3i, Variant> &elem : src_buffer._voxel_metadata) {
+		const VoxelVector3i pos = elem.key;
+		_voxel_metadata[pos] = elem.value.duplicate();
 	}
 
 	_block_metadata = src_buffer._block_metadata.duplicate();
 }
 
 Ref<Image> VoxelBuffer::debug_print_sdf_to_image_top_down() {
-	Image *im = memnew(Image);
-	im->create(_size.x, _size.z, false, Image::FORMAT_RGB8);
+	Ref<Image> im = Image::create_empty(_size.x, _size.z, false, Image::FORMAT_RGB8);
 	VoxelVector3i pos;
 	for (pos.z = 0; pos.z < _size.z; ++pos.z) {
 		for (pos.x = 0; pos.x < _size.x; ++pos.x) {

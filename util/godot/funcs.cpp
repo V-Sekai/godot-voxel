@@ -46,7 +46,7 @@ bool try_call_script(const Object *obj, StringName method_name,
 #endif
 
 	Callable::CallError err;
-	Variant ret = script->call(method_name, args, argc, err);
+	Variant ret = script->callp(method_name, args, argc, err);
 
 	// TODO Why does Variant::get_call_error_text want a non-const Object
 	// pointer??? It only uses const methods
@@ -162,14 +162,14 @@ Array generate_debug_seams_wireframe_surface(Ref<Mesh> src_mesh,
 			const Vector3 pos = src_positions[i];
 			Dupe *dptr = vertex_to_dupe.getptr(pos);
 			if (dptr == nullptr) {
-				vertex_to_dupe.set(pos, Dupe());
+				vertex_to_dupe[pos] = Dupe();
 			} else {
 				if (dptr->count == 0) {
 					dptr->dst_index = dst_positions.size();
 					dst_positions.push_back(pos + src_normals[i] * 0.05);
 				}
 				++dptr->count;
-				src_index_to_dst_index.set(i, dptr->dst_index);
+				src_index_to_dst_index[i] = dptr->dst_index;
 			}
 		}
 	}

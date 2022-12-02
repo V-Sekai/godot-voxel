@@ -115,7 +115,7 @@ void VoxelVoxImporter::add_mesh_instance(Ref<ImporterMesh> mesh, Node *parent, N
 	mesh_instance->set_position(offset);
 }
 
-Node *VoxelVoxImporter::import_scene(const String &p_path, uint32_t p_flags, const HashMap<StringName, Variant> &p_options, int p_bake_fps, List<String> *r_missing_deps, Error *r_err) {
+Node *VoxelVoxImporter::import_scene(const String &p_path, uint32_t p_flags, const HashMap<StringName, Variant> &p_options, List<String> *r_missing_deps, Error *r_err) {
 	vox::Data data;
 	const Error load_err = data.load_from_file(p_path);
 	if (load_err != OK && r_err) {

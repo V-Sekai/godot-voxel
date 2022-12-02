@@ -106,19 +106,19 @@ PackedFloat32Array DirectMultiMeshInstance::make_transform_3d_bulk_array(
 		float *ptr = bulk_array.ptrw() + 12 * i;
 		const Transform3D &t = transforms[i];
 
-		ptr[0] = t.basis.elements[0].x;
-		ptr[1] = t.basis.elements[0].y;
-		ptr[2] = t.basis.elements[0].z;
+		ptr[0] = t.basis.get_column(0).x;
+		ptr[1] = t.basis.get_column(0).y;
+		ptr[2] = t.basis.get_column(0).z;
 		ptr[3] = t.origin.x;
 
-		ptr[4] = t.basis.elements[1].x;
-		ptr[5] = t.basis.elements[1].y;
-		ptr[6] = t.basis.elements[1].z;
+		ptr[4] = t.basis.get_column(1).x;
+		ptr[5] = t.basis.get_column(1).y;
+		ptr[6] = t.basis.get_column(1).z;
 		ptr[7] = t.origin.y;
 
-		ptr[8] = t.basis.elements[2].x;
-		ptr[9] = t.basis.elements[2].y;
-		ptr[10] = t.basis.elements[2].z;
+		ptr[8] = t.basis.get_column(2).x;
+		ptr[9] = t.basis.get_column(2).y;
+		ptr[10] = t.basis.get_column(2).z;
 		ptr[11] = t.origin.z;
 	}
 

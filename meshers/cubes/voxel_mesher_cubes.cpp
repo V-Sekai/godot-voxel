@@ -739,9 +739,7 @@ make_greedy_atlas(const VoxelMesherCubes::GreedyAtlasData &atlas_data,
 			}
 		}
 	}
-	Ref<Image> image;
-	image.instantiate();
-	image->create(result_size.x, result_size.y, false, Image::FORMAT_RGBA8,
+	Ref<Image> image = Image::create_from_data(result_size.x, result_size.y, false, Image::FORMAT_RGBA8,
 			im_data);
 
 	return image;
