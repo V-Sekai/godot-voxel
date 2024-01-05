@@ -108,7 +108,7 @@ VoxelVoxImporter::build_mesh(VoxelBuffer &voxels, VoxelMesher &mesher,
 		texture.instantiate();
 		texture->set_image(out_atlas);
 		material->set_texture(BaseMaterial3D::TEXTURE_ALBEDO, texture);
-		material->set_texture_filter(BaseMaterial3D::TEXTURE_FILTER_LINEAR_WITH_MIPMAPS);
+		material->set_texture_filter(BaseMaterial3D::TEXTURE_FILTER_NEAREST_WITH_MIPMAPS);
 		mesh->add_surface(output.primitive_type, surface, Array(), Dictionary(), material);
 		++surface_index;
 	}
