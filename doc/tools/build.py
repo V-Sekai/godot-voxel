@@ -41,9 +41,7 @@ def update_classes_xml(custom_godot_path, godot_repo_root, verbose=False):
     args = [str(godot_executable), " --doctool ", str(godot_repo_root)]
     if verbose:
         print("Running: ", args)
-    result = subprocess.run(
-        args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True
-    )
+    result = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
     if verbose:
         print(result.stdout)
         print("Disregard Godot's errors about files unless they are about Voxel*.")
@@ -82,9 +80,7 @@ def update_mkdocs_file(mkdocs_config_fpath, md_classes_dir):
     class_files = []
     docs_folder = mkdocs_config_fpath.parents[0] / SOURCES
     for absolute_path in absolute_paths:
-        class_files.append(
-            str(absolute_path.relative_to(docs_folder)).replace("\\", "/")
-        )
+        class_files.append(str(absolute_path.relative_to(docs_folder)).replace("\\", "/"))
     class_files = sorted(class_files)
 
     with open(mkdocs_config_fpath, "r", encoding="utf-8") as f:

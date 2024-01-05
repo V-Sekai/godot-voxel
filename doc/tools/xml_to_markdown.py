@@ -156,12 +156,7 @@ def make_arglist(args, module_class_names):
     for arg_index, arg in enumerate(args):
         if arg_index > 0:
             s += ","
-        s += (
-            " "
-            + make_type(arg.attrib["type"], module_class_names)
-            + " "
-            + arg.attrib["name"]
-        )
+        s += " " + make_type(arg.attrib["type"], module_class_names) + " " + arg.attrib["name"]
         if "default" in arg.attrib:
             s += "=" + arg.attrib["default"]
     s += " )"
@@ -205,9 +200,7 @@ def process_xml(f_xml, f_out, module_class_names):
 
     # Header
     out = "# " + root.attrib["name"] + "\n\n"
-    out += (
-        "Inherits: " + make_type(root.attrib["inherits"], module_class_names) + "\n\n"
-    )
+    out += "Inherits: " + make_type(root.attrib["inherits"], module_class_names) + "\n\n"
     out += "\n"
     out += make_text(root.find("brief_description").text, module_class_names) + "\n\n"
 
