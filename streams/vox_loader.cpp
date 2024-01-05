@@ -73,6 +73,6 @@ Error VoxelVoxLoader::load_from_file(String fpath, Ref<VoxelBuffer> voxels,
 }
 
 void VoxelVoxLoader::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("load_from_file", "fpath", "voxels"),
+	ClassDB::bind_method(D_METHOD("load_from_file", "fpath", "voxels", "palette"),
 			&VoxelVoxLoader::load_from_file);
 }

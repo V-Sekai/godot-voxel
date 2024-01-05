@@ -66,14 +66,9 @@ void VoxelColorPalette::_b_set_data(PackedInt32Array colors) {
 }
 
 void VoxelColorPalette::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_color", "color"),
+	ClassDB::bind_method(D_METHOD("set_color",  "index", "color"),
 			&VoxelColorPalette::set_color);
 	ClassDB::bind_method(D_METHOD("get_color"), &VoxelColorPalette::get_color);
-
-	ClassDB::bind_method(D_METHOD("set_colors", "colors"),
-			&VoxelColorPalette::set_colors);
-	ClassDB::bind_method(D_METHOD("get_colors"), &VoxelColorPalette::get_colors);
-
 	ClassDB::bind_method(D_METHOD("set_data", "d"),
 			&VoxelColorPalette::_b_set_data);
 	ClassDB::bind_method(D_METHOD("get_data"), &VoxelColorPalette::_b_get_data);
