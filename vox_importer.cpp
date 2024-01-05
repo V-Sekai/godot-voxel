@@ -1,6 +1,8 @@
 #include "vox_importer.h"
 #include "constants/voxel_string_names.h"
 #include "meshers/cubes/voxel_mesher_cubes.h"
+#include "scene/resources/image_texture.h"
+#include "scene/resources/material.h"
 #include "storage/voxel_buffer.h"
 #include "streams/vox_data.h"
 #include "util/godot/funcs.h"
@@ -98,15 +100,16 @@ VoxelVoxImporter::build_mesh(VoxelBuffer &voxels, VoxelMesher &mesher,
 		Ref<StandardMaterial3D> material;
 		material.instantiate();
 		material->set_roughness(1.f);
-		material->set_flag(StandardMaterial3D::FLAG_ALBEDO_FROM_VERTEX_COLOR, true);
-		material->set_flag(StandardMaterial3D::FLAG_SRGB_VERTEX_COLOR, true);
 		material->set_transparency(StandardMaterial3D::TRANSPARENCY_ALPHA);
+		if (output.atlas_image.is_valid()) {
+			out_atlas = output.atlas_image;
+		}
+		Ref<ImageTexture> texture;
+		texture.instantiate();
+		texture->set_image(out_atlas);
+		material->set_texture(BaseMaterial3D::TEXTURE_ALBEDO, texture);
 		mesh->add_surface(output.primitive_type, surface, Array(), Dictionary(), material);
 		++surface_index;
-	}
-
-	if (output.atlas_image.is_valid()) {
-		out_atlas = output.atlas_image;
 	}
 
 	return mesh;
@@ -145,7 +148,7 @@ Node *VoxelVoxImporter::import_scene(const String &p_path, uint32_t p_flags, con
 	mesher->set_color_mode(VoxelMesherCubes::COLOR_MESHER_PALETTE);
 	mesher->set_palette(palette);
 	mesher->set_greedy_meshing_enabled(true);
-	mesher->set_store_colors_in_texture(false);
+	mesher->set_store_colors_in_texture(true);
 
 	for (unsigned int model_index = 0; model_index < data.get_model_count();
 			++model_index) {
