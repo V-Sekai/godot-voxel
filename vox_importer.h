@@ -26,7 +26,6 @@ class VoxelVoxImporter : public EditorSceneFormatImporter {
 			Vector3 offset);
 	static Ref<ImporterMesh>
 	build_mesh(VoxelBuffer &voxels, VoxelMesher &mesher,
-			std::vector<unsigned int> &surface_index_to_material,
 			Ref<Image> &out_atlas);
 
 public:

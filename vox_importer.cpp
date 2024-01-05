@@ -69,7 +69,6 @@ Error VoxelVoxImporter::process_scene_node_recursively(const vox::Data &data, in
 
 Ref<ImporterMesh>
 VoxelVoxImporter::build_mesh(VoxelBuffer &voxels, VoxelMesher &mesher,
-		std::vector<unsigned int> &surface_index_to_material,
 		Ref<Image> &out_atlas) {
 	//
 	VoxelMesher::Output output;
@@ -95,8 +94,14 @@ VoxelVoxImporter::build_mesh(VoxelBuffer &voxels, VoxelMesher &mesher,
 		if (!is_surface_triangulated(surface)) {
 			continue;
 		}
-		mesh->add_surface(output.primitive_type, surface, Array(), Dictionary());
-		surface_index_to_material.push_back(i);
+
+		Ref<StandardMaterial3D> material;
+		material.instantiate();
+		material->set_roughness(1.f);
+		material->set_flag(StandardMaterial3D::FLAG_ALBEDO_FROM_VERTEX_COLOR, true);
+		material->set_flag(StandardMaterial3D::FLAG_SRGB_VERTEX_COLOR, true);
+		material->set_transparency(StandardMaterial3D::TRANSPARENCY_ALPHA);
+		mesh->add_surface(output.primitive_type, surface, Array(), Dictionary(), material);
 		++surface_index;
 	}
 
@@ -106,10 +111,12 @@ VoxelVoxImporter::build_mesh(VoxelBuffer &voxels, VoxelMesher &mesher,
 
 	return mesh;
 }
+
 void VoxelVoxImporter::add_mesh_instance(Ref<ImporterMesh> mesh, Node *parent, Node *owner,
 		Vector3 offset) {
 	ImporterMeshInstance3D *mesh_instance = memnew(ImporterMeshInstance3D);
 	mesh_instance->set_mesh(mesh);
+	mesh_instance->set_name(MeshInstance3D::get_class_static());
 	parent->add_child(mesh_instance, true);
 	mesh_instance->set_owner(owner);
 	mesh_instance->set_position(offset);
@@ -126,7 +133,6 @@ Node *VoxelVoxImporter::import_scene(const String &p_path, uint32_t p_flags, con
 	Vector<VoxMesh> meshes;
 	meshes.resize(data.get_model_count());
 
-	// Get color palette
 	Ref<VoxelColorPalette> palette;
 	palette.instantiate();
 	for (unsigned int i = 0; i < data.get_palette().size(); ++i) {
@@ -141,26 +147,13 @@ Node *VoxelVoxImporter::import_scene(const String &p_path, uint32_t p_flags, con
 	mesher->set_greedy_meshing_enabled(true);
 	mesher->set_store_colors_in_texture(false);
 
-	FixedArray<Ref<StandardMaterial3D>, 2> materials;
-	for (unsigned int i = 0; i < materials.size(); ++i) {
-		Ref<StandardMaterial3D> &mat = materials[i];
-		mat.instantiate();
-		mat->set_roughness(1.f);
-		mat->set_flag(StandardMaterial3D::FLAG_ALBEDO_FROM_VERTEX_COLOR, true);
-		mat->set_flag(StandardMaterial3D::FLAG_SRGB_VERTEX_COLOR, true);
-	}
-	materials[1]->set_transparency(StandardMaterial3D::TRANSPARENCY_ALPHA);
-
-	// Build meshes from voxel models
 	for (unsigned int model_index = 0; model_index < data.get_model_count();
 			++model_index) {
 		const vox::Model &model = data.get_model(model_index);
-
 		Ref<VoxelBuffer> voxels;
 		voxels.instantiate();
 		voxels->create(model.size + VoxelVector3i(VoxelMesherCubes::PADDING * 2));
 		voxels->decompress_channel(VoxelBuffer::CHANNEL_COLOR);
-
 		Span<uint8_t> dst_color_indices;
 		if (!voxels->get_channel_raw(VoxelBuffer::CHANNEL_COLOR, dst_color_indices)) {
 			if (r_err) {
@@ -173,22 +166,11 @@ Node *VoxelVoxImporter::import_scene(const String &p_path, uint32_t p_flags, con
 				VoxelVector3i(VoxelMesherCubes::PADDING),
 				src_color_indices, model.size, VoxelVector3i(),
 				model.size);
-
-		std::vector<unsigned int> surface_index_to_material;
 		Ref<Image> atlas;
-		Ref<ImporterMesh> mesh =
-				build_mesh(**voxels, **mesher, surface_index_to_material, atlas);
+		Ref<ImporterMesh> mesh = build_mesh(**voxels, **mesher, atlas);
 
 		if (mesh.is_null()) {
 			continue;
-		}
-
-		for (unsigned int surface_index = 0;
-				surface_index < surface_index_to_material.size(); ++surface_index) {
-			const unsigned int material_index =
-					surface_index_to_material[surface_index];
-			CRASH_COND(material_index >= materials.size());
-			mesh->set_surface_material(surface_index, materials[material_index]);
 		}
 
 		VoxMesh mesh_info;
