@@ -82,11 +82,17 @@ public:
 		return _ptr[i];
 	}
 
-	inline size_t size() const { return _size; }
+	inline size_t size() const {
+		return _size;
+	}
 
-	inline T *data() { return _ptr; }
+	inline T *data() {
+		return _ptr;
+	}
 
-	inline const T *data() const { return _ptr; }
+	inline const T *data() const {
+		return _ptr;
+	}
 
 	inline void fill(const T v) {
 		const T *end = _ptr + _size;

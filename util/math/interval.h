@@ -29,9 +29,13 @@ struct Interval {
 				std::numeric_limits<float>::infinity());
 	}
 
-	inline bool contains(float v) const { return v >= min && v <= max; }
+	inline bool contains(float v) const {
+		return v >= min && v <= max;
+	}
 
-	inline bool is_single_value() const { return min == max; }
+	inline bool is_single_value() const {
+		return min == max;
+	}
 
 	inline void add_point(float x) {
 		if (x < min) {
@@ -46,7 +50,9 @@ struct Interval {
 		add_point(other.max);
 	}
 
-	inline float length() const { return max - min; }
+	inline float length() const {
+		return max - min;
+	}
 
 	inline Interval operator+(float x) const {
 		return Interval{ min + x, max + x };
@@ -56,7 +62,9 @@ struct Interval {
 		return Interval{ min + other.min, max + other.max };
 	}
 
-	inline void operator+=(const Interval &other) { *this = *this + other; }
+	inline void operator+=(const Interval &other) {
+		*this = *this + other;
+	}
 
 	inline Interval operator-(float x) const {
 		return Interval{ min - x, max - x };
@@ -66,7 +74,9 @@ struct Interval {
 		return Interval{ min - other.max, max - other.min };
 	}
 
-	inline Interval operator-() const { return Interval{ -max, -min }; }
+	inline Interval operator-() const {
+		return Interval{ -max, -min };
+	}
 
 	inline Interval operator*(float x) const {
 		const float a = min * x;
@@ -89,9 +99,13 @@ struct Interval {
 		return Interval{ ::min(a, b, c, d), ::max(a, b, c, d) };
 	}
 
-	inline void operator*=(float x) { *this = *this * x; }
+	inline void operator*=(float x) {
+		*this = *this * x;
+	}
 
-	inline void operator*=(Interval x) { *this = *this * x; }
+	inline void operator*=(Interval x) {
+		*this = *this * x;
+	}
 
 	inline Interval operator/(const Interval &other) const {
 		if (other.is_single_value() && other.min == 0.f) {
@@ -114,7 +128,9 @@ struct Interval {
 		return *this * (1.f / x);
 	}
 
-	inline void operator/=(float x) { *this = *this / x; }
+	inline void operator/=(float x) {
+		*this = *this / x;
+	}
 };
 
 inline Interval operator*(float b, const Interval &a) {

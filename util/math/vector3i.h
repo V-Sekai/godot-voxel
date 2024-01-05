@@ -167,7 +167,9 @@ struct VoxelVector3i {
 		return pos;
 	}
 
-	bool all_members_equal() const { return x == y && y == z; }
+	bool all_members_equal() const {
+		return x == y && y == z;
+	}
 
 	static inline VoxelVector3i min(const VoxelVector3i a,
 			const VoxelVector3i b) {

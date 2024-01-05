@@ -50,11 +50,17 @@ public:
 		return !equals(other);
 	}
 
-	inline T *data() { return _data; }
+	inline T *data() {
+		return _data;
+	}
 
-	inline const T *data() const { return _data; }
+	inline const T *data() const {
+		return _data;
+	}
 
-	inline unsigned int size() const { return N; }
+	inline unsigned int size() const {
+		return N;
+	}
 
 private:
 	T _data[N];

@@ -32,11 +32,17 @@ public:
 		_modified = modified;
 	}
 
-	inline bool is_modified() const { return _modified; }
+	inline bool is_modified() const {
+		return _modified;
+	}
 
-	void set_needs_lodding(bool need_lodding) { _needs_lodding = need_lodding; }
+	void set_needs_lodding(bool need_lodding) {
+		_needs_lodding = need_lodding;
+	}
 
-	inline bool get_needs_lodding() const { return _needs_lodding; }
+	inline bool get_needs_lodding() const {
+		return _needs_lodding;
+	}
 
 private:
 	VoxelDataBlock(VoxelVector3i bpos, Ref<VoxelBuffer> buffer,

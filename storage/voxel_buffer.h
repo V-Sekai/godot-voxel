@@ -421,7 +421,9 @@ public:
 
 	// Metadata
 
-	Variant get_block_metadata() const { return _block_metadata; }
+	Variant get_block_metadata() const {
+		return _block_metadata;
+	}
 	void set_block_metadata(Variant meta);
 	Variant get_voxel_metadata(VoxelVector3i pos) const;
 	void set_voxel_metadata(VoxelVector3i pos, Variant meta);
@@ -451,8 +453,12 @@ public:
 	// Internal synchronization.
 	// This lock is optional, and used internally at the moment, only in
 	// multithreaded areas.
-	inline const RWLock &get_lock() const { return _rw_lock; }
-	inline RWLock &get_lock() { return _rw_lock; }
+	inline const RWLock &get_lock() const {
+		return _rw_lock;
+	}
+	inline RWLock &get_lock() {
+		return _rw_lock;
+	}
 
 	// Debugging
 
@@ -465,13 +471,23 @@ private:
 
 	static void _bind_methods();
 
-	int get_size_x() const { return _size.x; }
-	int get_size_y() const { return _size.y; }
-	int get_size_z() const { return _size.z; }
+	int get_size_x() const {
+		return _size.x;
+	}
+	int get_size_y() const {
+		return _size.y;
+	}
+	int get_size_z() const {
+		return _size.z;
+	}
 
 	// Bindings
-	Vector3 _b_get_size() const { return _size.to_vec3(); }
-	void _b_create(int x, int y, int z) { create(x, y, z); }
+	Vector3 _b_get_size() const {
+		return _size.to_vec3();
+	}
+	void _b_create(int x, int y, int z) {
+		create(x, y, z);
+	}
 	uint64_t _b_get_voxel(int x, int y, int z, unsigned int channel) const {
 		return get_voxel(x, y, z, channel);
 	}

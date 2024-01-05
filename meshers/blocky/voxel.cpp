@@ -394,7 +394,7 @@ static void bake_mesh_geometry(Voxel &config, Voxel::BakedData &baked_data,
 							}
 						}
 
-						added_side_indices[side][src_index] =  next_side_index;
+						added_side_indices[side][src_index] = next_side_index;
 						++next_side_index;
 
 					} else {
