@@ -31,11 +31,11 @@ static Cube::Side name_to_side(const String &s) {
 }
 
 bool Voxel::_set(const StringName &p_name, const Variant &p_value) {
-	String name = p_name;
+	String voxel_name = p_name;
 
 	// TODO Eventualy these could be Rect2 for maximum flexibility?
-	if (name.begins_with("cube_tiles/")) {
-		String s = name.substr(STRLEN("cube_tiles/") - 1, name.length());
+	if (voxel_name.begins_with("cube_tiles/")) {
+		String s = voxel_name.substr(STRLEN("cube_tiles/") - 1, voxel_name.length());
 		Cube::Side side = name_to_side(s);
 		if (side != Cube::SIDE_COUNT) {
 			Vector2 v = p_value;
@@ -48,10 +48,10 @@ bool Voxel::_set(const StringName &p_name, const Variant &p_value) {
 }
 
 bool Voxel::_get(const StringName &p_name, Variant &r_ret) const {
-	String name = p_name;
+	String voxel_name = p_name;
 
-	if (name.begins_with("cube_tiles/")) {
-		String s = name.substr(STRLEN("cube_tiles/") - 1, name.length());
+	if (voxel_name.begins_with("cube_tiles/")) {
+		String s = voxel_name.substr(STRLEN("cube_tiles/") - 1, voxel_name.length());
 		Cube::Side side = name_to_side(s);
 		if (side != Cube::SIDE_COUNT) {
 			r_ret = _cube_tiles[side];
@@ -74,8 +74,8 @@ void Voxel::_get_property_list(List<PropertyInfo> *p_list) const {
 	}
 }
 
-void Voxel::set_voxel_name(String name) {
-	_name = name;
+void Voxel::set_voxel_name(String p_name) {
+	_name = p_name;
 }
 
 void Voxel::set_id(int id) {

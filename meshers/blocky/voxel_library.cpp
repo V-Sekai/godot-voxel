@@ -21,13 +21,13 @@ void VoxelLibrary::set_voxel_count(unsigned int type_count) {
 	_needs_baking = true;
 }
 
-int VoxelLibrary::get_voxel_index_from_name(StringName name) const {
+int VoxelLibrary::get_voxel_index_from_name(StringName p_name) const {
 	for (size_t i = 0; i < _voxel_types.size(); ++i) {
 		const Ref<Voxel> &v = _voxel_types[i];
 		if (v.is_null()) {
 			continue;
 		}
-		if (v->get_voxel_name() == name) {
+		if (v->get_voxel_name() == p_name) {
 			return i;
 		}
 	}
@@ -102,11 +102,11 @@ void VoxelLibrary::set_bake_tangents(bool bt) {
 	_needs_baking = true;
 }
 
-Ref<Voxel> VoxelLibrary::create_voxel(unsigned int id, String name) {
+Ref<Voxel> VoxelLibrary::create_voxel(unsigned int id, String p_name) {
 	ERR_FAIL_COND_V(id >= _voxel_types.size(), Ref<Voxel>());
 	Ref<Voxel> voxel(memnew(Voxel));
 	voxel->set_id(id);
-	voxel->set_voxel_name(name);
+	voxel->set_voxel_name(p_name);
 	_voxel_types[id] = voxel;
 	return voxel;
 }
@@ -436,8 +436,8 @@ Ref<Voxel> VoxelLibrary::_b_get_voxel(unsigned int id) {
 	return _voxel_types[id];
 }
 
-Ref<Voxel> VoxelLibrary::_b_get_voxel_by_name(StringName name) {
-	int id = get_voxel_index_from_name(name);
+Ref<Voxel> VoxelLibrary::_b_get_voxel_by_name(StringName p_name) {
+	int id = get_voxel_index_from_name(p_name);
 	ERR_FAIL_COND_V(id == -1, Ref<Voxel>());
 	return _voxel_types[id];
 }

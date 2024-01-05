@@ -37,14 +37,6 @@ bool try_call_script(const Object *obj, StringName method_name,
 		return false;
 	}
 
-#ifdef TOOLS_ENABLED
-	if (Engine::get_singleton()->is_editor_hint() &&
-			!script->get_script()->is_tool()) {
-		// Can't call a method on a non-tool script in the editor
-		return false;
-	}
-#endif
-
 	Callable::CallError err;
 	Variant ret = script->callp(method_name, args, argc, err);
 

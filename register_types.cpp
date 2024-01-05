@@ -24,7 +24,7 @@
 static void _editor_init() {
 	Ref<VoxelVoxImporter> import_vox;
 	import_vox.instantiate();
-	ResourceImporterScene::add_importer(import_vox);
+	ResourceImporterScene::add_scene_importer(import_vox);
 }
 #endif
 
