@@ -13,10 +13,14 @@
 			<description>
 			</description>
 		</method>
+		<method name="get_colors" qualifiers="const">
+			<return type="PackedColorArray" />
+			<description>
+			</description>
+		</method>
 		<method name="set_color">
 			<return type="void" />
-			<param index="0" name="index" type="int" />
-			<param index="1" name="color" type="Color" />
+			<param index="0" name="colors" type="PackedColorArray" />
 			<description>
 			</description>
 		</method>
