@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="VoxelVoxLoader" inherits="RefCounted" version="4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+<class name="VoxelVoxLoader" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
 	</brief_description>
 	<description>
@@ -11,7 +11,7 @@
 			<return type="int" enum="Error" />
 			<param index="0" name="fpath" type="String" />
 			<param index="1" name="voxels" type="VoxelBuffer" />
-			<param index="2" name="_unnamed_arg2" type="VoxelColorPalette" />
+			<param index="2" name="palette" type="VoxelColorPalette" />
 			<description>
 			</description>
 		</method>
